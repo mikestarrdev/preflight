@@ -1,0 +1,75 @@
+{
+  "version": "62a5a1e0cce9",
+  "created_at": "2026-07-22T14:49:02.046Z",
+  "total_chunks": 120,
+  "docs": {
+    "account-integrity": {
+      "chunks": 2,
+      "fetched_at": "2026-07-22T06:43:48.520Z"
+    },
+    "adult-nudity": {
+      "chunks": 4,
+      "fetched_at": "2026-07-22T06:41:09.863Z"
+    },
+    "adult-solicitation": {
+      "chunks": 3,
+      "fetched_at": "2026-07-22T06:41:27.853Z"
+    },
+    "alcohol": {
+      "chunks": 4,
+      "fetched_at": "2026-07-22T06:41:47.197Z"
+    },
+    "cryptocurrency": {
+      "chunks": 7,
+      "fetched_at": "2026-07-22T06:43:29.762Z"
+    },
+    "cs-fraud-scams": {
+      "chunks": 13,
+      "fetched_at": "2026-07-22T06:44:45.022Z"
+    },
+    "cs-spam": {
+      "chunks": 3,
+      "fetched_at": "2026-07-22T06:45:03.347Z"
+    },
+    "deceptive-practices": {
+      "chunks": 3,
+      "fetched_at": "2026-07-22T06:40:17.242Z"
+    },
+    "discriminatory-practices": {
+      "chunks": 2,
+      "fetched_at": "2026-07-22T06:44:29.470Z"
+    },
+    "drugs-pharmaceuticals": {
+      "chunks": 19,
+      "fetched_at": "2026-07-22T06:42:48.810Z"
+    },
+    "financial-services": {
+      "chunks": 5,
+      "fetched_at": "2026-07-22T06:43:10.998Z"
+    },
+    "health-wellness": {
+      "chunks": 11,
+      "fetched_at": "2026-07-22T06:40:51.438Z"
+    },
+    "inauthentic-behavior": {
+      "chunks": 2,
+      "fetched_at": "2026-07-22T06:44:11.402Z"
+    },
+    "personal-attributes": {
+      "chunks": 27,
+      "fetched_at": "2026-07-22T06:39:57.518Z"
+    },
+    "tobacco": {
+      "chunks": 6,
+      "fetched_at": "2026-07-22T06:42:10.287Z"
+    },
+    "unacceptable-business-practices": {
+      "chunks": 4,
+      "fetched_at": "2026-07-22T06:40:34.203Z"
+    },
+    "weapons": {
+      "chunks": 5,
+      "fetched_at": "2026-07-22T06:42:30.631Z"
+    }
+  }
+}
