@@ -18,8 +18,9 @@ create table if not exists policy_chunks (
   tsv           tsvector generated always as (to_tsvector('english', content)) stored
 );
 
-create index if not exists policy_chunks_embedding_idx
-  on policy_chunks using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+-- No vector index: at this corpus size (hundreds of chunks) exact search is
+-- fast and avoids approximate-recall loss. Add an hnsw index if the corpus
+-- grows past ~10k chunks.
 create index if not exists policy_chunks_tsv_idx
   on policy_chunks using gin (tsv);
 create index if not exists policy_chunks_platform_doc_idx
