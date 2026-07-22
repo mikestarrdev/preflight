@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Preflight
 
-## Getting Started
+Pre-flight compliance checking for paid social ads. Paste ad copy, upload a creative, or
+point at a landing page — get back policy violations cited to the exact clause that was
+broken, plus a compliant rewrite.
 
-First, run the development server:
+v1 covers Meta (Facebook/Instagram). The corpus schema is multi-platform; adding another
+platform is an ingest, not a refactor.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How it works
+
+```
+input (copy | image | landing page URL)
+  ↓ normalize      image → vision description; URL → fetched + cleaned text
+  ↓ classify       vertical, ad category, extracted claims          [Claude]
+  ↓ retrieve       hybrid search, per extracted claim               [pgvector + full-text]
+  ↓ adjudicate     each (element × clause) → verdict + citation     [Claude]
+  ↓ rewrite        compliant alternative per violation              [Claude]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Retrieval is hybrid because policy violations often turn on exact trigger words
+("guaranteed", "cure", "before and after") that semantic search alone misses. The corpus
+is chunked by policy clause, not fixed token windows, so a rule is never separated from
+its exception and every citation quotes the clause verbatim with a link to the source.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Status
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Phase 1 of 5: policy corpus and retrieval. The scraper, clause chunker, ingest pipeline,
+and hybrid search are in place. Agent loop, vision, evals, and UI are later phases —
+see `docs/`.
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+Next.js 15 / TypeScript, Supabase Postgres + pgvector, Claude (reasoning + vision),
+OpenAI embeddings, Playwright.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Running the corpus pipeline
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sh
+pnpm install
+cp .env.example .env.local   # fill in keys
+# apply supabase/schema.sql in the Supabase SQL editor
+pnpm scrape                  # fetch + parse Meta ad policies → data/parsed/
+pnpm ingest                  # embed + upsert → policy_chunks
+pnpm query "before and after weight loss photo"
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Scraped policy text stays out of the repo; the scraper is reproducible and polite
+(1 req/s, parses from disk after the first fetch).
