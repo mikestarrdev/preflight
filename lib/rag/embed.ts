@@ -7,9 +7,18 @@ export const EMBEDDING_DIMS = 1536;
 
 const BATCH_SIZE = 100;
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Built lazily, not at module load: scripts call dotenv's config() as their
+// first statement, but bundler-driven import ordering doesn't guarantee this
+// module evaluates after that call. Reading process.env inside the function
+// call (as lib/db.ts's supabaseAdmin() already does) sidesteps that entirely.
+let client: OpenAI | null = null;
+function openaiClient(): OpenAI {
+  client ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  return client;
+}
 
 export async function embedTexts(texts: string[]): Promise<number[][]> {
+  const openai = openaiClient();
   const out: number[][] = [];
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
