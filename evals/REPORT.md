@@ -40,3 +40,63 @@ citation of a section's example as a hit for its rule.
 The one citation-accuracy drop was a quote stitched from a different chunk
 than the one cited (`meta:deceptive-practices:2.1`), caught by verification
 and dropped, as designed.
+
+## Phase 3 re-run — 2026-07-23
+
+After adding the vision and landing page paths. Copy and image tiers are
+scored separately; they measure different things and stay unmerged.
+
+### Copy tier (44 cases) — no regression
+
+| Metric | Score | Baseline |
+|---|---|---|
+| Recall | 0.14 (3/22) | 0.14 |
+| False positive rate | 0.00 (0/22) | 0.00 |
+| Citation accuracy | 0.99 (112/113) | 0.99 |
+| Rewrite quality | 4.29/5 (n=28) | 4.29/5 |
+
+Identical to the baseline, as expected: the copy path's prompts and cache
+keys were kept byte-for-byte from Phase 2, and every copy case resolved from
+cache (0-1ms per case). The Phase 4 "before" numbers are intact.
+
+### Image tier (8 fixture cases) — first numbers
+
+Six violating fixtures (before/after comparison, fake play button, in-image
+outcome promise, alcohol promo, vape promo, hookah lounge) and two clean
+controls (anti-smoking campaign, generic product ad). The three image
+examples parked in Phase 2 from Meta's tobacco page are unparked here as the
+labels for the vape, hookah, and anti-smoking fixtures.
+
+| Metric | Score | Detail |
+|---|---|---|
+| Recall | 1.00 | 6/6 flagged fixtures cite an expected clause at violation/risk |
+| False positive rate | 0.00 | 0/2 clean fixtures produced a violation |
+| Citation accuracy | 0.97 | 38/39 emitted findings verified verbatim |
+| Rewrite quality | n/a | image findings get guidance, not replacement copy; the judge prompt grades ad copy only, so guidance is excluded |
+
+Model `claude-sonnet-4-6`, corpus `62a5a1e0cce9`, run
+`evals/results/2026-07-23T06-49-01-273Z.json`. $0.32 cold for the image
+tier; the copy tier cost nothing (cache hits).
+
+### Reading the image numbers
+
+Recall 1.00 on n=6 self-made fixtures is a smoke test of the scoring path,
+not a claim about real-world creatives — the fixtures were built to be
+unambiguous, and several carry the violation in rendered text, the easiest
+route. The genuinely visual cases worked too: the before/after fixture is
+flagged from the `split_or_comparison` flag path (violation on
+`meta:health-wellness:2.1`, the side-by-side clause), and the fake play
+button from the `ui_elements` flag path (violation on `meta:cs-spam:2.1.s2`,
+deceptive platform functionality).
+
+The severity split is coherent where it matters: the alcohol promo comes
+back all-`risk` (restricted, hinges on licensing and age targeting not
+visible in an image) while vape and hookah come back `violation`
+(prohibited outright). The anti-smoking control draws `risk` on two broad
+tobacco clauses but correctly cites the cessation exception
+(`meta:tobacco:3.2`) as `clear` and produces no violation.
+
+The one citation drop was a `meta:tobacco:3.1` quote on the hookah case that
+was not an exact substring, caught and dropped as designed. Expanding this
+tier into a real dataset (Ad Library sampling, paraphrase generation) is
+Phase 4.

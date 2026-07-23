@@ -14,7 +14,8 @@
     "query": "tsx scripts/query.ts",
     "analyze": "tsx scripts/analyze.ts",
     "eval": "tsx evals/run.ts",
-    "eval:seed": "tsx evals/build-seed.ts"
+    "eval:seed": "tsx evals/build-seed.ts",
+    "eval:fixtures": "tsx evals/fixtures/generate.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.5",
