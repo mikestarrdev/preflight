@@ -1,0 +1,3 @@
+{"id":"meta-tobacco-3.1.1-a","input":{"copy":"This image is compliant because it promotes an anti-smoking campaign."},"expected":{"should_flag":false,"policy_ids":[],"notes":"image example, needs vision path"},"source":"meta_example","tags":["tobacco","image"]}
+{"id":"meta-tobacco-3.2.1-b","input":{"copy":"This image promotes an e-cigarette and is non-compliant."},"expected":{"should_flag":true,"policy_ids":[],"notes":"image example, needs vision path"},"source":"meta_example","tags":["tobacco","image"]}
+{"id":"meta-tobacco-3.2.1-c","input":{"copy":"This image shows hookah pipe imagery and is non-compliant."},"expected":{"should_flag":true,"policy_ids":[],"notes":"image example, needs vision path"},"source":"meta_example","tags":["tobacco","image"]}

@@ -12,7 +12,9 @@
     "db:push": "tsx scripts/apply-schema.ts",
     "ingest": "tsx scripts/ingest.ts",
     "query": "tsx scripts/query.ts",
-    "analyze": "tsx scripts/analyze.ts"
+    "analyze": "tsx scripts/analyze.ts",
+    "eval": "tsx evals/run.ts",
+    "eval:seed": "tsx evals/build-seed.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.5",
