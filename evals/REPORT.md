@@ -80,14 +80,21 @@ tier; the copy tier cost nothing (cache hits).
 
 ### Reading the image numbers
 
-Recall 1.00 on n=6 self-made fixtures is a smoke test of the scoring path,
-not a claim about real-world creatives — the fixtures were built to be
-unambiguous, and several carry the violation in rendered text, the easiest
-route. The genuinely visual cases worked too: the before/after fixture is
-flagged from the `split_or_comparison` flag path (violation on
-`meta:health-wellness:2.1`, the side-by-side clause), and the fake play
-button from the `ui_elements` flag path (violation on `meta:cs-spam:2.1.s2`,
-deceptive platform functionality).
+**Caveat: 1.00 recall here is not a capability measurement.** n=8, and the
+fixtures were authored by the same person who designed the flag taxonomy
+(`split_or_comparison`, `ui_elements`, `body_focus`, ...) the vision step
+extracts and the retrieval step keys on — the test and the system share a
+mental model. This tier currently proves the scoring path works end to end
+on non-copy elements and nothing more. Phase 4 expands it with creatives not
+designed around the system's own flag categories, which is the real test.
+
+With that said, the specifics are worth recording. Several fixtures carry
+the violation in rendered text, the easiest route, but the genuinely visual
+cases worked too: the before/after fixture is flagged from the
+`split_or_comparison` flag path (violation on `meta:health-wellness:2.1`,
+the side-by-side clause), and the fake play button from the `ui_elements`
+flag path (violation on `meta:cs-spam:2.1.s2`, deceptive platform
+functionality).
 
 The severity split is coherent where it matters: the alcohol promo comes
 back all-`risk` (restricted, hinges on licensing and age targeting not
@@ -100,3 +107,19 @@ The one citation drop was a `meta:tobacco:3.1` quote on the hookah case that
 was not an exact substring, caught and dropped as designed. Expanding this
 tier into a real dataset (Ad Library sampling, paraphrase generation) is
 Phase 4.
+
+### Known issue: explanation text can misstate literal values
+
+The adjudicator's `clause_quote` is verified verbatim against the corpus, so
+citations are unaffected, but `explanation` is free text and is not checked
+against the input. Observed at least once: an explanation referred to "$100"
+for an ad that actually offered "$500". The user reads the explanation, not
+the internal diagnostics, so this is a real quality issue even though no
+finding's citation is wrong.
+
+Two candidate fixes for Phase 4, not applied here:
+- require the explanation to quote the offending span of the ad verbatim,
+  the same discipline already imposed on `clause_quote`;
+- verify numerals in the explanation against the input the same way
+  `clause_quote` is verified against the corpus, and drop or flag findings
+  that fail.
