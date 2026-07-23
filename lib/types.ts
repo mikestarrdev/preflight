@@ -1,6 +1,10 @@
 export type Severity = 'violation' | 'risk' | 'clear';
 export type Element = 'copy' | 'image' | 'landing_page';
 
+// 'replacement' is drop-in ad copy; 'guidance' describes what to change, for
+// elements where generated text can't be the fix (images, landing pages).
+export type RewriteKind = 'replacement' | 'guidance';
+
 export type Finding = {
   element: Element;
   severity: Severity;
@@ -10,6 +14,7 @@ export type Finding = {
   explanation: string;      // why this ad element violates this clause
   confidence: number;       // 0-1
   suggested_rewrite?: string;
+  rewrite_kind?: RewriteKind;
 };
 
 export type AnalysisResult = {

@@ -1,9 +1,10 @@
 import type { AnalyzeOutput } from '@/lib/agent/orchestrator';
 
-// One line of evals/dataset/*.jsonl.
+// One line of evals/dataset/*.jsonl. image_path is repo-relative; the runner
+// loads and base64-encodes the fixture.
 export type EvalCase = {
   id: string;
-  input: { copy: string };
+  input: { copy?: string; image_path?: string; url?: string };
   expected: {
     should_flag: boolean;
     policy_ids: string[]; // clauses that should be cited; citing any one counts

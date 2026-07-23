@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config({ path: '.env.local' });
 
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { extname, join } from 'node:path';
 import type { CaseRun, EvalCase } from './types';
 
 const DATASET_DIR = 'evals/dataset';
@@ -11,7 +11,7 @@ const CONCURRENCY = 4;
 
 function loadCases(filterTag: string | null): EvalCase[] {
   const files = readdirSync(DATASET_DIR).filter(
-    // parked-* files hold cases the current pipeline can't run (image examples)
+    // parked-* files hold cases the pipeline can't run yet
     (f) => f.endsWith('.jsonl') && !f.startsWith('parked'),
   );
   if (files.length === 0) {
@@ -58,14 +58,26 @@ async function main() {
   console.log(`${cases.length} cases${filterTag ? ` (tag: ${filterTag})` : ''}, concurrency ${CONCURRENCY}\n`);
   if (cases.length === 0) process.exit(1);
 
-  // import after dotenv so env vars are set before clients initialize
+  // imports after dotenv so env vars are set before clients initialize
   const { analyze } = await import('../lib/agent/orchestrator');
+  const { MEDIA_TYPE_BY_EXT } = await import('../lib/inputs/vision');
   const { getUsage, usageCostUSD, MODEL_REASONING } = await import('../lib/claude');
   const { corpusVersion } = await import('../lib/corpus');
   const { scoreRecall } = await import('./scorers/recall');
   const { scoreFalsePositives } = await import('./scorers/false-positive');
   const { scoreCitations } = await import('./scorers/citation');
   const { scoreRewrites } = await import('./scorers/rewrite');
+
+  const toInput = (evalCase: EvalCase) => {
+    const { copy, image_path, url } = evalCase.input;
+    let image;
+    if (image_path) {
+      const mediaType = MEDIA_TYPE_BY_EXT[extname(image_path).toLowerCase()];
+      if (!mediaType) throw new Error(`${evalCase.id}: unsupported fixture type ${image_path}`);
+      image = { data: readFileSync(image_path).toString('base64'), mediaType };
+    }
+    return { copy, image, url };
+  };
 
   const started = Date.now();
   let done = 0;
@@ -75,7 +87,7 @@ async function main() {
     const t = Date.now();
     let run: CaseRun;
     try {
-      const result = await analyze(evalCase.input.copy);
+      const result = await analyze(toInput(evalCase));
       run = { eval_case: evalCase, result, duration_ms: Date.now() - t };
     } catch (err) {
       run = {
@@ -93,11 +105,25 @@ async function main() {
     return run;
   });
 
-  const recall = scoreRecall(runs);
-  const falsePositive = scoreFalsePositives(runs);
-  const citation = scoreCitations(runs);
+  // Copy and image cases are scored separately: the tiers measure different
+  // things, and a merged headline figure would hide movement in either.
+  const tiers = [
+    { name: 'copy', runs: runs.filter((r) => r.eval_case.input.image_path === undefined) },
+    { name: 'image', runs: runs.filter((r) => r.eval_case.input.image_path !== undefined) },
+  ].filter((t) => t.runs.length > 0);
+
   console.log('\njudging rewrites...');
-  const rewriteScore = await scoreRewrites(runs);
+  const tierScores = [];
+  for (const tier of tiers) {
+    tierScores.push({
+      name: tier.name,
+      cases: tier.runs.length,
+      recall: scoreRecall(tier.runs),
+      false_positive: scoreFalsePositives(tier.runs),
+      citation: scoreCitations(tier.runs),
+      rewrite: await scoreRewrites(tier.runs),
+    });
+  }
 
   const errors = runs.filter((r) => r.result === null);
   const usage = getUsage();
@@ -108,12 +134,7 @@ async function main() {
     model_version: MODEL_REASONING,
     corpus_version: corpusVersion(),
     filter: filterTag,
-    scores: {
-      recall,
-      false_positive: falsePositive,
-      citation,
-      rewrite: rewriteScore,
-    },
+    scores: Object.fromEntries(tierScores.map((t) => [t.name, t])),
     totals: {
       cases: runs.length,
       errors: errors.length,
@@ -136,12 +157,15 @@ async function main() {
   const outPath = join(RESULTS_DIR, `${record.timestamp.replace(/[:.]/g, '-')}.json`);
   writeFileSync(outPath, JSON.stringify(record, null, 2) + '\n');
 
-  console.log(`\n=== results (model ${MODEL_REASONING}, corpus ${corpusVersion()}) ===\n`);
-  console.log(`recall               ${fmt(recall.score)}   (${recall.hits}/${recall.total} flagged cases cite an expected clause)`);
-  console.log(`false positive rate  ${fmt(falsePositive.rate)}   (${falsePositive.false_positives}/${falsePositive.total} clean cases produced a violation)`);
-  console.log(`citation accuracy    ${fmt(citation.score)}   (${citation.verified}/${citation.emitted} emitted findings verified verbatim)`);
-  console.log(`rewrite quality      ${rewriteScore.mean_score === null ? 'n/a' : `${rewriteScore.mean_score.toFixed(2)}/5`}  (judge: ${rewriteScore.judge_model}, n=${rewriteScore.judged})`);
-  console.log(`errors               ${errors.length}/${runs.length} cases`);
+  console.log(`\n=== results (model ${MODEL_REASONING}, corpus ${corpusVersion()}) ===`);
+  for (const t of tierScores) {
+    console.log(`\n--- ${t.name} tier (${t.cases} cases) ---`);
+    console.log(`recall               ${fmt(t.recall.score)}   (${t.recall.hits}/${t.recall.total} flagged cases cite an expected clause)`);
+    console.log(`false positive rate  ${fmt(t.false_positive.rate)}   (${t.false_positive.false_positives}/${t.false_positive.total} clean cases produced a violation)`);
+    console.log(`citation accuracy    ${fmt(t.citation.score)}   (${t.citation.verified}/${t.citation.emitted} emitted findings verified verbatim)`);
+    console.log(`rewrite quality      ${t.rewrite.mean_score === null ? 'n/a' : `${t.rewrite.mean_score.toFixed(2)}/5`}  (judge: ${t.rewrite.judge_model}, n=${t.rewrite.judged})`);
+  }
+  console.log(`\nerrors               ${errors.length}/${runs.length} cases`);
   console.log(`cost                 $${usageCostUSD().toFixed(2)}  (${usage.calls} calls, in ${usage.input_tokens} tok, out ${usage.output_tokens} tok — cache hits cost nothing)`);
   console.log(`duration             ${(durationMs / 1000).toFixed(0)}s`);
   console.log(`\nwrote ${outPath}`);

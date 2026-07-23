@@ -31,9 +31,11 @@ export async function scoreRewrites(runs: CaseRun[]): Promise<RewriteScore> {
   for (const r of runs) {
     if (r.result === null) continue;
     for (const f of r.result.findings) {
-      if (f.severity === 'violation' && f.suggested_rewrite) {
+      // Replacement rewrites only: guidance (image/landing page findings) is
+      // instructions, not ad copy, and this judge prompt can't grade it.
+      if (f.severity === 'violation' && f.suggested_rewrite && f.rewrite_kind !== 'guidance') {
         items.push({
-          copy: r.eval_case.input.copy,
+          copy: r.eval_case.input.copy ?? '',
           clause: f.clause_quote,
           explanation: f.explanation,
           rewrite: f.suggested_rewrite,

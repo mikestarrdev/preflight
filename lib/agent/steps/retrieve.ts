@@ -14,20 +14,34 @@ export type RetrievedChunk = PolicyChunk & {
   surfaced_by: string[]; // claim ids, plus 'full_copy' for the whole-ad search
 };
 
-export async function retrieve(copy: string, claims: Claim[]): Promise<RetrievedChunk[]> {
+export type RetrievalQuery = { label: string; text: string };
+
+export async function retrieve(
+  content: string,
+  claims: Claim[],
+  extraQueries: RetrievalQuery[] = [],
+): Promise<RetrievedChunk[]> {
   return cached(
     {
       step: 'retrieve',
       model: EMBEDDING_MODEL,
       corpus_version: corpusVersion(),
-      input: { copy, claims: claims.map((c) => c.text) },
+      // extra_queries joins the key only when present so Phase 2 copy-path
+      // cache entries stay valid.
+      input: {
+        copy: content,
+        claims: claims.map((c) => c.text),
+        ...(extraQueries.length > 0 ? { extra_queries: extraQueries.map((q) => q.text) } : {}),
+      },
     },
     async () => {
-      // One search per claim, plus one on the full copy to catch anything
-      // claim extraction missed.
+      // One search per claim, plus one on the full content to catch anything
+      // claim extraction missed. Image and landing page elements add extra
+      // queries (creative description, flag phrases, mismatch phrasings).
       const queries = [
         ...claims.map((c) => ({ label: c.id, text: c.text })),
-        { label: 'full_copy', text: copy },
+        ...(content.trim().length > 0 ? [{ label: 'full_copy', text: content }] : []),
+        ...extraQueries,
       ];
       const results = await Promise.all(
         queries.map((q) => search(q.text, { platform: 'meta', k: K_PER_QUERY })),
