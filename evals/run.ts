@@ -2,14 +2,21 @@ import { config } from 'dotenv';
 config({ path: '.env.local' });
 
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { extname, join } from 'node:path';
-import type { CaseRun, EvalCase } from './types';
+import { basename, extname, join } from 'node:path';
+import type { CaseRun, EvalCase, LoadedCase, Split } from './types';
 
 const DATASET_DIR = 'evals/dataset';
 const RESULTS_DIR = 'evals/results';
 const CONCURRENCY = 4;
+// Extrapolate a full-run cost once this many cases have completed, so a run
+// that is going to be expensive announces itself early instead of at the end.
+const PROJECT_AFTER = 5;
 
-function loadCases(filterTag: string | null): EvalCase[] {
+// Per-run safety valve. A run that blows past this aborts rather than draining
+// the budget on a bad prompt. Default $3; override with EVAL_MAX_COST_USD.
+const MAX_COST_USD = Number(process.env.EVAL_MAX_COST_USD ?? 3);
+
+function loadCases(split: Split, filterTag: string | null): LoadedCase[] {
   const files = readdirSync(DATASET_DIR).filter(
     // parked-* files hold cases the pipeline can't run yet
     (f) => f.endsWith('.jsonl') && !f.startsWith('parked'),
@@ -18,25 +25,42 @@ function loadCases(filterTag: string | null): EvalCase[] {
     console.error(`no dataset files in ${DATASET_DIR}/ — run pnpm eval:seed first`);
     process.exit(1);
   }
-  const cases = files.flatMap((f) =>
-    readFileSync(join(DATASET_DIR, f), 'utf8')
+  const loaded: LoadedCase[] = [];
+  for (const f of files) {
+    const tier = basename(f, '.jsonl');
+    const lines = readFileSync(join(DATASET_DIR, f), 'utf8')
       .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => JSON.parse(line) as EvalCase),
-  );
-  return filterTag ? cases.filter((c) => c.tags.includes(filterTag)) : cases;
+      .filter((line) => line.trim().length > 0);
+    for (const line of lines) {
+      const evalCase = JSON.parse(line) as EvalCase;
+      if (evalCase.split === undefined) {
+        console.error(`${f}: case ${evalCase.id} has no split — run pnpm eval:split first`);
+        process.exit(1);
+      }
+      // The runner never loads holdout unless --holdout is passed, so the
+      // held-out set cannot leak into an iteration run by accident.
+      if (evalCase.split !== split) continue;
+      if (filterTag && !evalCase.tags.includes(filterTag)) continue;
+      loaded.push({ evalCase, tier });
+    }
+  }
+  return loaded;
 }
 
-// Fixed-size worker pool; results land at their case's index.
+// Fixed-size worker pool; results land at their case's index. A worker stops
+// pulling new items once stop() returns true (the cost ceiling tripped), so an
+// abort drains in-flight work without starting more.
 async function runPool<T, R>(
   items: T[],
   concurrency: number,
   fn: (item: T, index: number) => Promise<R>,
-): Promise<R[]> {
-  const out: R[] = new Array(items.length);
+  stop: () => boolean,
+): Promise<(R | undefined)[]> {
+  const out: (R | undefined)[] = new Array(items.length);
   let next = 0;
   const workers = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
     while (true) {
+      if (stop()) return;
       const i = next++;
       if (i >= items.length) return;
       out[i] = await fn(items[i], i);
@@ -51,12 +75,17 @@ function fmt(score: number | null, digits = 2): string {
 }
 
 async function main() {
+  const holdout = process.argv.includes('--holdout');
+  const split: Split = holdout ? 'holdout' : 'dev';
   const filterArg = process.argv.find((a) => a.startsWith('--filter='));
   const filterTag = filterArg ? filterArg.slice('--filter='.length) : null;
 
-  const cases = loadCases(filterTag);
-  console.log(`${cases.length} cases${filterTag ? ` (tag: ${filterTag})` : ''}, concurrency ${CONCURRENCY}\n`);
-  if (cases.length === 0) process.exit(1);
+  const loaded = loadCases(split, filterTag);
+  console.log(
+    `${loaded.length} cases [split: ${split}]${filterTag ? ` (tag: ${filterTag})` : ''}, ` +
+      `concurrency ${CONCURRENCY}, per-run ceiling $${MAX_COST_USD.toFixed(2)}\n`,
+  );
+  if (loaded.length === 0) process.exit(1);
 
   // imports after dotenv so env vars are set before clients initialize
   const { analyze } = await import('../lib/agent/orchestrator');
@@ -81,36 +110,63 @@ async function main() {
 
   const started = Date.now();
   let done = 0;
+  let aborted = false;
 
   // A failure in one case must not kill the run: record the error, continue.
-  const runs: CaseRun[] = await runPool(cases, CONCURRENCY, async (evalCase) => {
-    const t = Date.now();
-    let run: CaseRun;
-    try {
-      const result = await analyze(toInput(evalCase));
-      run = { eval_case: evalCase, result, duration_ms: Date.now() - t };
-    } catch (err) {
-      run = {
-        eval_case: evalCase,
-        result: null,
-        error: err instanceof Error ? err.message : String(err),
-        duration_ms: Date.now() - t,
-      };
-    }
-    done += 1;
-    const status = run.result
-      ? `${run.result.findings.length} findings`
-      : `ERROR: ${run.error?.split('\n')[0]}`;
-    console.log(`[${done}/${cases.length}] ${evalCase.id} (${run.duration_ms}ms) ${status}`);
-    return run;
-  });
+  const maybeRuns: (CaseRun | undefined)[] = await runPool(
+    loaded,
+    CONCURRENCY,
+    async ({ evalCase, tier }) => {
+      const t = Date.now();
+      let run: CaseRun;
+      try {
+        const result = await analyze(toInput(evalCase));
+        run = { eval_case: evalCase, tier, result, duration_ms: Date.now() - t };
+      } catch (err) {
+        run = {
+          eval_case: evalCase,
+          tier,
+          result: null,
+          error: err instanceof Error ? err.message : String(err),
+          duration_ms: Date.now() - t,
+        };
+      }
+      done += 1;
+      const status = run.result
+        ? `${run.result.findings.length} findings`
+        : `ERROR: ${run.error?.split('\n')[0]}`;
+      console.log(`[${done}/${loaded.length}] ${evalCase.id} (${run.duration_ms}ms) ${status}`);
 
-  // Copy and image cases are scored separately: the tiers measure different
-  // things, and a merged headline figure would hide movement in either.
-  const tiers = [
-    { name: 'copy', runs: runs.filter((r) => r.eval_case.input.image_path === undefined) },
-    { name: 'image', runs: runs.filter((r) => r.eval_case.input.image_path !== undefined) },
-  ].filter((t) => t.runs.length > 0);
+      // Project a full-run cost from the first few completed cases. Cache hits
+      // cost nothing, so a warm run reads near $0 here, which is the point.
+      if (done === PROJECT_AFTER) {
+        const spent = usageCostUSD();
+        const projected = (spent / done) * loaded.length;
+        console.log(
+          `  ~ projected full-run cost from first ${done}: $${projected.toFixed(2)} ` +
+            `($${spent.toFixed(2)} so far${spent < 0.01 ? ', mostly cache hits' : ''})`,
+        );
+      }
+
+      // Trip the per-run ceiling. In-flight cases finish; no new ones start.
+      if (!aborted && usageCostUSD() > MAX_COST_USD) {
+        aborted = true;
+        console.error(
+          `\n!! ABORTING: cost $${usageCostUSD().toFixed(2)} exceeded ` +
+            `EVAL_MAX_COST_USD=$${MAX_COST_USD.toFixed(2)} after ${done}/${loaded.length} cases`,
+        );
+      }
+      return run;
+    },
+    () => aborted,
+  );
+
+  const runs: CaseRun[] = maybeRuns.filter((r): r is CaseRun => r !== undefined);
+  const skipped = loaded.length - runs.length;
+
+  // One tier per dataset file; scored separately, never merged.
+  const tierNames = [...new Set(runs.map((r) => r.tier))].sort();
+  const tiers = tierNames.map((name) => ({ name, runs: runs.filter((r) => r.tier === name) }));
 
   console.log('\njudging rewrites...');
   const tierScores = [];
@@ -133,10 +189,13 @@ async function main() {
     timestamp: new Date().toISOString(),
     model_version: MODEL_REASONING,
     corpus_version: corpusVersion(),
+    split,
     filter: filterTag,
+    aborted,
     scores: Object.fromEntries(tierScores.map((t) => [t.name, t])),
     totals: {
       cases: runs.length,
+      skipped,
       errors: errors.length,
       duration_ms: durationMs,
       cost_usd: Number(usageCostUSD().toFixed(4)),
@@ -144,6 +203,7 @@ async function main() {
     },
     cases: runs.map((r) => ({
       id: r.eval_case.id,
+      tier: r.tier,
       tags: r.eval_case.tags,
       expected: r.eval_case.expected,
       error: r.error ?? null,
@@ -157,7 +217,7 @@ async function main() {
   const outPath = join(RESULTS_DIR, `${record.timestamp.replace(/[:.]/g, '-')}.json`);
   writeFileSync(outPath, JSON.stringify(record, null, 2) + '\n');
 
-  console.log(`\n=== results (model ${MODEL_REASONING}, corpus ${corpusVersion()}) ===`);
+  console.log(`\n=== results [split: ${split}] (model ${MODEL_REASONING}, corpus ${corpusVersion()}) ===`);
   for (const t of tierScores) {
     console.log(`\n--- ${t.name} tier (${t.cases} cases) ---`);
     console.log(`recall               ${fmt(t.recall.score)}   (${t.recall.hits}/${t.recall.total} flagged cases cite an expected clause)`);
@@ -166,6 +226,7 @@ async function main() {
     console.log(`rewrite quality      ${t.rewrite.mean_score === null ? 'n/a' : `${t.rewrite.mean_score.toFixed(2)}/5`}  (judge: ${t.rewrite.judge_model}, n=${t.rewrite.judged})`);
   }
   console.log(`\nerrors               ${errors.length}/${runs.length} cases`);
+  if (skipped > 0) console.log(`skipped              ${skipped} cases (run aborted on cost ceiling)`);
   console.log(`cost                 $${usageCostUSD().toFixed(2)}  (${usage.calls} calls, in ${usage.input_tokens} tok, out ${usage.output_tokens} tok — cache hits cost nothing)`);
   console.log(`duration             ${(durationMs / 1000).toFixed(0)}s`);
   console.log(`\nwrote ${outPath}`);
@@ -174,6 +235,8 @@ async function main() {
     console.log('\nerrored cases:');
     for (const r of errors) console.log(`  ${r.eval_case.id}: ${r.error?.split('\n')[0]}`);
   }
+
+  if (aborted) process.exit(1);
 }
 
 main().catch((err) => {

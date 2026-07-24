@@ -15,6 +15,7 @@
     "analyze": "tsx scripts/analyze.ts",
     "eval": "tsx evals/run.ts",
     "eval:seed": "tsx evals/build-seed.ts",
+    "eval:split": "tsx evals/split.ts",
     "eval:fixtures": "tsx evals/fixtures/generate.ts"
   },
   "dependencies": {
