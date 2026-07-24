@@ -5,6 +5,16 @@ export type Element = 'copy' | 'image' | 'landing_page';
 // elements where generated text can't be the fix (images, landing pages).
 export type RewriteKind = 'replacement' | 'guidance';
 
+// A policy example (a ✅/❌ line from Meta's own page) that illustrates the
+// cited rule. When adjudication matches the ad to an example chunk, the finding
+// cites the governing rule and carries the example here as supporting context.
+export type SupportingExample = {
+  policy_id: string;        // id of the example chunk
+  content_type: 'example_compliant' | 'example_violating';
+  quote: string;            // VERBATIM text of the example
+  source_url: string;
+};
+
 export type Finding = {
   element: Element;
   severity: Severity;
@@ -15,6 +25,7 @@ export type Finding = {
   confidence: number;       // 0-1
   suggested_rewrite?: string;
   rewrite_kind?: RewriteKind;
+  supporting_example?: SupportingExample;
 };
 
 export type AnalysisResult = {

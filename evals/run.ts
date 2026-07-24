@@ -192,6 +192,7 @@ async function main() {
     split,
     filter: filterTag,
     aborted,
+    parent_rule_resolution: process.env.EVAL_DISABLE_PARENT_RULE !== '1',
     scores: Object.fromEntries(tierScores.map((t) => [t.name, t])),
     totals: {
       cases: runs.length,

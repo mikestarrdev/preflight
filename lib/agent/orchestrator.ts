@@ -33,6 +33,7 @@ export type RunDiagnostics = {
   step_timings_ms: Record<string, number>;
   findings_emitted: number; // adjudicator output count, pre-verification
   citation_drops: number; // findings dropped by citation verification
+  parent_rule_redirects: number; // findings redirected from a matched example to its rule
   degraded: string[]; // non-fatal failures, e.g. "rewrite:meta:health-wellness:2.1"
 };
 
@@ -68,6 +69,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
   const degraded: string[] = [];
   let findingsEmitted = 0;
   let citationDrops = 0;
+  let parentRuleRedirects = 0;
   let failedElements = 0;
 
   const collect = (result: ReturnType<typeof verifyCitations>, emitted: number): void => {
@@ -77,6 +79,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
     findings.push(...result.findings);
     findingsEmitted += emitted;
     citationDrops += result.dropped.length;
+    parentRuleRedirects += result.parent_rule_redirects;
   };
 
   // Rewrite input per element: the copy itself, the serialized creative, or
@@ -240,6 +243,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       step_timings_ms: timings,
       findings_emitted: findingsEmitted,
       citation_drops: citationDrops,
+      parent_rule_redirects: parentRuleRedirects,
       degraded,
     },
   };

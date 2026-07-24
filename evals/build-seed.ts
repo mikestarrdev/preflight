@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { governingRule } from '../lib/rag/corpus-index';
 import type { PolicyChunk } from '../lib/types';
 import type { EvalCase } from './types';
 
@@ -47,30 +48,6 @@ function extractCopy(line: string): string | null {
   return null; // descriptive line, not quoted ad copy
 }
 
-// Walk up clause_path to the governing rule chunk. Exact parent first
-// (tobacco 3.2.1 → 3.2). Where the scraper produced no parent chunk
-// (personal-attributes 2.7.2 → no 2.7, no 2), fall back to the single rule
-// chunk directly under the ancestor prefix (2 → 2.1).
-function governingRule(chunk: PolicyChunk, byDoc: Map<string, PolicyChunk[]>): PolicyChunk | null {
-  const siblings = byDoc.get(chunk.doc_slug) ?? [];
-  const rules = siblings.filter((c) => c.content_type === 'rule');
-  const segments = chunk.clause_path.split('.');
-  while (segments.length > 1) {
-    segments.pop();
-    const prefix = segments.join('.');
-    const exact = rules.find((r) => r.clause_path === prefix);
-    if (exact) return exact;
-    const under = rules.filter((r) => {
-      const rest = r.clause_path.startsWith(`${prefix}.`)
-        ? r.clause_path.slice(prefix.length + 1)
-        : null;
-      return rest !== null && !rest.includes('.');
-    });
-    if (under.length === 1) return under[0];
-  }
-  return null;
-}
-
 function main() {
   const files = readdirSync(PARSED_DIR).filter((f) => f.endsWith('.json'));
   if (files.length === 0) {
@@ -80,10 +57,6 @@ function main() {
   const chunks: PolicyChunk[] = files.flatMap((f) =>
     JSON.parse(readFileSync(join(PARSED_DIR, f), 'utf8')),
   );
-  const byDoc = new Map<string, PolicyChunk[]>();
-  for (const c of chunks) {
-    byDoc.set(c.doc_slug, [...(byDoc.get(c.doc_slug) ?? []), c]);
-  }
 
   const cases: EvalCase[] = [];
   const parked: EvalCase[] = [];
@@ -127,7 +100,7 @@ function main() {
 
       let policyIds: string[] = [];
       if (shouldFlag) {
-        const rule = governingRule(chunk, byDoc);
+        const rule = governingRule(chunk);
         if (!rule) {
           console.warn(`no governing rule found for ${chunk.id}, skipping "${copy}"`);
           skippedNoRule += 1;
