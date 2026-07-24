@@ -4,12 +4,15 @@ import { governingRule } from '../lib/rag/corpus-index';
 import type { PolicyChunk } from '../lib/types';
 import type { EvalCase } from './types';
 
-// Seed dataset generator. The corpus already contains labeled ground truth:
-// chunks tagged example_compliant (✅ lines) and example_violating (❌ lines),
-// straight from Meta's policy pages. Each usable line becomes one eval case.
+// Seed dataset generator for Tier 1 (verbatim.jsonl). The corpus already
+// contains labeled ground truth: chunks tagged example_compliant (✅ lines) and
+// example_violating (❌ lines), straight from Meta's policy pages. Each usable
+// line becomes one eval case. These are leaked by construction (the input is a
+// substring of a corpus chunk), which is why the report treats this tier as the
+// easy floor and measures generalization on the paraphrased and realistic tiers.
 
 const PARSED_DIR = 'data/parsed';
-const SEED_PATH = 'evals/dataset/seed.jsonl';
+const SEED_PATH = 'evals/dataset/verbatim.jsonl';
 // Lines that describe an image rather than quote ad text are Phase 3 cases.
 // Parked here; the runner skips parked-* files.
 const PARKED_PATH = 'evals/dataset/parked-image-cases.jsonl';

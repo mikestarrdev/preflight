@@ -158,13 +158,229 @@ const FIXTURES: Fixture[] = [
       <h1>AquaPure</h1>
       <h2>Stay hydrated all summer — $19.99</h2>`,
   },
+
+  // --- Phase 4 additions: cases not built around the flag taxonomy. ---
+
+  // (a) Violation carried entirely in rendered text. No split, no body focus,
+  // no visible prohibited product — the flags path stays empty, so the check
+  // has to come from transcribing and policy-checking the text.
+  {
+    file: 'text-diabetes-cure.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #e7f4ea; color: #14361f; gap: 40px; padding: 80px; }
+        h1 { font-size: 104px; color: #1f7a3d; line-height: 1.05; }
+        h2 { font-size: 56px; color: #2a2a2a; }
+        .cta { background: #1f7a3d; color: #fff; font-size: 50px; font-weight: 700; padding: 28px 64px; border-radius: 14px; }
+        .small { font-size: 34px; color: #5a6b5f; }
+      </style>
+      <h1>CURE YOUR TYPE 2 DIABETES IN 30 DAYS</h1>
+      <h2>Doctors are stunned. Throw away your metformin for good.</h2>
+      <div class="cta">Discover the secret</div>
+      <div class="small">GlucoHerb natural formula</div>`,
+  },
+  {
+    file: 'text-guaranteed-loan.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #101d33; color: #fff; gap: 44px; padding: 80px; }
+        h1 { font-size: 150px; color: #ffd24d; }
+        h2 { font-size: 54px; letter-spacing: 2px; }
+        .cta { background: #ffd24d; color: #101d33; font-size: 52px; font-weight: 800; padding: 28px 70px; border-radius: 14px; }
+      </style>
+      <h1>GET $5,000 TODAY</h1>
+      <h2>GUARANTEED APPROVAL — NO CREDIT CHECK — EVERYONE QUALIFIES</h2>
+      <div class="cta">Apply in 2 minutes</div>`,
+  },
+  {
+    file: 'text-debt-erase.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #0f3b3a; color: #eafaf7; gap: 40px; padding: 80px; }
+        h1 { font-size: 118px; color: #5fe0c0; }
+        h2 { font-size: 56px; }
+        .cta { background: #5fe0c0; color: #0f3b3a; font-size: 50px; font-weight: 800; padding: 28px 66px; border-radius: 14px; }
+      </style>
+      <h1>ERASE 90% OF YOUR DEBT</h1>
+      <h2>Guaranteed in 6 months, or you pay us nothing.</h2>
+      <div class="cta">Free consultation</div>`,
+  },
+  {
+    file: 'text-crypto-returns.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #0b0b12; color: #f7e9c6; gap: 44px; padding: 80px; }
+        h1 { font-size: 120px; color: #f0c14b; }
+        h2 { font-size: 58px; }
+        .cta { background: #f0c14b; color: #0b0b12; font-size: 52px; font-weight: 800; padding: 28px 66px; border-radius: 14px; }
+      </style>
+      <h1>$500 into $50,000 in 90 DAYS</h1>
+      <h2>Returns 100% guaranteed. Zero risk.</h2>
+      <div class="cta">Start earning now</div>`,
+  },
+  {
+    file: 'text-payday.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #f4711f; color: #fff; gap: 40px; padding: 80px; }
+        h1 { font-size: 130px; }
+        h2 { font-size: 54px; }
+        .cta { background: #fff; color: #f4711f; font-size: 52px; font-weight: 800; padding: 28px 66px; border-radius: 14px; }
+      </style>
+      <h1>CASH BEFORE PAYDAY</h1>
+      <h2>Payday advance in your account in 15 minutes. Repay on your next paycheck.</h2>
+      <div class="cta">Get funded today</div>`,
+  },
+
+  // (b) A flag fires but the ad is compliant. These test that a flag is
+  // evidence, not a verdict: the same split framing as the weight-loss
+  // before/after, on a laundry stain, is fine.
+  {
+    file: 'comparison-detergent.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { flex-direction: row; align-items: stretch; }
+        .half { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
+        .before { background: #c9bfa8; } .after { background: #dff0f7; }
+        .shirt { font-size: 300px; line-height: 1; position: relative; }
+        .stain { position: absolute; left: 52%; top: 46%; width: 120px; height: 120px; background: #6b4422; border-radius: 50%; opacity: .85; }
+        .label { font-size: 70px; font-weight: 800; color: #333; letter-spacing: 6px; }
+        .divider { width: 6px; background: #fff; }
+        .banner { position: absolute; top: 40px; left: 0; right: 0; font-size: 52px; font-weight: 700; color: #222; }
+        .brand { position: absolute; bottom: 40px; left: 0; right: 0; font-size: 44px; color: #333; }
+      </style>
+      <div class="banner">SPARKLEWASH STAIN REMOVER</div>
+      <div class="half before"><div class="shirt">👕<div class="stain"></div></div><div class="label">BEFORE</div></div>
+      <div class="divider"></div>
+      <div class="half after"><div class="shirt">👕</div><div class="label">AFTER</div></div>
+      <div class="brand">Tough on coffee, wine and grass stains</div>`,
+  },
+  {
+    file: 'comparison-phones.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #f0f2f5; color: #1a2230; gap: 36px; padding: 70px; }
+        .row { display: flex; gap: 80px; align-items: center; }
+        .phone { width: 230px; height: 470px; background: #1a2230; border-radius: 36px; border: 10px solid #333; }
+        .phone.pro { background: #3a4a63; }
+        .spec { font-size: 40px; }
+        h1 { font-size: 78px; } .name { font-size: 48px; font-weight: 700; margin-top: 16px; }
+        .vs { font-size: 70px; font-weight: 800; color: #888; }
+      </style>
+      <h1>WHICH ONE IS RIGHT FOR YOU?</h1>
+      <div class="row">
+        <div><div class="phone"></div><div class="name">Nova 5</div></div>
+        <div class="vs">vs</div>
+        <div><div class="phone pro"></div><div class="name">Nova 5 Pro</div></div>
+      </div>
+      <div class="spec">Bigger screen • Longer battery • Better camera</div>`,
+  },
+  {
+    file: 'pilates-class.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #f6eef6; color: #3a2340; gap: 40px; padding: 80px; }
+        .pose { font-size: 360px; line-height: 1; }
+        h1 { font-size: 96px; color: #7a3f86; }
+        h2 { font-size: 54px; }
+        .cta { background: #7a3f86; color: #fff; font-size: 48px; font-weight: 700; padding: 26px 60px; border-radius: 14px; }
+      </style>
+      <div class="pose">🧘</div>
+      <h1>PILATES FOR EVERY BODY</h1>
+      <h2>Small-group reformer classes. Your first session is free.</h2>
+      <div class="cta">Book a class</div>`,
+  },
+
+  // (c) Clean controls in verticals other than the existing two.
+  {
+    file: 'clean-coffee.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #3b2a1e; color: #f3e5d3; gap: 40px; }
+        .cup { font-size: 360px; line-height: 1; }
+        h1 { font-size: 104px; } h2 { font-size: 54px; color: #d9b892; }
+      </style>
+      <div class="cup">☕</div>
+      <h1>FRESH ROASTED DAILY</h1>
+      <h2>Downtown Coffee Co. — open 7am to 6pm</h2>`,
+  },
+  {
+    file: 'clean-bookstore.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #12324a; color: #eaf2f8; gap: 40px; }
+        .b { font-size: 340px; } h1 { font-size: 104px; } h2 { font-size: 56px; color: #8fc0e0; }
+      </style>
+      <div class="b">📚</div>
+      <h1>SUMMER READING SALE</h1>
+      <h2>20% off every paperback this week</h2>`,
+  },
+  {
+    file: 'clean-plants.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #e9f3e4; color: #26401f; gap: 40px; }
+        .p { font-size: 340px; } h1 { font-size: 104px; color: #3f7a2e; } h2 { font-size: 56px; }
+      </style>
+      <div class="p">🪴</div>
+      <h1>THE PLANT SHOP</h1>
+      <h2>New arrivals every Friday</h2>`,
+  },
+  {
+    file: 'clean-shoes.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #1c1c24; color: #fff; gap: 40px; }
+        .s { font-size: 320px; } h1 { font-size: 110px; color: #f05a3c; } h2 { font-size: 54px; }
+      </style>
+      <div class="s">👟</div>
+      <h1>NEW ARRIVALS</h1>
+      <h2>Trailblazer running shoes — $89</h2>`,
+  },
+  {
+    file: 'clean-insurance.png',
+    type: 'png',
+    html: `
+      <style>${BASE_CSS}
+        body { background: #eef2fb; color: #1b2a4a; gap: 40px; padding: 80px; }
+        .h { font-size: 300px; } h1 { font-size: 96px; color: #2c4c8c; } h2 { font-size: 54px; }
+        .cta { background: #2c4c8c; color: #fff; font-size: 48px; font-weight: 700; padding: 26px 60px; border-radius: 14px; }
+      </style>
+      <div class="h">🏠</div>
+      <h1>COMPARE HOME INSURANCE</h1>
+      <h2>See quotes from top providers in minutes</h2>
+      <div class="cta">Get a quote</div>`,
+  },
 ];
 
 async function main() {
+  // Optional filename args render only those fixtures, so adding new ones does
+  // not re-screenshot the existing files (which would change their bytes and
+  // invalidate the recorded vision cache and image-tier baseline).
+  const only = new Set(process.argv.slice(2));
+  const selected = only.size > 0 ? FIXTURES.filter((f) => only.has(f.file)) : FIXTURES;
+  if (only.size > 0 && selected.length !== only.size) {
+    const known = new Set(FIXTURES.map((f) => f.file));
+    const missing = [...only].filter((f) => !known.has(f));
+    throw new Error(`unknown fixture(s): ${missing.join(', ')}`);
+  }
+
   mkdirSync(OUT_DIR, { recursive: true });
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: SIZE, height: SIZE } });
-  for (const fixture of FIXTURES) {
+  for (const fixture of selected) {
     await page.setContent(fixture.html, { waitUntil: 'networkidle' });
     const path = join(OUT_DIR, fixture.file);
     await page.screenshot({
