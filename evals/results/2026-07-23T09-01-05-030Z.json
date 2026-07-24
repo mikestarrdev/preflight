@@ -1,0 +1,2843 @@
+{
+  "timestamp": "2026-07-23T09:01:05.030Z",
+  "model_version": "claude-sonnet-4-6",
+  "corpus_version": "62a5a1e0cce9",
+  "split": "holdout",
+  "filter": null,
+  "aborted": false,
+  "parent_rule_resolution": false,
+  "scores": {
+    "images": {
+      "name": "images",
+      "cases": 5,
+      "recall": {
+        "hits": 3,
+        "total": 3,
+        "score": 1
+      },
+      "false_positive": {
+        "false_positives": 0,
+        "total": 2,
+        "rate": 0
+      },
+      "citation": {
+        "verified": 36,
+        "emitted": 36,
+        "score": 1
+      },
+      "explanation_grounding": {
+        "grounded": 0,
+        "total": 29,
+        "score": 0
+      },
+      "rewrite": {
+        "mean_score": null,
+        "judged": 0,
+        "judge_model": "claude-sonnet-4-6"
+      }
+    },
+    "paraphrased": {
+      "name": "paraphrased",
+      "cases": 12,
+      "recall": {
+        "hits": 3,
+        "total": 7,
+        "score": 0.42857142857142855
+      },
+      "false_positive": {
+        "false_positives": 0,
+        "total": 5,
+        "rate": 0
+      },
+      "citation": {
+        "verified": 51,
+        "emitted": 53,
+        "score": 0.9622641509433962
+      },
+      "explanation_grounding": {
+        "grounded": 0,
+        "total": 23,
+        "score": 0
+      },
+      "rewrite": {
+        "mean_score": 4.333333333333333,
+        "judged": 6,
+        "judge_model": "claude-sonnet-4-6"
+      }
+    },
+    "realistic": {
+      "name": "realistic",
+      "cases": 6,
+      "recall": {
+        "hits": 6,
+        "total": 6,
+        "score": 1
+      },
+      "false_positive": {
+        "false_positives": 0,
+        "total": 0,
+        "rate": null
+      },
+      "citation": {
+        "verified": 47,
+        "emitted": 49,
+        "score": 0.9591836734693877
+      },
+      "explanation_grounding": {
+        "grounded": 0,
+        "total": 38,
+        "score": 0
+      },
+      "rewrite": {
+        "mean_score": 3.642857142857143,
+        "judged": 14,
+        "judge_model": "claude-sonnet-4-6"
+      }
+    },
+    "verbatim": {
+      "name": "verbatim",
+      "cases": 13,
+      "recall": {
+        "hits": 0,
+        "total": 6,
+        "score": 0
+      },
+      "false_positive": {
+        "false_positives": 0,
+        "total": 7,
+        "rate": 0
+      },
+      "citation": {
+        "verified": 37,
+        "emitted": 38,
+        "score": 0.9736842105263158
+      },
+      "explanation_grounding": {
+        "grounded": 0,
+        "total": 11,
+        "score": 0
+      },
+      "rewrite": {
+        "mean_score": 4.375,
+        "judged": 8,
+        "judge_model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  "totals": {
+    "cases": 36,
+    "skipped": 0,
+    "errors": 0,
+    "duration_ms": 184211,
+    "cost_usd": 0.8583,
+    "usage": {
+      "input_tokens": 137417,
+      "output_tokens": 29734,
+      "calls": 95
+    }
+  },
+  "cases": [
+    {
+      "id": "img-vape-promo",
+      "tier": "images",
+      "tags": [
+        "tobacco",
+        "image"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:tobacco:1.1",
+          "meta:tobacco:2.1",
+          "meta:tobacco:3.1"
+        ],
+        "notes": "unparks meta-tobacco-3.2.1-b: image promotes an e-cigarette"
+      },
+      "error": null,
+      "duration_ms": 28,
+      "findings": [
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:tobacco:2.1",
+          "clause_quote": "Advertisers can't run ads that promote the sale or use of tobacco or nicotine products or related paraphernalia, including but not limited to: heated tobacco products electronic cigarettes, vapes, Nicotine-free vapes; wellness vapes, vaporizers, or other products that simulate smoking.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/tobacco-related-products/",
+          "explanation": "The ad explicitly promotes vape/e-cigarette products ('VAPE NATION', illustrated vape device, 'New mango flavor pods — 20% off starter kits'), which falls squarely within the prohibited categories of electronic cigarettes and vapes. This is a direct promotion of the sale of vape products.",
+          "confidence": 0.99,
+          "suggested_rewrite": "This creative cannot be remediated through minor edits — the entire ad is built around promoting a vape product, which is categorically prohibited under the platform's tobacco and nicotine policy. The creative must be fully replaced with one that does not reference, depict, or promote vapes, e-cigarettes, nicotine products, or related paraphernalia in any visual or text element.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:tobacco:1.1",
+          "clause_quote": "Ads must not promote Electronic Nicotine delivery devices, such as electronic cigarettes, vaporizers, or any other products that simulate smoking or are otherwise designed for use with tobacco or nicotine products.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/tobacco-related-products/",
+          "explanation": "The ad promotes vape pods and starter kits under the brand 'VAPE NATION', with a visual of a vape pen emitting vapor. This directly promotes electronic nicotine delivery devices or products that simulate smoking.",
+          "confidence": 0.99,
+          "suggested_rewrite": "This creative cannot be remediated through minor changes — the entire ad concept, including the vape device illustration, vapor cloud, brand name 'VAPE NATION', and all copy referencing pods and starter kits, is the violation itself, as the product being promoted (an electronic nicotine delivery device) is categorically prohibited under this policy regardless of how it is depicted or described.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:tobacco:3.1",
+          "clause_quote": "Electronic nicotine delivery system products, such as e-cigarettes, vaporizers and heating devices for tobacco and nicotine, including vape pens and vape oils/cartridges",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/tobacco-related-products/",
+          "explanation": "The ad promotes vape pods (analogous to vape oils/cartridges) and starter kits featuring a vape pen illustration, directly matching the prohibited product categories listed in this clause.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Remove the vape pen illustration and vapor cloud graphic entirely, and replace them with a non-product lifestyle image (such as a mango fruit or abstract flavor-inspired graphic) that does not depict any electronic nicotine delivery device; this creative cannot be remediated to comply with the policy while retaining its core promotional message, as the ad is fundamentally for a prohibited product category (vape pods and starter kits), so the underlying offer must be changed before any visual fix can achieve compliance.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:tobacco:3.2",
+          "clause_quote": "Note that promoting vapes is not allowed in any context.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/tobacco-related-products/",
+          "explanation": "The ad promotes vapes ('VAPE NATION', mango flavor pods, starter kits). This clause explicitly states that promoting vapes is not allowed in any context, leaving no permissible exception for this ad.",
+          "confidence": 0.99,
+          "suggested_rewrite": "This creative cannot be remediated by a small change — the entire ad is built around promoting a vape product and brand, which is prohibited in any context under this policy. The creative must be replaced in full with one that does not feature a vape or e-cigarette device, vapor imagery, vape brand identity, or any copy referencing vape pods, flavors, or starter kits.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:tobacco:3.2.1",
+          "clause_quote": "❌ This image promotes an e-cigarette and is non-compliant.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/tobacco-related-products/",
+          "explanation": "The ad image features a centered illustration of a vape/e-cigarette device with vapor cloud, directly matching the non-compliant example of an image that promotes an e-cigarette.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Remove the vape device illustration and vapor cloud graphic entirely, replacing them with a neutral lifestyle image or abstract visual (such as a mango fruit graphic or a color-wash background) that does not depict any tobacco or nicotine delivery product; the brand name and promotional text may remain if the platform policy permits text-only promotion of such products, but the creative must not visually feature the e-cigarette device in any form.",
+          "rewrite_kind": "guidance"
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "image:vision": 4,
+          "image:classify": 2,
+          "image:retrieve": 16,
+          "image:adjudicate": 2,
+          "rewrite": 1
+        },
+        "findings_emitted": 5,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 5,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "img-text-diabetes-cure",
+      "tier": "images",
+      "tags": [
+        "image",
+        "image_text_violation",
+        "deceptive_practices"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:deceptive-practices:2.1",
+          "meta:unacceptable-business-practices:3.1"
+        ],
+        "notes": "Violation lives in rendered text ('CURE YOUR TYPE 2 DIABETES IN 30 DAYS'), not composition. No visual flag fires, so the flags path can't carry it; the text transcription must."
+      },
+      "error": null,
+      "duration_ms": 47437,
+      "findings": [
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:deceptive-practices:2.1",
+          "clause_quote": "Promote claims (including those from health professionals or health organizations) to cure, heal, or eliminate any of the following incurable diseases and/or terminal illnesses (exhaustive list):\nDiabetes",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+          "explanation": "The ad's headline explicitly states 'CURE YOUR TYPE 2 DIABETES IN 30 DAYS,' which is a direct claim to cure diabetes, a condition explicitly listed as incurable under this policy. This is an unambiguous violation.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Replace the headline 'CURE YOUR TYPE 2 DIABETES IN 30 DAYS' with a compliant claim such as 'Support Healthy Blood Sugar Levels in 30 Days,' and replace the subheadline 'Doctors are stunned. Throw away your metformin for good.' with 'A natural formula designed to complement your wellness routine'—removing all references to curing diabetes or discontinuing prescription medication.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about health-related benefits of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The ad claims GlucoHerb can cure Type 2 diabetes in 30 days and that 'Doctors are stunned,' which are deceptive and exaggerated health benefit claims designed to mislead people into clicking through and purchasing the supplement.",
+          "confidence": 0.97,
+          "suggested_rewrite": "Replace the headline 'CURE YOUR TYPE 2 DIABETES IN 30 DAYS' with a factual, non-curative claim such as 'Support Healthy Blood Sugar Levels with GlucoHerb,' and remove the subheadline 'Doctors are stunned. Throw away your metformin for good.' entirely, replacing it with a compliant disclaimer such as 'Not intended to diagnose, treat, cure, or prevent any disease. Consult your doctor before changing your medication.'",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.8",
+          "clause_quote": "Promotes false or misleading health claims or guarantees in a weight loss context by employing click-bait tactics, such as the use of sensational language that make exaggerated or extreme claims",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "While this clause references weight loss context specifically, the ad employs identical click-bait tactics ('Doctors are stunned,' 'Discover the secret') with sensational language making extreme health claims about curing diabetes. The broader deceptive health practices framing applies.",
+          "confidence": 0.75,
+          "suggested_rewrite": "Replace the headline 'CURE YOUR TYPE 2 DIABETES IN 30 DAYS' with a compliant claim such as 'Support Healthy Blood Sugar Levels Naturally,' remove the subheadline 'Doctors are stunned. Throw away your metformin for good.' entirely, and update the CTA button text from 'Discover the secret' to 'Learn More'—eliminating all sensational, click-bait, and medication-replacement language while preserving the product's positioning as a natural blood sugar supplement.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:0.1",
+          "clause_quote": "Advertisers can't run ads that promote the sale or use of illicit or recreational drugs, or other unsafe substances, products or supplements, as determined by Meta at its sole discretion.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "GlucoHerb is promoted as a supplement claiming to cure diabetes. Whether it qualifies as an 'unsafe supplement' is at Meta's discretion, but a product instructing users to 'throw away your metformin' (a prescription medication) in favor of an unregulated supplement raises significant safety concerns that could trigger this clause.",
+          "confidence": 0.78
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:1.1",
+          "clause_quote": "Encourage the consumption of illicit, recreational, or other potentially unsafe drugs, products or supplements",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "The ad encourages consumption of GlucoHerb, a supplement making unverified curative claims for a serious medical condition, and instructs users to discontinue a prescription medication (metformin). This could constitute encouraging use of a potentially unsafe supplement.",
+          "confidence": 0.8
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:4.1",
+          "clause_quote": "Encourage the consumption of illicit, recreational, or other potentially unsafe drugs, products or supplements",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "The ad actively encourages viewers to consume GlucoHerb and abandon their prescribed metformin. Advising people to stop a prescription diabetes medication in favor of an unregulated supplement constitutes encouraging use of a potentially unsafe supplement.",
+          "confidence": 0.8
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.7.2",
+          "clause_quote": "❌ \"Do you have diabetes?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad directly addresses viewers as having Type 2 diabetes ('CURE YOUR TYPE 2 DIABETES,' 'Throw away your metformin'), implying the viewer has the condition. This mirrors the prohibited example of directly referencing a viewer's diabetes status.",
+          "confidence": 0.88,
+          "suggested_rewrite": "Replace the headline 'CURE YOUR TYPE 2 DIABETES IN 30 DAYS' with a non-targeted claim such as 'Supporting Healthy Blood Sugar Levels Naturally,' and replace 'Throw away your metformin for good' with 'GlucoHerb is formulated with natural ingredients to support metabolic wellness'—removing all language that implies the viewer has diabetes or is taking a specific prescription medication.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:0.1.1",
+          "clause_quote": "Ads promoting or marketing dietary, health or weight loss products and services must be targeted to people at least 18 years or older.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "GlucoHerb is a health/dietary supplement. There is no visible indication in the ad that it is age-gated to 18+. Whether the targeting settings enforce this restriction is not visible from the creative alone.",
+          "confidence": 0.72
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:7.2",
+          "clause_quote": "Advertisers can't run ads that: Promote prescription drugs unless they are actively certified by LegitScript or have gone through Meta's internal review process",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "The ad references metformin, a prescription drug, instructing users to 'throw away your metformin.' While the ad is not promoting metformin for sale, it is referencing and advising on a prescription drug in a health context. Whether this constitutes promotion of a prescription drug is contextually ambiguous, but the instruction to discontinue a prescription medication is a risk.",
+          "confidence": 0.65
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "image:vision": 9191,
+          "image:classify": 3929,
+          "image:retrieve": 1389,
+          "image:adjudicate": 28888,
+          "rewrite": 4040
+        },
+        "findings_emitted": 11,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 9,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "img-text-guaranteed-loan",
+      "tier": "images",
+      "tags": [
+        "image",
+        "image_text_violation",
+        "cs_fraud_scams"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:cs-fraud-scams:2.1"
+        ],
+        "notes": "Text-carried loan fraud ('GUARANTEED APPROVAL, NO CREDIT CHECK'). No visual flag; check must come from the transcribed text."
+      },
+      "error": null,
+      "duration_ms": 49123,
+      "findings": [
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.1",
+          "clause_quote": "Offers loans with guarantee or near-guarantee of approval, either explicitly stated or implicitly understood based on context (such as claims to approve loan without asking for financial information).",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad explicitly states 'GUARANTEED APPROVAL — NO CREDIT CHECK — EVERYONE QUALIFIES,' which directly constitutes a guarantee of loan approval and implies approval without asking for financial information, matching both the explicit and implicit conditions described in this clause.",
+          "confidence": 0.97,
+          "suggested_rewrite": "Replace the text 'GUARANTEED APPROVAL — NO CREDIT CHECK — EVERYONE QUALIFIES' with a factual, non-guaranteeing claim such as 'Fast decisions — simple application — check your options,' removing any language that promises or implies universal approval or the absence of a financial review.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "violation",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The ad uses 'GUARANTEED APPROVAL' and 'EVERYONE QUALIFIES' — absolute, exaggerated claims about the success/accessibility of a loan product — to entice users to apply (share sensitive information). These claims are almost certainly not literally true for all applicants and constitute deceptive exaggeration.",
+          "confidence": 0.92,
+          "suggested_rewrite": "Replace the body text 'GUARANTEED APPROVAL — NO CREDIT CHECK — EVERYONE QUALIFIES' with a factual, qualified claim such as 'Fast decisions — most applicants get an answer in minutes' or 'No hard credit pull to check your rate,' removing the absolute guarantees while preserving the message of speed and accessibility.",
+          "rewrite_kind": "guidance"
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:2.1",
+          "clause_quote": "Promote Short-term Loans of 90 days or less, which are loans that require repayment in full in 90 days or less from the date the loan is issued.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a $5,000 loan with no disclosed repayment terms. Depending on the actual product, this could be a short-term loan of 90 days or less, which is prohibited. The loan term is not visible in the ad, making this a risk rather than a confirmed violation.",
+          "confidence": 0.7
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:2.2",
+          "clause_quote": "Advertisers can run ads that promote credit cards, insurance services or long-term loans over 90 days as long as they: Only target people 18 years or older",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "If this is a long-term loan (over 90 days), the ad must only target people 18 years or older. The targeting settings are not visible in the image, so compliance cannot be confirmed.",
+          "confidence": 0.75
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:2.3",
+          "clause_quote": "Targeting some countries with a financial product or service ad requires a license from the relevant regulatory authorities. If that is the case, advertisers will have to demonstrate they have the appropriate authorization, which may be subject to review by Meta.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a loan product. Whether the advertiser holds the required regulatory authorization to advertise loans in the targeted jurisdiction cannot be determined from the image alone.",
+          "confidence": 0.8
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:0.1",
+          "clause_quote": "Ads promoting credit cards, loans or insurance services must be targeted to people 18 years or older.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "This is a loan ad and must be targeted to users 18+. Targeting settings are not visible in the image, so compliance cannot be confirmed.",
+          "confidence": 0.8
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:discriminatory-practices:0.2",
+          "clause_quote": "Any United States advertiser or advertiser targeting the United States, Canada or certain parts of Europe that is running financial products and services, housing or employment ads, must self identify as a Special Ad Category",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "This is a financial services ad that, if targeting the US, Canada, or parts of Europe, must be declared as a Special Ad Category with approved targeting options. Whether this has been done cannot be determined from the image.",
+          "confidence": 0.75
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:cs-spam:2.1.s2",
+          "clause_quote": "Deceptive platform functionality - Mimicking the features or functionality of our services, such as mimicking fundraising, in-line polls, play buttons, or the Like button where that functionality does not exist or does not function as expected, in order to get a user to follow a link.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/spam/",
+          "explanation": "The ad contains a fake button drawn into the image ('Apply in 2 minutes'). This may constitute mimicking platform UI functionality to get users to follow a link, though the button appears to be a CTA button rather than a specific platform feature like a Like or play button.",
+          "confidence": 0.55
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Offers a guaranteed reward of real money in exchange for users needing to: Register at an off-site link.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad promises 'GET $5,000 TODAY' with 'GUARANTEED APPROVAL' and directs users to apply via a link. This could be interpreted as offering a guaranteed reward of real money contingent on registering at an off-site link, which falls under giveaway fraud patterns. However, this is a loan product rather than a pure giveaway, making this a risk rather than a clear violation.",
+          "confidence": 0.6
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:1.1",
+          "clause_quote": "Advertisers may be required to be licensed in the country they are targeting if they wish to run ads for financial products or services. Meta may review any relevant licensing or otherwise confirm such advertisers' authorization to run such ads.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a loan product. Licensing status of the advertiser in the targeted country is not determinable from the image alone.",
+          "confidence": 0.78
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "image:vision": 8575,
+          "image:classify": 3902,
+          "image:retrieve": 2211,
+          "image:adjudicate": 30805,
+          "rewrite": 3629
+        },
+        "findings_emitted": 10,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 10,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "img-comparison-phones",
+      "tier": "images",
+      "tags": [
+        "image",
+        "flag_not_verdict",
+        "hard_negative"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "Flag-not-verdict: side-by-side product comparison of two phones may trip split_or_comparison, but a spec comparison is not a prohibited transformation. Compliant."
+      },
+      "error": null,
+      "duration_ms": 22481,
+      "findings": [
+        {
+          "element": "image",
+          "severity": "clear",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The ad makes comparative product claims ('Bigger screen', 'Longer battery', 'Better camera') between two models of the same brand. These are standard comparative feature claims between the Nova 5 and Nova 5 Pro and do not appear deceptive or exaggerated in context — they describe relative differences between two specific products from the same manufacturer. No misleading tactics are evident.",
+          "confidence": 0.85
+        },
+        {
+          "element": "image",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.1.1",
+          "clause_quote": "Using the words like \"you/other\" without referencing a personal attribute",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The headline 'WHICH ONE IS RIGHT FOR YOU?' uses the word 'you' but does not reference any personal attribute such as age, religion, health status, or other protected characteristic. It is a standard consumer-choice prompt, which is explicitly permitted.",
+          "confidence": 0.95
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "image:vision": 10345,
+          "image:classify": 2821,
+          "image:retrieve": 1392,
+          "image:adjudicate": 7923,
+          "rewrite": 0
+        },
+        "findings_emitted": 2,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "img-clean-insurance",
+      "tier": "images",
+      "tags": [
+        "image",
+        "clean"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "clean control: home insurance comparison; finance imagery alone is not a violation (insurance is permitted for 18+ with no PII request)"
+      },
+      "error": null,
+      "duration_ms": 38028,
+      "findings": [
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:0.1",
+          "clause_quote": "Ads promoting credit cards, loans or insurance services must be targeted to people 18 years or older.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes home insurance comparison services. Whether the ad is properly age-targeted to 18+ cannot be determined from the creative alone — it depends on the campaign's targeting settings, which are not visible in the image.",
+          "confidence": 0.85
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:1.1",
+          "clause_quote": "Advertisers may be required to be licensed in the country they are targeting if they wish to run ads for financial products or services. Meta may review any relevant licensing or otherwise confirm such advertisers' authorization to run such ads.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes home insurance comparison, which is an insurance-related financial service. Whether the advertiser holds the required licensing or authorization in the targeted country cannot be determined from the creative alone.",
+          "confidence": 0.8
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:2.3",
+          "clause_quote": "Authorization: Targeting some countries with a financial product or service ad requires a license from the relevant regulatory authorities. If that is the case, advertisers will have to demonstrate they have the appropriate authorization, which may be subject to review by Meta.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "Insurance products are explicitly listed among financial products that may require a license. The ad promotes home insurance comparison, and the advertiser's authorization status cannot be confirmed from the creative alone.",
+          "confidence": 0.8
+        },
+        {
+          "element": "image",
+          "severity": "clear",
+          "policy_id": "meta:financial-services:2.2",
+          "clause_quote": "Advertisers can run ads that promote credit cards, insurance services or long-term loans over 90 days as long as they: Only target people 18 years or older",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes home insurance comparison, which falls within the permitted category of insurance service ads. The ad does not promote any of the prohibited instruments (binary options, CFDs, ICOs, penny auctions). The main remaining concern is age targeting, addressed separately.",
+          "confidence": 0.85
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:discriminatory-practices:0.2",
+          "clause_quote": "Any United States advertiser or advertiser targeting the United States, Canada or certain parts of Europe that is running financial products and services, housing or employment ads, must self identify as a Special Ad Category, as it becomes available, and run such ads with approved targeting options.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad promotes home insurance, which is a financial product. If targeting the US, Canada, or parts of Europe, the advertiser must self-identify as a Special Ad Category. This cannot be confirmed from the creative alone and depends on targeting settings.",
+          "confidence": 0.75
+        },
+        {
+          "element": "image",
+          "severity": "clear",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The claim 'See quotes from top providers in minutes' is a mild convenience promise and does not constitute a deceptive or exaggerated claim about success. The ad does not make unrealistic guarantees or misrepresent the service in a materially misleading way.",
+          "confidence": 0.82
+        },
+        {
+          "element": "image",
+          "severity": "risk",
+          "policy_id": "meta:cs-spam:2.1.s2",
+          "clause_quote": "Deceptive platform functionality - Mimicking the features or functionality of our services, such as mimicking fundraising, in-line polls, play buttons, or the Like button where that functionality does not exist or does not function as expected, in order to get a user to follow a link.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/spam/",
+          "explanation": "The ad contains a visually rendered 'Get a quote' button drawn within the image itself (noted as a 'fake button' in the visual flags). This could be considered mimicking a functional UI element to prompt clicks, which may fall under deceptive platform functionality. However, a simple CTA button is a common ad design pattern and may not rise to the level of mimicking platform-specific functionality.",
+          "confidence": 0.5
+        },
+        {
+          "element": "image",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.5.s1",
+          "clause_quote": "Offers false, heavily discounted insurance with promises of large savings on insurance compared to conventional insurance providers (at least 30% less).",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad does not promise discounts, savings percentages, or heavily reduced prices. It simply invites users to compare quotes from top providers, which does not match the insurance fraud and scam pattern described in this clause.",
+          "confidence": 0.95
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "image:vision": 7635,
+          "image:classify": 2671,
+          "image:retrieve": 2747,
+          "image:adjudicate": 24974,
+          "rewrite": 1
+        },
+        "findings_emitted": 8,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 5,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-race-2-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "race"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "Asserts the viewer shares the Latino attribute via 'your family' and 'fellow Latino singles'."
+      },
+      "error": null,
+      "duration_ms": 18796,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.1",
+          "clause_quote": "Imply that the advertiser is aware of someone's personal attributes or the personal attributes of their family",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The opening line 'Proud of where your family comes from?' directly addresses the viewer's family heritage, which could be read as implying the advertiser is aware of the viewer's ethnic or national-origin background. However, the clause also permits ads to 'Broadly reference personal attributes that aren't listed above' and to 'Contain passing reference to a personal attribute,' so the verdict depends on whether this phrasing is treated as an implication of awareness versus a broad rhetorical appeal.",
+          "confidence": 0.65
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.2.1",
+          "clause_quote": "✅ \"Meet Hispanic men online now!\"\n✅ \"Find black singles today.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad's core call-to-action — 'Connect with fellow Latino singles tonight' — is structurally identical to the explicitly permitted examples of referencing a racial/ethnic group in a dating-service context. 'Latino' maps directly to the 'Hispanic' example, and the phrasing does not add any prohibited element.",
+          "confidence": 0.9
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.2.2",
+          "clause_quote": "❌ \"Meet other black singles near you!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The prohibited example 'Meet other black singles near you!' is distinguished from the permitted examples by the word 'other,' which implies the viewer shares the same racial/ethnic attribute. The ad uses 'fellow Latino singles,' where 'fellow' carries the same implication as 'other' — that the viewer is themselves Latino. This mirrors the prohibited pattern and creates a meaningful compliance risk.",
+          "confidence": 0.8
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:discriminatory-practices:0.1",
+          "clause_quote": "advertisers may not (1) use our audience selection tools to (a) wrongfully target specific groups of people for advertising",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad's explicit ethnic targeting signal ('fellow Latino singles') raises the question of whether the campaign is using audience selection tools to target users based on ethnicity. The verdict depends on the actual targeting configuration, which is not visible in the copy alone.",
+          "confidence": 0.55
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 3093,
+          "copy:retrieve": 1879,
+          "copy:adjudicate": 13824,
+          "rewrite": 0
+        },
+        "findings_emitted": 4,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 3,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-gender-1-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "gender_identity"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "Implies the viewer is questioning gender identity / is trans."
+      },
+      "error": null,
+      "duration_ms": 19625,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.6.2",
+          "clause_quote": "❌ \"Questioning your gender identity?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad opens with 'Still working out who you really are?' directed at the viewer, which is functionally equivalent to the prohibited example 'Questioning your gender identity?' — both are rhetorical questions implying the viewer may be uncertain about their gender identity. This pattern of asserting or implying a personal attribute (gender identity uncertainty) about the viewer is what the disallowed example prohibits.",
+          "confidence": 0.82,
+          "suggested_rewrite": "A welcoming circle for trans folks — come as you are.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.6.1",
+          "clause_quote": "✅ \"A monthly meetup for trans persons and trans allies\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The allowed example 'A monthly meetup for trans persons and trans allies' is structurally similar to 'Our circle for trans folks,' suggesting that describing a community space for trans people is not inherently prohibited. However, the ad's opening rhetorical question ('Still working out who you really are?') introduces additional risk not present in the allowed example, so this clause alone does not render the full ad clear.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:1.1",
+          "clause_quote": "ads must not imply any negative self perception of body image as part of promotion of personal health products.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The clause specifically addresses body image in the context of health products. The ad's question 'Still working out who you really are?' could be read as implying uncertainty or negative self-perception, but the clause is scoped to body image and personal health products. If this ad is for a mental health or wellness service, the implication of negative self-perception becomes a plausible risk, though the clause's primary focus on body image limits its direct applicability.",
+          "confidence": 0.45
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2839,
+          "copy:retrieve": 2270,
+          "copy:adjudicate": 13020,
+          "rewrite": 1495
+        },
+        "findings_emitted": 4,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 2,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-health-2-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "health"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "Implies the viewer's depression. Contrast compliant 'Depression counseling'."
+      },
+      "error": null,
+      "duration_ms": 15920,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.7.2",
+          "clause_quote": "❌ \"Depression getting you down? Get help now.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad's copy 'Can't remember the last time you felt like yourself? You don't have to sit with depression alone.' follows a structurally similar pattern to the prohibited example: it opens with a rhetorical question implying the viewer has depression, then pivots to an implicit call to action (seeking help). The prohibited example 'Depression getting you down? Get help now.' is nearly identical in structure — a question presupposing the viewer's condition followed by a prompt. However, the ad's phrasing is somewhat softer and more empathetic than the prohibited example, and the clause's approved examples (meta:personal-attributes:2.7.1) show that 'Depression counseling' is permitted. The verdict depends on whether Meta would treat the viewer-directed rhetorical question as an impermissible personal attribute assertion, which is not fully determinable from the copy alone.",
+          "confidence": 0.72
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.7.1",
+          "clause_quote": "✅ \"Depression counseling\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad promotes what appears to be a mental health support service for depression, which is analogous to the approved example 'Depression counseling.' The ad does not make cure claims or sensational promises, and the general category of service being advertised appears permissible under this clause.",
+          "confidence": 0.78
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:deceptive-practices:2.1",
+          "clause_quote": "Employ click-bait tactics in a health context, such as the use of sensational language that makes exaggerated or extreme health claims.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+          "explanation": "The ad does not make any specific health outcome claims, cure promises, or use sensational language. The phrasing 'You don't have to sit with depression alone' is empathetic rather than exaggerated or extreme, and no specific results or timelines are promised.",
+          "confidence": 0.88
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2793,
+          "copy:retrieve": 925,
+          "copy:adjudicate": 12201,
+          "rewrite": 0
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 1,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-financial-1-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "financial_status"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "Implies the viewer's vulnerable financial status (phase-4 spec example). Contrast compliant 'Services to clean up any previous offenses'."
+      },
+      "error": null,
+      "duration_ms": 31051,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.8.2",
+          "clause_quote": "❌ Are you bankrupt? Check out our services.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad opens with 'Drowning in credit card bills?' — a direct question implying the viewer is in a vulnerable financial situation (debt distress). This mirrors the prohibited pattern shown in the clause's negative example, which flags ads that open with a question asserting the viewer's financially distressed status (bankruptcy) before pitching services. The ad's rhetorical question about credit card debt functions identically to 'Are you bankrupt?' as a personal financial attribute assertion directed at the viewer.",
+          "confidence": 0.82,
+          "suggested_rewrite": "Struggling with credit card bills? Our services help people take control of their finances and start fresh.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:1.1",
+          "clause_quote": "Advertisers may be required to be licensed in the country they are targeting if they wish to run ads for financial products or services. Meta may review any relevant licensing or otherwise confirm such advertisers' authorization to run such ads.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes what appears to be a debt relief or credit-related financial service ('We can help you start over' in the context of credit card bills). Whether the advertiser holds the required licensing in the targeted country cannot be determined from the ad copy alone, making this a contextual risk.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:0.1",
+          "clause_quote": "Advertisers promoting financial products and services may be required to verify their business and/or individual identity and demonstrate they are authorized by the relevant regulatory authorities where this is a requirement",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a financial service related to credit card debt relief. Authorization and identity verification status of the advertiser cannot be confirmed from the copy alone, creating a compliance risk that depends on context not visible in the ad.",
+          "confidence": 0.72
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Promises to delete or eliminate or reduce debt by a particular amount in a set period of time. Promises to stop or delete all debt collections or lawsuits. Promises to forgive or cancel debt through \"new government program\" or change in law or equivalent statement. Promises to delete or remove credit information from credit reports or create new \"credit identity\".",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The phrase 'We can help you start over' is vague but could be interpreted as promising debt elimination or a fresh credit identity, which falls within the prohibited patterns. However, the copy does not explicitly promise a specific reduction, deletion, or forgiveness of debt, so this is a risk rather than a clear violation — the landing page content would be determinative.",
+          "confidence": 0.65
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s1",
+          "clause_quote": "Debt Relief and Credit Repair Fraud and Scam.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad targets people struggling with credit card debt and promises to 'help you start over,' which places it squarely in the debt relief and credit repair category flagged by this clause. Whether the advertiser is a verified, legitimate entity cannot be determined from the copy alone, making this a risk pending verification signals.",
+          "confidence": 0.68
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:financial-services:2.2",
+          "clause_quote": "Advertisers can run ads that promote credit cards, insurance services or long-term loans over 90 days as long as they: Only target people 18 years or older",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad does not promote credit cards, insurance, or long-term loans — it promotes a debt relief or 'start over' service. The specific prohibited instruments (binary options, CFDs, ICOs, penny auctions) are not present. This clause is not breached by the ad copy.",
+          "confidence": 0.85
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.7",
+          "clause_quote": "Involves buying, selling or trading of stolen credit cards or other financial instruments that can be used for unauthorized purchases",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad does not involve stolen financial instruments, PII trading, fake reviews, subscription credential trading, or exam cheating. None of the prohibited categories in this clause are implicated by the ad copy.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.1",
+          "clause_quote": "Offers loans requiring the user to pay an advance fee to obtain a loan. Offers loans with guarantee or near-guarantee of approval",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad does not offer loans, does not promise guaranteed approval, and does not request an advance fee. The loan fraud provisions of this clause are not triggered by the ad copy.",
+          "confidence": 0.92
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2512,
+          "copy:retrieve": 2205,
+          "copy:adjudicate": 24703,
+          "rewrite": 1631
+        },
+        "findings_emitted": 8,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 5,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-financial-2-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "financial_status"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "Asserts the viewer is in debt / financial distress."
+      },
+      "error": null,
+      "duration_ms": 24967,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.1",
+          "clause_quote": "Imply that the advertiser is aware of someone's personal attributes or the personal attributes of their family",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad directly addresses the viewer with 'Dodging calls from collectors' and 'losing sleep over what you owe,' asserting specific personal financial behaviors and emotional states. This implies the advertiser is aware of the viewer's personal financial situation and stress, going beyond broad or passing reference.",
+          "confidence": 0.82,
+          "suggested_rewrite": "Collector calls and mounting debt can feel overwhelming. There's a way out.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.8.2",
+          "clause_quote": "❌ Are you bankrupt? Check out our services.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad's framing — 'Dodging calls from collectors and losing sleep over what you owe?' — is structurally analogous to the prohibited example of directly addressing a viewer's vulnerable financial status. While it does not use the word 'bankrupt,' it directly implies the viewer is in serious debt distress, which falls within the same category of targeting vulnerable financial status.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Promises to stop or delete all debt collections or lawsuits.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad references 'calls from collectors' and promises 'There's a way out,' which could imply stopping debt collection activity. Without visibility into the landing page or the actual service offered, there is a plausible risk that the advertised service makes promises prohibited under this clause.",
+          "confidence": 0.55
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:unacceptable-business-practices:2.1",
+          "clause_quote": "Advertisers can't run ads that promote products, services, schemes or offers that use identified deceptive or misleading practices, including scams to take money from people or access personal information.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The vague promise 'There's a way out' without any disclosure of what the service is, its terms, or its legitimacy could constitute a deceptive or misleading practice depending on the actual product being advertised. This is context-dependent and cannot be fully assessed from the ad copy alone.",
+          "confidence": 0.5
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.5.s1",
+          "clause_quote": "Debt Relief and Credit Repair Fraud and Scam.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad is relevant to the debt relief category, but the copy itself does not make any of the specific prohibited promises enumerated in the clause (e.g., guaranteeing debt elimination by a specific amount or time, promising new government programs). The clause is retrieved as relevant but the ad copy alone does not clearly breach it.",
+          "confidence": 0.7
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:financial-services:2.1",
+          "clause_quote": "Promote misleading content related to student loan consolidation, forgiveness, or refinancing services by using deceptive practices, such as overstating the benefits to the user or not disclosing terms upfront.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad does not promote any specific loan product listed in this clause (payday loans, paycheck advances, bail bonds, short-term loans, or student loan services). The clause is retrieved as potentially relevant but the ad copy does not breach it.",
+          "confidence": 0.85
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2944,
+          "copy:retrieve": 1152,
+          "copy:adjudicate": 19345,
+          "rewrite": 1525
+        },
+        "findings_emitted": 6,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 4,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-criminal-2-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "criminal_record"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "'your conviction' asserts a criminal record."
+      },
+      "error": null,
+      "duration_ms": 16434,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.11.2",
+          "clause_quote": "❌ \"Are you a convicted felon?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad opens with 'Ready to put your conviction behind you' — directly asserting to the viewer that they have a criminal conviction. This mirrors the prohibited pattern of directly referencing a viewer's criminal record in ad copy, analogous to the disallowed 'Are you a convicted felon?' example. The clause prohibits ads that assert or imply the viewer has a criminal record.",
+          "confidence": 0.82,
+          "suggested_rewrite": "Ready for a fresh start and a new career opportunity?",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.11.1",
+          "clause_quote": "✅ \"Services to clean up any previous offenses\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The permitted example shows that services aimed at helping people with prior offenses can be advertised. The ad's intent — helping people with convictions get hired — is directionally similar to this permitted use case. However, the specific phrasing 'put your conviction behind you' directly addresses the viewer's personal criminal record rather than describing a service category, which distinguishes it from the permitted example.",
+          "confidence": 0.75
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2530,
+          "copy:retrieve": 2295,
+          "copy:adjudicate": 10141,
+          "rewrite": 1466
+        },
+        "findings_emitted": 3,
+        "citation_drops": 1,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 1,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-nameid-1-v",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "name_id"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "Uses the viewer's name to imply personal identification."
+      },
+      "error": null,
+      "duration_ms": 18613,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.1",
+          "clause_quote": "Imply that the advertiser is aware of someone's personally identifiable information, such as their name",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad opens with 'Sarah, your custom name necklace is ready,' directly addressing the viewer by their first name ('Sarah'), which implies the advertiser is aware of the user's personally identifiable information. This mirrors the prohibited pattern in clause 2.12.2 (e.g., 'Billy Taylor, get this t-shirt with your name in print!'). Although the product is a name necklace — a customizable item — the ad copy uses the viewer's actual name to address them personally, crossing from a generic product reference into an implied assertion of PII awareness.",
+          "confidence": 0.92,
+          "suggested_rewrite": "Your custom name necklace is ready — claim it today.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.12.2",
+          "clause_quote": "❌ \"Billy Taylor, get this t-shirt with your name in print!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Sarah, your custom name necklace is ready' is structurally identical to the prohibited example: it addresses the viewer by their first name and ties that name to a personalized product. The prohibited example uses 'Billy Taylor' addressed by name for a name-printed product; this ad uses 'Sarah' addressed by name for a name necklace. The pattern is the same and constitutes a violation.",
+          "confidence": 0.91,
+          "suggested_rewrite": "Your custom name necklace is ready — claim it today.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The claim 'your custom name necklace is ready' implies the necklace has already been made and is waiting for the viewer, which is almost certainly false — no necklace has been produced before any purchase. This could constitute a deceptive claim designed to mislead people into purchasing. However, this depends on the landing page and whether the framing is understood as a common marketing convention rather than a literal factual assertion, so it is a risk rather than a confirmed violation.",
+          "confidence": 0.65
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2248,
+          "copy:retrieve": 1987,
+          "copy:adjudicate": 12293,
+          "rewrite": 2085
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 3,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-religion-1-c",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "religion",
+        "hard_negative"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "Hard negative: describes the service/audience. Compliant analog of 'Date Christian singles!'"
+      },
+      "error": null,
+      "duration_ms": 15999,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.3.1",
+          "clause_quote": "✅ \"Date Christian singles!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Faith-based matchmaking for Christian singles.' is structurally and substantively equivalent to the explicitly permitted example 'Date Christian singles!' — it promotes a dating/matchmaking service directed at Christian singles without asserting or implying the viewer's own religion. This falls within the allowed pattern.",
+          "confidence": 0.9
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.3.2",
+          "clause_quote": "❌ \"Are you Christian?\"\n❌ \"Meet other Buddhists\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The prohibited examples address the viewer's personal religious identity directly ('Are you Christian?') or imply the viewer already belongs to the religion ('Meet other Buddhists'). The ad copy 'Faith-based matchmaking for Christian singles.' describes the service's audience rather than asserting or querying the viewer's own faith, so it does not match the disallowed pattern.",
+          "confidence": 0.82
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:discriminatory-practices:0.1",
+          "clause_quote": "Ads must not discriminate or encourage discrimination against people based on personal attributes such as race, ethnicity, color, national origin, religion, age, sex, sexual orientation, gender identity, family status, disability, medical or genetic condition.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad promotes a faith-based matchmaking service for Christian singles, which is a niche dating product rather than an offer of housing, employment, or financial services. Advertising a religion-specific dating service is not the same as discriminating against people in access to goods or opportunities; it is describing the intended user community of the service. No discriminatory exclusion or targeting of protected classes in a harmful context is evident from the copy alone.",
+          "confidence": 0.8
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.4",
+          "clause_quote": "Romance Fraud and Scam, which are fraudulent attempts to establish online romantic relationships by seeking non-sexual companionship or relationship and offering or asking for money or its equivalent in exchange.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad copy makes no offer or request for money, no false identity claims, and no solicitation of funds in exchange for a relationship. It straightforwardly describes a matchmaking service. There are no signals of romance fraud in the copy.",
+          "confidence": 0.97
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1842,
+          "copy:retrieve": 1833,
+          "copy:adjudicate": 12322,
+          "rewrite": 0
+        },
+        "findings_emitted": 4,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-age-1-c",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "age",
+        "hard_negative"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "Hard negative: describes the product, not the viewer. Compliant analog of 'Our new lotion and creams fight wrinkles'."
+      },
+      "error": null,
+      "duration_ms": 23936,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:1.1",
+          "clause_quote": "we allow weight loss products or services, and cosmetic products or procedures ads only when targeting people who are 18 years or older",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The ad promotes a serum that 'visibly smooths fine lines and deep wrinkles,' which qualifies as a skin anti-aging/cosmetic product. The policy requires such ads to target people 18 years or older. Whether the targeting settings comply is not visible from the ad copy alone, making this a risk pending confirmation of targeting configuration.",
+          "confidence": 0.85
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:0.1.1",
+          "clause_quote": "Ads promoting or marketing cosmetic products, procedures or surgeries, must be targeted to people at least 18 years or older.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The serum is a cosmetic product targeting wrinkles. The ad copy itself does not violate this clause, but compliance depends on the targeting settings being restricted to 18+, which cannot be confirmed from the copy alone.",
+          "confidence": 0.85
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:health-wellness:2.2",
+          "clause_quote": "Skin anti-aging products or services, including treatments for wrinkles such as Botox injectables, may display zoomed-in or close-up images or highlight specific areas of the skin to demonstrate the promoted results. These depictions must reflect realistic outcomes over time and should not include side-by-side comparisons.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The ad copy promotes a skin anti-aging serum for wrinkles, which is explicitly permitted under this clause when targeting 18+. The copy makes no side-by-side comparisons, does not use before/after imagery, and does not employ negative self-perception tactics. The claim 'visibly smooths fine lines and deep wrinkles' is a straightforward outcome statement consistent with permitted advertising.",
+          "confidence": 0.9
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:health-wellness:2.1",
+          "clause_quote": "Contain distasteful messaging that could make people feel negatively about the way they look, exploit insecurities to conform to certain beauty standards, reinforce negative or unhealthy body images, or feature body-shaming",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The ad copy 'visibly smooths fine lines and deep wrinkles' is a neutral product claim. It does not contain distasteful messaging, exploit insecurities, body-shame, or include side-by-side comparisons. No prohibited depictions are present in the copy.",
+          "confidence": 0.92
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.1",
+          "clause_quote": "Imply knowledge of Medical information of a user or user's family",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad does not address the viewer directly about their personal attributes or imply knowledge of their skin condition. It broadly describes what the product does ('visibly smooths fine lines and deep wrinkles') without asserting that the viewer personally has wrinkles.",
+          "confidence": 0.9
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.4.2",
+          "clause_quote": "❌ \"Ready to upgrade your skin to look younger?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy does not use second-person language implying the viewer looks old or needs to look younger. It describes the product's function generically without targeting the viewer's personal appearance or age.",
+          "confidence": 0.88
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1958,
+          "copy:retrieve": 1869,
+          "copy:adjudicate": 20108,
+          "rewrite": 0
+        },
+        "findings_emitted": 7,
+        "citation_drops": 1,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 2,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-financial-1-c",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "financial_status",
+        "hard_negative"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "Hard negative: educational, describes a service without attributing debt to the viewer."
+      },
+      "error": null,
+      "duration_ms": 16223,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.5.s1",
+          "clause_quote": "Debt Relief and Credit Repair Fraud and Scam.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "This clause heading is relevant as debt consolidation is adjacent to debt relief. However, the ad makes no fraudulent promises — it describes itself only as 'a plain-English guide to how debt consolidation works,' which is purely educational and informational. No false claims, guarantees, or scam signals are present.",
+          "confidence": 0.92
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Promises to delete or eliminate or reduce debt by a particular amount in a set period of time.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad does not promise to delete, eliminate, or reduce debt by any amount or timeframe. It positions itself solely as an educational guide explaining how debt consolidation works, with no outcome guarantees.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:financial-services:2.1",
+          "clause_quote": "Promote misleading content related to student loan consolidation, forgiveness, or refinancing services by using deceptive practices, such as overstating the benefits to the user or not disclosing terms upfront.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a plain-English guide to debt consolidation, not a consolidation product or service itself. It makes no benefit claims and does not overstate outcomes. It is informational in nature and does not appear to use deceptive practices.",
+          "confidence": 0.88
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:financial-services:2.3",
+          "clause_quote": "Ads that promote or provide information about education, training or skillbuilding to apply for loans or manage them",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad describes a plain-English educational guide about how debt consolidation works. This falls squarely within the category of ads that provide information about education related to loans, which the policy explicitly permits without authorization requirements.",
+          "confidence": 0.93
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The ad makes no success claims, financial benefit promises, or exaggerated statements. The copy is straightforwardly descriptive of an educational resource, presenting no deceptive or misleading elements.",
+          "confidence": 0.96
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1718,
+          "copy:retrieve": 1300,
+          "copy:adjudicate": 13204,
+          "rewrite": 0
+        },
+        "findings_emitted": 5,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-criminal-1-c",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "criminal_record",
+        "hard_negative"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "Hard negative: describes the service. Compliant analog of 'Services to clean up any previous offenses'."
+      },
+      "error": null,
+      "duration_ms": 18549,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.11.1",
+          "clause_quote": "✅ \"Services to clean up any previous offenses\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad promotes 'Record expungement services' which is functionally equivalent to 'Services to clean up any previous offenses' — an explicitly approved example under the criminal record personal attributes guidelines. The ad does not assert or imply the viewer has a criminal record in a direct-address manner, and the phrasing 'see which states qualify' frames it as informational. This ad aligns with the permitted example.",
+          "confidence": 0.88
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.11.2",
+          "clause_quote": "❌ \"Are you a convicted felon?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy does not directly address or assert the viewer's criminal status. The prohibited example involves directly asking the viewer if they are a convicted felon, which implies personal knowledge of the viewer's record. The ad's language ('Record expungement services: see which states qualify') does not make such a direct personal assertion or question.",
+          "confidence": 0.85
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Promises to delete or eliminate or reduce debt by a particular amount in a set period of time. Promises to stop or delete all debt collections or lawsuits. Promises to forgive or cancel debt through \"new government program\" or change in law or equivalent statement. Promises to delete or remove credit information from credit reports or create new \"credit identity\".",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "While this clause primarily targets debt/credit fraud, record expungement services that promise to 'clean' or remove criminal records could be analogized to promises to 'delete or remove credit information from credit reports.' The risk depends on the landing page and the specific claims made there. The ad copy itself is brief and does not make explicit promises, but the nature of the service (removing records) warrants scrutiny under this clause.",
+          "confidence": 0.35
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:discriminatory-practices:0.2",
+          "clause_quote": "Any United States advertiser or advertiser targeting the United States, Canada or certain parts of Europe that is running financial products and services, housing or employment ads, must self identify as a Special Ad Category",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "Record expungement services are often sought in the context of employment or housing eligibility. If the ad is implicitly tied to improving employment or housing prospects (which is a common use case for expungement), it could be considered adjacent to employment or housing advertising and may require Special Ad Category designation. This depends on targeting settings and landing page context not visible in the copy alone.",
+          "confidence": 0.3
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 2777,
+          "copy:retrieve": 1223,
+          "copy:adjudicate": 14549,
+          "rewrite": 0
+        },
+        "findings_emitted": 4,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 2,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "para-voting-1-c",
+      "tier": "paraphrased",
+      "tags": [
+        "personal_attributes",
+        "voting",
+        "hard_negative"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "Hard negative: informational. Compliant analog of 'Learn about voter registration'."
+      },
+      "error": null,
+      "duration_ms": 11003,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.9.1",
+          "clause_quote": "✅ \"Learn about voter registration\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Learn how to register to vote before the deadline' is substantively equivalent to the explicitly permitted example 'Learn about voter registration.' It provides informational guidance on voter registration without making any claims about the viewer's specific voting status or records.",
+          "confidence": 0.95
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.9.2",
+          "clause_quote": "❌ \"Records show that your voter registration is incomplete\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad does not assert anything about the viewer's existing voting status or records. It does not claim the viewer's ballot is missing or registration is incomplete. It is a general informational call to action, not a personalized claim about the viewer's voting record, so it does not match the prohibited pattern.",
+          "confidence": 0.97
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1789,
+          "copy:retrieve": 2551,
+          "copy:adjudicate": 6663,
+          "rewrite": 0
+        },
+        "findings_emitted": 2,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "real-supp-3",
+      "tier": "realistic",
+      "tags": [
+        "supplements",
+        "unacceptable_business_practices"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:unacceptable-business-practices:3.1",
+          "meta:deceptive-practices:2.1"
+        ],
+        "notes": "Violating span: 'melts away anxiety, erases brain fog, doubles your metabolism, and reverses aging ... with zero side effects ... a miracle in a bottle' — exaggerated, sensational health claims (unacceptable-business-practices:3.1; deceptive-practices:2.1 click-bait/extreme health claims)."
+      },
+      "error": null,
+      "duration_ms": 34379,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:deceptive-practices:2.1",
+          "clause_quote": "Promise specific health-related results in specific time with no qualifying or disclaimer language.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+          "explanation": "The ad states 'Feel the difference in 48 hours or it's completely free,' which is a specific health-related result promised within a specific timeframe (48 hours) with no qualifying or disclaimer language whatsoever.",
+          "confidence": 0.97,
+          "suggested_rewrite": "What if one capsule could do it all? NeuroThrive is the daily supplement wellness insiders are quietly obsessed with. Just one a day helps melt away anxiety, clears brain fog, supports your metabolism, and promotes cellular vitality, all with a formula crafted for everyday wellness. It's the closest thing to a miracle in a bottle we have ever formulated. Many of our customers notice a difference within the first few days — and if you're not satisfied, it's completely free. Start your transformation now.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:0.1.1",
+          "clause_quote": "Ads promoting or marketing dietary, health or weight loss products and services must be targeted to people at least 18 years or older.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "NeuroThrive is marketed as a daily supplement with metabolism and health claims, qualifying it as a dietary/health product. Whether the ad is actually targeted to 18+ is not visible from the copy alone, creating a risk if age targeting has not been applied.",
+          "confidence": 0.85
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:2.2",
+          "clause_quote": "clearly indicate the time taken to achieve noticeable results without employing negative self-perception tactics.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The ad claims results in '48 hours' but the broader claim set ('doubles your metabolism,' 'reverses aging at the cellular level') goes far beyond what this clause permits for dietary supplement ads, and the results indicated are not realistic or clearly substantiated. The clause requires results to be clearly and honestly indicated, which the ad's extreme claims undermine.",
+          "confidence": 0.78
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.7.2",
+          "clause_quote": "❌ \"Depression getting you down? Get help now.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad claims to 'melt away anxiety,' which directly references a mental health condition (anxiety) as a target outcome. The clause's example prohibits ads that reference mental health conditions in a way that implies the product addresses them, which this ad does by promising to eliminate anxiety.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.4.2",
+          "clause_quote": "❌ \"Ready to upgrade your skin to look younger?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad claims to 'reverse aging at the cellular level,' which is functionally equivalent to the prohibited example of implying the viewer should look younger. This may constitute an impermissible reference to the viewer's age as a personal attribute to be corrected.",
+          "confidence": 0.7
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:2.1",
+          "clause_quote": "Ads must not promote the sale or use of illicit or recreational drugs, or other unsafe substances, products or supplements, as determined by Meta at its sole discretion.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "NeuroThrive is promoted as a supplement with extreme physiological claims (doubling metabolism, reversing cellular aging, eliminating anxiety with zero side effects). Meta retains sole discretion to classify supplements as unsafe, and the implausible claims could trigger review under this clause.",
+          "confidence": 0.6
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:health-wellness:2.1",
+          "clause_quote": "Contain distasteful messaging that could make people feel negatively about the way they look, exploit insecurities to conform to certain beauty standards, reinforce negative or unhealthy body images, or feature body-shaming",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The ad does not contain body-shaming, negative self-perception messaging, or side-by-side comparisons. It focuses on positive outcome promises rather than exploiting insecurities about appearance.",
+          "confidence": 0.88
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 6146,
+          "copy:retrieve": 2899,
+          "copy:adjudicate": 22219,
+          "rewrite": 3115
+        },
+        "findings_emitted": 8,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 6,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "real-supp-4",
+      "tier": "realistic",
+      "tags": [
+        "supplements",
+        "deceptive_practices"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:deceptive-practices:2.1"
+        ],
+        "notes": "Violating span: 'shrink tumors and cure cancer naturally' — claims to cure cancer, an incurable disease on the exhaustive list (deceptive-practices:2.1)."
+      },
+      "error": null,
+      "duration_ms": 46630,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:deceptive-practices:2.1",
+          "clause_quote": "Promise specific health-related results in specific time with no qualifying or disclaimer language.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+          "explanation": "The ad states 'our customers report more energy and calmer digestion within days' — a specific health outcome promised within a specific timeframe ('within days') with no qualifying or disclaimer language whatsoever.",
+          "confidence": 0.95,
+          "suggested_rewrite": "Big Pharma won't tell you this, but nature already holds the answer. HopeRoot is a concentrated botanical tincture used for centuries in traditional medicine, and many of our customers report more energy and calmer digestion — results that vary by individual. Most importantly, the active compound has been shown to shrink tumors and cure cancer naturally, without the poison of chemo. Give your body the fighting chance it deserves. Bottles ship free this week only.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:drugs-pharmaceuticals:13.1",
+          "clause_quote": "Contain any claims that expressly state or imply that the featured products can treat, cure, prevent, mitigate or diagnose a disease or medical condition in humans or animals.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "The ad claims the active compound 'has been shown to shrink tumors and cure cancer naturally.' This expressly states the product can cure a disease (cancer) and treat a medical condition (tumors), directly violating this clause.",
+          "confidence": 0.97,
+          "suggested_rewrite": "Big Pharma won't tell you this, but nature already holds the answer. HopeRoot is a concentrated botanical tincture used for centuries in traditional medicine, and our customers report more energy and calmer digestion within days. Support your body from the inside out with a formula rooted in ancient botanical wisdom — without harsh chemicals. Give your body the fighting chance it deserves. Bottles ship free this week only.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:4.1",
+          "clause_quote": "Encourage the consumption of illicit, recreational, or other potentially unsafe drugs, products or supplements",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "HopeRoot is marketed as a 'concentrated botanical tincture' with unverified cancer-cure claims and no regulatory approval indicated. Depending on its composition and regulatory status, it may qualify as a potentially unsafe supplement. The ad actively encourages consumption ('Give your body the fighting chance it deserves'), creating a risk under this clause.",
+          "confidence": 0.72
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.7.2",
+          "clause_quote": "❌ \"Don't wait!! Get your spouse treated for cancer today with help from our medical experts.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad targets people in a cancer context with urgency ('Give your body the fighting chance it deserves,' 'Bottles ship free this week only'), implying the viewer or someone they know has cancer. This mirrors the prohibited example of exploiting a cancer diagnosis to drive action, creating a risk under this clause.",
+          "confidence": 0.78
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:3.1",
+          "clause_quote": "Promises specific weight-loss results in specific time with no qualifying or disclaimer language.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "While this clause specifically references weight-loss, the ad promises specific health results ('more energy and calmer digestion within days') with no qualifying or disclaimer language. The broader deceptive practices framework applies; however, this specific clause is narrowly scoped to weight-loss, so this finding is noted as a violation of the spirit but confidence is moderated.",
+          "confidence": 0.6,
+          "suggested_rewrite": "Big Pharma won't tell you this, but nature already holds the answer. HopeRoot is a concentrated botanical tincture used for centuries in traditional medicine, and our customers report more energy and calmer digestion — results that may vary. Most importantly, the active compound has been studied for its potential wellness benefits, supporting your body's natural defenses without harsh side effects. Give your body the fighting chance it deserves. Bottles ship free this week only.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:0.1",
+          "clause_quote": "Advertisers can't run ads that promote the sale or use of illicit or recreational drugs, or other unsafe substances, products or supplements, as determined by Meta at its sole discretion.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "A botanical tincture claiming to cure cancer with no regulatory backing could be classified as an unsafe supplement at Meta's discretion. The ad promotes its sale and consumption, creating risk under this clause.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:3.1",
+          "clause_quote": "Advertisers can't run ads that promote the sale or use of illicit or recreational drugs, or other unsafe substances, products or supplements.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "Same basis as meta:drugs-pharmaceuticals:0.1 — HopeRoot's unverified cancer-cure claims and lack of any regulatory or safety disclosure raise the risk that it qualifies as an unsafe supplement whose promotion is prohibited.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:health-wellness:2.1",
+          "clause_quote": "Promote weight loss products and services, or cosmetic products or procedures that:\nContain distasteful messaging that could make people feel negatively about the way they look",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "The ad does not promote weight loss or cosmetic products and does not reference body image. This clause is not applicable to the ad's content.",
+          "confidence": 0.97
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 5258,
+          "copy:retrieve": 990,
+          "copy:adjudicate": 26634,
+          "rewrite": 13748
+        },
+        "findings_emitted": 10,
+        "citation_drops": 1,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 7,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "real-fin-3",
+      "tier": "realistic",
+      "tags": [
+        "financial_services",
+        "cs_fraud_scams"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:cs-fraud-scams:2.1"
+        ],
+        "notes": "Violating span: 'cover the one-time $99 refundable processing fee and your funds are released' — offers a loan requiring an advance fee to obtain it (cs-fraud-scams:2.1, Loan Fraud / Advance Fee)."
+      },
+      "error": null,
+      "duration_ms": 45271,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.1",
+          "clause_quote": "Offers loans requiring the user to pay an advance fee to obtain a loan.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad explicitly requires the viewer to 'cover the one-time $99 refundable processing fee' before 'your funds are released to your account.' This is a textbook advance fee structure: payment of a fee is a precondition to receiving the loan proceeds, which is precisely what this clause prohibits.",
+          "confidence": 0.97,
+          "suggested_rewrite": "Need up to $10,000? At QuickFund we cut through the red tape the big banks bury you in. Get matched with a personal loan offer in minutes — no collateral and no waiting weeks for an answer. No upfront fees required to receive your funds. This offer is reserved for you and expires in 24 hours. Check your rate today and get funded fast.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Falsely promises money in exchange for an up-front fee/wire transfer/payment.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad promises loan funds will be 'released to your account the same day, guaranteed' once the viewer pays the '$99 refundable processing fee.' This is a direct promise of money contingent on an up-front payment, matching the advance fee fraud pattern described in this clause.",
+          "confidence": 0.95,
+          "suggested_rewrite": "Looking for a $10,000 personal loan? At QuickFund we cut through the red tape the big banks bury you in. No collateral and no waiting weeks for an answer — get a decision fast. This offer is reserved for you and expires in 24 hours. Apply now and see if you qualify today.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The ad uses multiple deceptive claims: a personalised 'pre-approved' loan that is 'reserved for you,' a same-day fund release 'guaranteed,' and a 24-hour expiry to create false urgency. These are exaggerated or fabricated claims designed to pressure the viewer into paying the $99 fee, which constitutes misleading people into a purchase.",
+          "confidence": 0.92,
+          "suggested_rewrite": "Need a personal loan up to $10,000? At QuickFund we make the process straightforward — no collateral required and no weeks of waiting. Apply today and get a decision quickly. A one-time $99 processing fee applies upon approval. See if you qualify and get started now.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:2.3",
+          "clause_quote": "Loans (long and short-term)",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a personal loan product. Depending on the jurisdiction targeted, QuickFund may be required to hold a regulatory licence to advertise loan products. Whether the advertiser has obtained and demonstrated such authorisation to Meta is not visible from the ad copy alone, making this a risk rather than a confirmed violation.",
+          "confidence": 0.82
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:0.1",
+          "clause_quote": "Advertisers promoting financial products and services may be required to verify their business and/or individual identity and demonstrate they are authorized by the relevant regulatory authorities where this is a requirement; and any such authorization may be subject to review by Meta.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "QuickFund is promoting a loan product. Whether it has verified its identity and demonstrated regulatory authorisation to Meta cannot be determined from the ad copy, but the nature of the ad (advance-fee loan with guaranteed approval) raises serious doubt about whether a legitimate, licensed lender would operate this way.",
+          "confidence": 0.78
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:1.1",
+          "clause_quote": "Advertisers may be required to be licensed in the country they are targeting if they wish to run ads for financial products or services.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes a personal loan. Licensing status of QuickFund is unknown from the copy. Given the advance-fee and guaranteed-approval structure, there is meaningful risk the advertiser is not a licensed lender, which would make running this ad a policy breach.",
+          "confidence": 0.78
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:discriminatory-practices:0.2",
+          "clause_quote": "Any United States advertiser or advertiser targeting the United States, Canada or certain parts of Europe that is running financial products and services, housing or employment ads, must self identify as a Special Ad Category",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "This is a loan advertisement. If targeting the US, Canada, or covered European regions, the advertiser must self-identify as a Special Ad Category and use approved targeting options. Compliance with this requirement cannot be confirmed from the ad copy alone.",
+          "confidence": 0.75
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:financial-services:2.2",
+          "clause_quote": "Advertisers can run ads that promote credit cards, insurance services or long-term loans over 90 days as long as they: Only target people 18 years or older",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "This clause addresses prohibited financial instruments (binary options, CFDs, ICOs, penny auctions) and sets conditions for permissible credit/insurance/long-term loan ads. The ad does not promote any of the prohibited instruments listed. The age-targeting requirement is a separate risk addressed under other clauses. No direct breach of this specific clause is evident from the copy.",
+          "confidence": 0.8
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 6702,
+          "copy:retrieve": 4955,
+          "copy:adjudicate": 30477,
+          "rewrite": 3136
+        },
+        "findings_emitted": 9,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 7,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "real-fin-5",
+      "tier": "realistic",
+      "tags": [
+        "financial_services",
+        "cs_fraud_scams"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:cs-fraud-scams:2.2",
+          "meta:unacceptable-business-practices:3.1"
+        ],
+        "notes": "Violating span: 'turns it into $50,000 in ninety days, with returns that are fully guaranteed and completely risk-free' — investment opportunity with guaranteed/risk-free, get-rich-quick returns (cs-fraud-scams:2.2)."
+      },
+      "error": null,
+      "duration_ms": 41104,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.2",
+          "clause_quote": "Offers investment opportunities where returns on investment are guaranteed or risk-free.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad explicitly states 'returns that are fully guaranteed and completely risk-free,' which is a direct match to this prohibited claim type.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Meet the AI trading bot that never sleeps. CryptoPilot's algorithm is built to find opportunities around the clock, and now you can put it to work for your portfolio. Start with as little as $500 and let our system trade on your behalf — early members are already seeing significant gains. Fund your account today and let the bot work while you sleep.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:unacceptable-business-practices:3.1",
+          "clause_quote": "Use deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+          "explanation": "The ad makes multiple exaggerated and deceptive claims: a guaranteed 100x return in 90 days, 'There is simply no way to lose,' and 'CryptoPilot's algorithm has cracked the market.' These are clearly exaggerated success claims designed to mislead people into depositing funds.",
+          "confidence": 0.98,
+          "suggested_rewrite": "Meet the AI trading bot that never sleeps. CryptoPilot's algorithm analyzes the market around the clock, scanning for opportunities so you don't have to. Start with as little as $500 and let our system work for you — early members are already seeing meaningful gains. Fund your account today and let the bot trade while you sleep.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.1",
+          "clause_quote": "Offers real money gambling services (\"Real money\" is real-world currency that can be used to buy goods or services in the real world, including national currencies such as U.S. Dollars and virtual currencies such as Bitcoin): with a guarantee of winning.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "While the product is framed as a trading bot rather than gambling, the ad guarantees returns ('fully guaranteed,' 'There is simply no way to lose') on a real-money investment product involving cryptocurrency, which parallels the prohibited guarantee-of-winning pattern for real-money services.",
+          "confidence": 0.78,
+          "suggested_rewrite": "Meet the AI trading bot that never sleeps. CryptoPilot's algorithm works around the clock, scanning the market so you don't have to. Deposit as little as $500 and put our system to work for your portfolio. Early members are already seeing significant gains. Fund your account today and let the bot trade while you sleep.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s1",
+          "clause_quote": "Offers jobs with an unclear or vague job description and get-rich-quick opportunities promising money with little time investment or effort.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad promises wealth with no effort ('let the bot build your fortune while you sleep'), which aligns with the get-rich-quick, little-effort pattern. However, this clause is primarily directed at job offers, so the fit is partial.",
+          "confidence": 0.72
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cryptocurrency:2.1",
+          "clause_quote": "Cryptocurrency investment: asking to invest, join or support in order to solicit customers for exchanges, trading platforms or other fintech platforms.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+          "explanation": "CryptoPilot appears to be a cryptocurrency trading platform or bot. The ad solicits deposits ('Fund your account today') for what is likely a crypto trading service. Whether the advertiser has obtained the required written permission from Meta is unknown from the ad copy alone.",
+          "confidence": 0.9
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cryptocurrency:1.1",
+          "clause_quote": "we require advertisers seeking to promote cryptocurrency trading platforms, software, or services and products that use blockchain technology to provide evidence that their activities are appropriately licensed.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+          "explanation": "CryptoPilot is presented as an AI trading bot for what appears to be cryptocurrency markets. The ad provides no indication that the advertiser holds the required regulatory license or has obtained written permission from Meta.",
+          "confidence": 0.88
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:cs-spam:1.1",
+          "clause_quote": "We do not allow content that is designed to deceive, mislead, or overwhelm users in order to artificially increase viewership.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/spam/",
+          "explanation": "While the ad is deceptive in its financial claims, the spam policy rationale is focused on artificially increasing viewership and platform integrity rather than financial fraud. The ad's violations are better captured by the fraud and deceptive practices clauses. No spam-specific tactics (cloaking, fake engagement, etc.) are present in the copy.",
+          "confidence": 0.8
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 5390,
+          "copy:retrieve": 1296,
+          "copy:adjudicate": 28460,
+          "rewrite": 5958
+        },
+        "findings_emitted": 10,
+        "citation_drops": 1,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 6,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "real-debt-2",
+      "tier": "realistic",
+      "tags": [
+        "debt_relief",
+        "cs_fraud_scams"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:cs-fraud-scams:2.5.s2"
+        ],
+        "notes": "Violating span: 'stop all collection calls and lawsuits immediately and permanently' — promises to stop or delete all debt collections or lawsuits (cs-fraud-scams:2.5.s2)."
+      },
+      "error": null,
+      "duration_ms": 30859,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.5.s2",
+          "clause_quote": "Promises to stop or delete all debt collections or lawsuits.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad explicitly states 'stop all collection calls and lawsuits immediately and permanently, no matter how much you owe.' This is a direct promise to stop all debt collections and lawsuits, matching the prohibited claim verbatim in scope and absoluteness.",
+          "confidence": 0.95,
+          "suggested_rewrite": "The calls, the letters, the stress: it doesn't have to feel this way. When you enroll with ShieldPoint, we step in as your legal advocate—communicating with creditors on your behalf and working to reduce the pressure you're facing. Creditors have to go through us now, and we don't back down. You focus on your life while we handle the rest. Call now for your free case review and take the first step toward relief.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:2.5.s1",
+          "clause_quote": "Debt Relief and Credit Repair Fraud and Scam.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad promotes a debt relief service ('ShieldPoint') with sweeping absolute claims ('immediately and permanently,' 'no matter how much you owe,' 'silence the collectors for good'). This falls within the Debt Relief and Credit Repair Fraud and Scam category. Whether the entity is verified or legitimate cannot be determined from the ad copy alone, creating a risk finding.",
+          "confidence": 0.8
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:personal-attributes:2.8.2",
+          "clause_quote": "❌ Are you bankrupt? Check out our services.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad opens by referencing 'The calls, the letters, the threats' — signals of debt collection pressure — and then pitches a debt relief service. While it does not use the word 'bankrupt,' it implicitly targets people in a vulnerable financial status (those being pursued by collectors and facing lawsuits), which is analogous to the prohibited example of directly calling out a viewer's financial distress to solicit services.",
+          "confidence": 0.65
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:2.3",
+          "clause_quote": "Authorization: Targeting some countries with a financial product or service ad requires a license from the relevant regulatory authorities. If that is the case, advertisers will have to demonstrate they have the appropriate authorization, which may be subject to review by Meta.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "ShieldPoint appears to be offering a debt relief or legal representation service, which may fall under regulated financial or legal services categories requiring advertiser authorization. The ad copy does not indicate any licensing or regulatory authorization, and this cannot be confirmed from the copy alone.",
+          "confidence": 0.7
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cs-fraud-scams:4.1",
+          "clause_quote": "That offers litigant recruitment opportunities for people to participate in class action lawsuits by impersonating a government entity or a news outlet, by using sensationalist language, or by using exaggerated claims.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad uses sensationalist language ('silence the collectors for good,' 'stop all collection calls and lawsuits immediately and permanently,' 'we don't back down') and makes exaggerated absolute claims about legal outcomes. While it is not explicitly recruiting for class action lawsuits, the use of sensationalist and exaggerated claims in a legal services context warrants a risk flag under this provision.",
+          "confidence": 0.55
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:deceptive-practices:1.1",
+          "clause_quote": "removing content and combatting behavior that purposefully employs deceptive means – such as wilful misrepresentation, stolen information and exaggerated claims – to either scam or defraud users and businesses",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+          "explanation": "Claims such as 'stop all collection calls and lawsuits immediately and permanently, no matter how much you owe' and 'silence the collectors for good' are absolute guarantees about legal outcomes that are unlikely to be universally achievable, constituting potentially exaggerated claims under this deceptive practices overview.",
+          "confidence": 0.75
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 5874,
+          "copy:retrieve": 2384,
+          "copy:adjudicate": 19710,
+          "rewrite": 2891
+        },
+        "findings_emitted": 6,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 6,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "real-fin-7",
+      "tier": "realistic",
+      "tags": [
+        "financial_services",
+        "cs_fraud_scams"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:financial-services:2.2",
+          "meta:cs-fraud-scams:2.2"
+        ],
+        "notes": "Violating span: 'Secure your allocation in our ICO ... ride the next 100x' — promotes an Initial Coin Offering, a prohibited instrument (financial-services:2.2), with get-rich-quick framing (cs-fraud-scams:2.2)."
+      },
+      "error": null,
+      "duration_ms": 29863,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:financial-services:2.2",
+          "clause_quote": "Promote Initial Coin Offerings, which are a type of funding for cryptocurrencies that is often a form of crowdfunding.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad explicitly promotes an ICO: 'Our initial coin offering opens Monday' and 'Secure your allocation in our ICO today.' This directly matches the prohibited conduct of promoting Initial Coin Offerings.",
+          "confidence": 0.99,
+          "suggested_rewrite": "BlockNova is more than a token, it's the future of decentralized finance. Our token launch opens Monday, and early buyers lock in tokens at a fraction of the listing price. Early backers of projects like this have seen life-changing gains. Secure your allocation today, connect your wallet in seconds, and ride the next 100x from the ground floor.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cryptocurrency:0.1",
+          "clause_quote": "Ads may not promote cryptocurrency trading platforms, software and related services and products that enable monetisation, reselling, swapping or staking of cryptocurrencies without prior written permission.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+          "explanation": "The ad promotes BlockNova tokens via an ICO presale, which constitutes a cryptocurrency product enabling monetisation and reselling of cryptocurrency assets. No indication of prior written permission is present.",
+          "confidence": 0.92,
+          "suggested_rewrite": "BlockNova is more than a token — it's a new vision for decentralized infrastructure. Our community launch opens Monday, and early members gain access to exclusive platform features and ecosystem benefits from day one. Be part of something before the rest of the world catches on. Join the BlockNova community today, connect in seconds, and get in on the ground floor of what's next.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cryptocurrency:2.1",
+          "clause_quote": "Cryptocurrency investment: asking to invest, join or support in order to solicit customers for exchanges, trading platforms or other fintech platforms.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+          "explanation": "The ad solicits users to purchase BlockNova tokens in a presale ICO, framing it as an investment opportunity ('ride the next 100x from the ground floor'). This constitutes soliciting customers for a cryptocurrency investment product, which requires written permission. Whether permission has been obtained is not visible from the ad copy alone.",
+          "confidence": 0.9
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cryptocurrency:1.1",
+          "clause_quote": "we require advertisers seeking to promote cryptocurrency trading platforms, software, or services and products that use blockchain technology to provide evidence that their activities are appropriately licensed.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+          "explanation": "BlockNova is a cryptocurrency token being offered via ICO. The ad provides no indication that the advertiser has submitted a recognized regulatory license or obtained written permission from Meta. Whether such authorization exists is not determinable from the ad copy alone.",
+          "confidence": 0.88
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:cs-fraud-scams:2.2",
+          "clause_quote": "Offers investment opportunities where the opportunity is of a \"get-rich-quick\" nature and/or claims that a small investment can be turned into a large amount.",
+          "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+          "explanation": "The ad claims 'Early backers of projects like this have seen life-changing gains' and urges users to 'ride the next 100x from the ground floor.' The explicit '100x' return promise and 'life-changing gains' language constitute a get-rich-quick investment claim where a small investment is implied to yield a very large return.",
+          "confidence": 0.95,
+          "suggested_rewrite": "BlockNova is more than a token, it's the future of decentralized finance. Our initial coin offering opens Monday, and presale buyers lock in tokens at a fraction of the listing price. Early supporters get access to BlockNova at its lowest available price before public trading begins. Secure your allocation in our ICO today, connect your wallet in seconds, and be part of the next chapter in decentralized finance from day one.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:cryptocurrency:2.1.1.s1",
+          "clause_quote": "Australian Financial Services License / Australian Markets License, Issuer: Australian Securities and Investments Commission (ASIC)",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/cryptocurrency-products-and-services/",
+          "explanation": "The ad promotes a cryptocurrency ICO and investment opportunity. Depending on the countries being targeted, specific regulatory registrations or licenses may be required. The ad copy provides no evidence of any such licensing, making this a risk contingent on targeting settings not visible in the copy.",
+          "confidence": 0.75
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 4467,
+          "copy:retrieve": 3789,
+          "copy:adjudicate": 17450,
+          "rewrite": 4157
+        },
+        "findings_emitted": 6,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 6,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.12.1-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "NAME OR IDENTIFICATION"
+      },
+      "error": null,
+      "duration_ms": 3,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.12.1",
+          "clause_quote": "✅ \"We print customizable t-shirts and stickers with your name.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy matches verbatim the explicitly permitted example in this clause, confirming it does not violate the name/identification policy.",
+          "confidence": 0.99
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.12.2",
+          "clause_quote": "❌ \"Billy Taylor, get this t-shirt with your name in print!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "Unlike the prohibited example, the ad does not address a specific named individual or use a real person's name. It uses a generic offer ('your name') without targeting or referencing any personal attribute of the viewer.",
+          "confidence": 0.99
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.1.1",
+          "clause_quote": "✅ Ad creative that describes or shows the promoted product or service",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad describes the promoted product (customizable t-shirts and stickers) without referencing any personal attribute of the viewer, consistent with the permitted examples in this clause.",
+          "confidence": 0.97
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1,
+          "copy:retrieve": 1,
+          "copy:adjudicate": 0,
+          "rewrite": 0
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.2.1-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "RACE OR ETHNICITY"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.2.1",
+          "clause_quote": "\"Meet Hispanic men online now!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Meet Hispanic men online now!' is explicitly listed as an approved example under the RACE OR ETHNICITY additional guidelines, indicating it does not breach this clause.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.2.2",
+          "clause_quote": "\"Meet other black singles near you!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The prohibited pattern in this clause uses 'other,' which implies the viewer shares the same racial attribute as those being targeted. The ad copy says 'Meet Hispanic men' without 'other,' matching the approved form in 2.2.1 rather than the prohibited form here.",
+          "confidence": 0.93
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 1,
+          "copy:adjudicate": 0,
+          "rewrite": 0
+        },
+        "findings_emitted": 2,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.2.2-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "RACE OR ETHNICITY"
+      },
+      "error": null,
+      "duration_ms": 2,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.2.2",
+          "clause_quote": "\"Meet other black singles near you!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy is word-for-word identical to the prohibited example listed in this clause. The phrasing 'Meet other black singles near you!' implies the viewer is also Black, thereby asserting or implying a personal racial attribute about the audience, which is explicitly disallowed.",
+          "confidence": 0.97,
+          "suggested_rewrite": "Find meaningful connections with singles near you!",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.2.1",
+          "clause_quote": "\"Find black singles today.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "This clause shows that referencing Black singles in an ad is permissible when framed as a general invitation (e.g., 'Find black singles today'). The ad copy 'Meet other black singles near you!' differs critically by using 'other,' which implies the viewer shares the racial attribute, placing it outside the permitted examples and into the prohibited pattern of clause 2.2.2.",
+          "confidence": 0.95
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 0,
+          "rewrite": 1
+        },
+        "findings_emitted": 2,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 1,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.4.1-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "AGE"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.4.1",
+          "clause_quote": "✅ \"Meet seniors\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Meet seniors' is explicitly listed as a permitted example under the AGE guidelines. It does not imply the viewer shares the attribute (no 'other'), so it does not breach this clause.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.4.2",
+          "clause_quote": "❌ \"Meet other seniors\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The prohibited form is 'Meet other seniors', which implies the viewer is also a senior. The ad copy reads 'Meet seniors' (without 'other'), which does not assert a shared personal attribute with the viewer and therefore does not match the prohibited pattern.",
+          "confidence": 0.97
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 1,
+          "rewrite": 0
+        },
+        "findings_emitted": 2,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.4.1-d",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "AGE"
+      },
+      "error": null,
+      "duration_ms": 2,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.4.1",
+          "clause_quote": "\"Age is just a number. Anyone can now learn coding with our C program.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy matches verbatim one of the explicitly approved examples listed in this clause. Both the phrase 'Age is just a number' and 'Anyone can now learn coding with our C program.' are cited as compliant examples, confirming the ad does not breach this clause.",
+          "confidence": 0.99
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:discriminatory-practices:0.1",
+          "clause_quote": "Ads must not discriminate or encourage discrimination against people based on personal attributes such as race, ethnicity, color, national origin, religion, age, sex, sexual orientation, gender identity, family status, disability, medical or genetic condition.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad's claim 'Anyone can now learn coding' is inclusive and does not discriminate or encourage discrimination based on age or any other protected attribute. The phrase 'Age is just a number' reinforces inclusivity rather than exclusion.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.1",
+          "clause_quote": "Contain passing reference to a personal attribute. This includes gender, age groups or age ranges.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad makes a passing, general reference to age ('Age is just a number') without implying awareness of any individual viewer's specific age or asserting a personal attribute about the viewer. This falls within the permitted use described in the clause.",
+          "confidence": 0.96
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 1,
+          "copy:adjudicate": 1,
+          "rewrite": 0
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.4.2-b",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "AGE"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.4.2",
+          "clause_quote": "❌ \"Are you 18 years old?\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy uses the exact phrase \"Are you 18 years old?\" which is explicitly listed as a prohibited example under the Age section of the Personal Attributes policy. This is a direct match to the disallowed wording.",
+          "confidence": 0.98,
+          "suggested_rewrite": "For adults ready to take the next step — explore what we have to offer.",
+          "rewrite_kind": "replacement"
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 1,
+          "rewrite": 0
+        },
+        "findings_emitted": 1,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 1,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.5.1-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "SEXUAL ORIENTATION OR PRACTICES"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.5.1",
+          "clause_quote": "✅ \"Atlantis Gay Cruises\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Atlantis Gay Cruises' is explicitly listed as an approved example under the Sexual Orientation or Practices guidelines, indicating this phrasing is permitted. The ad references a known brand name that identifies a gay cruise company without asserting or implying anything about the viewer's personal sexual orientation.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.5.2",
+          "clause_quote": "❌ \"Are you gay?\"\n❌ \"Meet other lesbians now!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The prohibited examples under this clause involve directly addressing or asserting the viewer's sexual orientation (e.g., 'Are you gay?'). The ad copy 'Atlantis Gay Cruises' is a brand name and does not directly address or make assumptions about the viewer's personal sexual orientation, so it does not match the prohibited pattern.",
+          "confidence": 0.95
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:adult-nudity:0.1",
+          "clause_quote": "Ads must not contain imagery depicting nudity, sexual activity, depictions of people in explicit or sexually suggestive positions, or activities that are sexually suggestive.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/adult-nudity-and-sexual-activity/",
+          "explanation": "The ad copy consists solely of the brand name 'Atlantis Gay Cruises'. There is no imagery described, no sexually suggestive language, and no depiction of sexual activity in the copy itself. The clause concerns imagery and explicit content, none of which is present in this text-only claim.",
+          "confidence": 0.92
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:health-wellness:5.1",
+          "clause_quote": "Promote the sale or use of adult sexual services, including but not limited to: Adult entertainment businesses, such as strip clubs",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "A gay cruise line is a travel and hospitality service. The ad does not promote sexual services, adult entertainment businesses, or any of the other enumerated prohibited categories. The mere association with an LGBTQ+ audience does not make a cruise line an adult sexual service.",
+          "confidence": 0.95
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 1,
+          "rewrite": 0
+        },
+        "findings_emitted": 4,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.5.2-b",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "SEXUAL ORIENTATION OR PRACTICES"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.5.2",
+          "clause_quote": "❌ \"Meet other lesbians now!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Meet other lesbians now!' is cited verbatim as a prohibited example under the Sexual Orientation or Practices guidelines. The ad's wording is an exact match to the disallowed example, making this a clear violation.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Find your community and meet new people now!",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.5.1",
+          "clause_quote": "✅ \"Gay dating online now!\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "While some gay/lesbian dating ad copy is permitted (e.g., 'Gay dating online now!'), the specific phrasing 'Meet other lesbians now!' falls into the prohibited pattern under 2.5.2 rather than the permitted pattern here. This clause does not provide cover for the ad as written.",
+          "confidence": 0.95
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 0,
+          "rewrite": 1
+        },
+        "findings_emitted": 2,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 1,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.6.1-b",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "GENDER IDENTITY"
+      },
+      "error": null,
+      "duration_ms": 0,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.6.1",
+          "clause_quote": "✅ \"A monthly meetup for trans persons and trans allies\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'A monthly meetup for trans persons and trans allies' is explicitly listed as an approved example in this clause, confirming it does not breach the gender identity personal attributes policy.",
+          "confidence": 0.99
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.6.2",
+          "clause_quote": "❌ \"Meet other transgender singles at our monthly meetup\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad does not imply the viewer is transgender or assume their gender identity. It invites both trans persons and allies, which differs from the disallowed example that presupposes the viewer is transgender. The ad's phrasing is also explicitly approved under clause meta:personal-attributes:2.6.1.",
+          "confidence": 0.97
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:discriminatory-practices:0.2",
+          "clause_quote": "Any United States advertiser or advertiser targeting the United States, Canada or certain parts of Europe that is running financial products and services, housing or employment ads, must self identify as a Special Ad Category",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad promotes a community meetup event, not financial products, housing, or employment. The Special Ad Category requirement is not triggered.",
+          "confidence": 0.98
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 0,
+          "rewrite": 0
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 0,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.6.2-b",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "GENDER IDENTITY"
+      },
+      "error": null,
+      "duration_ms": 2,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.6.2",
+          "clause_quote": "❌ \"Meet other transgender singles at our monthly meetup\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy is verbatim identical to the prohibited example listed in this clause: 'Meet other transgender singles at our monthly meetup'. This is a direct match to an explicitly disallowed ad formulation under the Gender Identity guidelines.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Connect with your community at our monthly singles meetup",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:1.1",
+          "clause_quote": "we don't allow advertisers to run ads that assert or imply the personal attributes of their audience.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The phrase 'Meet other transgender singles' directly asserts that the viewer is transgender, implying a personal attribute (gender identity) of the audience rather than focusing on the benefits of the product or service. This breaches the core prohibition on asserting or implying personal attributes.",
+          "confidence": 0.97,
+          "suggested_rewrite": "A monthly meetup for transgender singles — come connect, socialize, and meet new people",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.6.1",
+          "clause_quote": "✅ \"Come meet transgender singles\"\n✅ \"A monthly meetup for trans persons and trans allies\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "This clause illustrates compliant alternatives. The ad does not use either of these approved formulations; instead it uses the prohibited 'Meet other transgender singles' phrasing. The clause is relevant for contrast but the ad does not conform to it, so no separate breach is cited here beyond what is already captured in 2.6.2 and 1.1.",
+          "confidence": 0.95
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 0,
+          "rewrite": 1
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 2,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.7.1-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": false,
+        "policy_ids": [],
+        "notes": "PHYSICAL OR MENTAL HEALTH AND DISABILITY"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.7.1",
+          "clause_quote": "\"Bulimia counseling available\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy 'Bulimia counseling available' is explicitly listed as an approved example in this clause. The ad's wording matches the allowed example verbatim, so it does not breach this clause.",
+          "confidence": 0.99
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.7.2",
+          "clause_quote": "\"Depression getting you down? Get help now.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "This clause prohibits ads that imply the viewer has a condition or use distressing/pressuring language. The ad copy 'Bulimia counseling available' is a neutral service announcement and does not assert that the viewer has bulimia, nor does it use shame or urgency tactics. It does not match the prohibited patterns illustrated in this clause.",
+          "confidence": 0.95
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:health-wellness:2.1",
+          "clause_quote": "Contain distasteful messaging that could make people feel negatively about the way they look, exploit insecurities to conform to certain beauty standards, reinforce negative or unhealthy body images, or feature body-shaming",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/health-wellness/",
+          "explanation": "Bulimia is an eating disorder closely tied to body image. While the ad copy itself is neutral and does not contain distasteful messaging, the targeting settings and landing page content are not visible here. If the ad targets people based on body-image insecurities or the landing page employs negative self-perception tactics, it could breach this clause. The copy alone does not violate it, but context-dependent risk exists.",
+          "confidence": 0.65
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 0,
+          "copy:adjudicate": 1,
+          "rewrite": 0
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 1,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.7.2-c",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "PHYSICAL OR MENTAL HEALTH AND DISABILITY"
+      },
+      "error": null,
+      "duration_ms": 1,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.7.2",
+          "clause_quote": "❌ \"Don't wait!! Get your spouse treated for cancer today with help from our medical experts.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy is cited verbatim as a prohibited example under the Physical or Mental Health and Disability clause. The ad directly references a third party's (the spouse's) cancer condition in a way that implies knowledge of that person's health status, which is explicitly disallowed by this clause.",
+          "confidence": 0.97,
+          "suggested_rewrite": "Don't wait!! Find trusted medical experts to help navigate a cancer diagnosis today.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:deceptive-practices:2.1",
+          "clause_quote": "Promise specific health-related results in specific time with no qualifying or disclaimer language.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+          "explanation": "The ad promises that the spouse can be 'treated for cancer today,' specifying an immediate timeframe ('today') for a health outcome related to cancer, with no qualifying language or disclaimers present in the copy.",
+          "confidence": 0.9,
+          "suggested_rewrite": "Don't wait!! Connect your spouse with our medical experts to explore cancer treatment options.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:personal-attributes:2.8.1",
+          "clause_quote": "✅ \"Don't wait!! Get your spouse treated for cancer today with help from our medical experts.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "This clause marks the ad copy with a checkmark (✅) under the Vulnerable Financial Status section, suggesting it is presented as a compliant example in that specific context. However, this appears to be a mislabeled or erroneous clause, as the ad is flagged as prohibited under other clauses. Under this clause as retrieved, the ad is marked as acceptable, so no breach is found here.",
+          "confidence": 0.6
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:drugs-pharmaceuticals:7.1",
+          "clause_quote": "Qualified advertisers that are actively certified with LegitScript can run ads that promote prescription drugs as long as they: Only target people in eligible countries (United States, Canada or New Zealand) Only target people in countries in which they are certified Only target people 18 years or older Obtain authorization from Meta",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/drugs-pharmaceuticals/",
+          "explanation": "The ad references 'medical experts' treating cancer, which may involve prescription drugs or treatments. Whether the advertiser holds LegitScript certification and Meta authorization cannot be determined from the ad copy alone, making this a risk pending verification of the advertiser's credentials and targeting settings.",
+          "confidence": 0.65
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:discriminatory-practices:0.1",
+          "clause_quote": "Ads must not discriminate or encourage discrimination against people based on personal attributes such as race, ethnicity, color, national origin, religion, age, sex, sexual orientation, gender identity, family status, disability, medical or genetic condition.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad targets 'your spouse' generically and does not discriminate against or exclude any protected group. No discriminatory content is present in the copy.",
+          "confidence": 0.9
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 0,
+          "copy:retrieve": 1,
+          "copy:adjudicate": 0,
+          "rewrite": 0
+        },
+        "findings_emitted": 7,
+        "citation_drops": 1,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 3,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    },
+    {
+      "id": "meta-personal-attributes-2.8.2-a",
+      "tier": "verbatim",
+      "tags": [
+        "personal_attributes"
+      ],
+      "expected": {
+        "should_flag": true,
+        "policy_ids": [
+          "meta:personal-attributes:2.1"
+        ],
+        "notes": "VULNERABLE FINANCIAL STATUS"
+      },
+      "error": null,
+      "duration_ms": 2,
+      "findings": [
+        {
+          "element": "copy",
+          "severity": "violation",
+          "policy_id": "meta:personal-attributes:2.8.2",
+          "clause_quote": "❌ Are you bankrupt? Check out our services.\"",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+          "explanation": "The ad copy matches verbatim the prohibited example given in this clause. The phrase 'Are you bankrupt? Check out our services.' directly asserts a vulnerable financial status about the viewer, which is explicitly called out as a disallowed ad format under the Vulnerable Financial Status guideline.",
+          "confidence": 0.99,
+          "suggested_rewrite": "Navigating financial challenges? Check out our services.",
+          "rewrite_kind": "replacement"
+        },
+        {
+          "element": "copy",
+          "severity": "risk",
+          "policy_id": "meta:financial-services:0.1",
+          "clause_quote": "Advertisers promoting financial products and services may be required to verify their business and/or individual identity and demonstrate they are authorized by the relevant regulatory authorities where this is a requirement",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+          "explanation": "The ad promotes unspecified 'services' to people who may be bankrupt, suggesting a financial or debt-related service. Without visibility into the advertiser's licensing status or the nature of the services offered, it is unclear whether the required authorization and disclosure obligations are met.",
+          "confidence": 0.7
+        },
+        {
+          "element": "copy",
+          "severity": "clear",
+          "policy_id": "meta:discriminatory-practices:0.1",
+          "clause_quote": "Ads must not discriminate or encourage discrimination against people based on personal attributes such as race, ethnicity, color, national origin, religion, age, sex, sexual orientation, gender identity, family status, disability, medical or genetic condition.",
+          "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+          "explanation": "The ad targets people based on financial status (bankruptcy), which is not among the enumerated protected attributes in this clause. While the ad raises concerns under the personal attributes policy, it does not appear to discriminate on the basis of the characteristics listed here.",
+          "confidence": 0.8
+        }
+      ],
+      "diagnostics": {
+        "step_timings_ms": {
+          "copy:classify": 1,
+          "copy:retrieve": 1,
+          "copy:adjudicate": 0,
+          "rewrite": 0
+        },
+        "findings_emitted": 3,
+        "citation_drops": 0,
+        "parent_rule_redirects": 0,
+        "explanation_spans_total": 2,
+        "explanation_spans_grounded": 0,
+        "degraded": []
+      }
+    }
+  ]
+}
