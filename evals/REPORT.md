@@ -328,6 +328,55 @@ usability, and improving the rewrite step is the clearest next piece of work. Re
 0.90-point rewrite gap is more useful than the recall win alone would be, because it says
 where the system is actually weak.
 
+### Severity distribution and the noise rate
+
+The false-positive rate counts only findings at `violation`. That is the right threshold for
+"the tool told the user to rewrite a legal ad," but it hides how the model behaves at `risk`.
+Two measurements make that visible (final system; dev, with holdout in parentheses).
+
+**Severity mix of findings, split by whether the case actually violates** (dev shares):
+
+| Tier | On violating cases (viol / risk / clear) | On compliant cases (viol / risk / clear) |
+|---|---|---|
+| verbatim | 64% / 14% / 21% | 0% / 21% / 79% |
+| paraphrased | 22% / 54% / 24% | 0% / 23% / 77% |
+| realistic | 40% / 42% / 18% | (no compliant cases yet) |
+| images | 37% / 52% / 11% | 0% / 21% / 79% |
+
+The model is decisive on the leaked verbatim violations (64% called `violation`) and hedges
+everywhere else: on the paraphrased violations only 22% are `violation` and 54% are `risk`.
+The hedge is defensible — "implies a personal attribute" genuinely depends on targeting the
+ad does not show — but it is why paraphrased rewrite quality is measured on so few cases
+(rewrites run on violations only), and it is the mechanism behind the next number.
+
+**False positive at two thresholds** — the standard one (any `violation` on a compliant case)
+and a stricter **noise rate** (any `violation` *or* `risk` on a compliant case):
+
+| Tier | FP (violation) dev / holdout | Noise (violation or risk) dev / holdout |
+|---|---|---|
+| verbatim | 0% / 0% | 27% (4/15) / 0% (0/7) |
+| paraphrased | 0% / 0% | 46% (6/13) / 60% (3/5) |
+| images | 0% / 0% | 25% (2/8) / 50% (1/2) |
+
+The false-positive rate is 0.00 at the violation threshold on every tier and both splits: the
+system never tells a user their compliant ad is a violation. At the stricter threshold the
+picture is different, and honestly so. On the paraphrased tier — mostly near-miss hard
+negatives — **46% of compliant cases (dev) draw a `risk` finding**, and the noisy cases are
+exactly the ones the tier was built to stress: `para-race-1-c` ("A dating community built for
+Black singles") and `para-orientation-1-c` draw `risk` on personal-attributes:2.1, the rule
+they narrowly comply with; `img-pilates-class` draws `risk` on the same rule. The remainder
+are context hedges — `img-clean-insurance` draws six `risk` findings on financial-services
+licensing clauses a static image cannot confirm.
+
+The reading: the clean 0.00 false-positive rate is real, but it partly reflects the model
+preferring `risk` to `violation` on ambiguous compliant cases rather than confidently
+clearing them. A user would see a yellow "worth a look" flag on a quarter to a half of
+compliant near-miss ads. Whether that is acceptable is a product-framing question (`risk`
+means "check this," not "rejected"), but it is a real cost the single false-positive number
+does not surface, which is why it is measured here. Reducing the hedge without giving up the
+0.00 violation-FP is a prompt/threshold problem for a later iteration, not something to paper
+over now.
+
 ## 9. Known limitations and what's next
 
 - **Tier 3's false-positive rate is not yet measured.** The 20 realistic violation cases are
@@ -343,9 +392,13 @@ where the system is actually weak.
   compositional (a before/after body shot with no text), there is no verbatim ad-text span to
   quote; grounding there is against the vision step's serialization, not raw copy. The metric
   is most meaningful on text-bearing elements.
-- **Personal-attributes paraphrases come back as `risk`, not `violation`.** Recall credits
-  both, but it means those findings get no rewrite (rewrite runs on violations), so rewrite
-  quality on the paraphrased tier is measured on fewer cases than the tier's size suggests.
+- **The model hedges to `risk` rather than committing.** On paraphrased violations only 22%
+  of findings are `violation` (54% `risk`); on compliant near-misses the noise rate (any
+  `risk` on a clean case) runs 25-60% even though the violation-level false-positive rate is
+  0.00 (see section 8). The consequences: hedged findings get no rewrite (so paraphrased
+  rewrite quality is measured on few cases), and a user sees a yellow flag on many compliant
+  near-miss ads. Tightening the hedge without reintroducing violation-level false positives
+  is a prompt/threshold iteration for later.
 - **Holdout tiers are small** (6-13 cases each), so a single case swings a tier's number by
   0.08-0.17. The dev numbers carry the weight; holdout is a generalization check, not a
   precise measurement.
