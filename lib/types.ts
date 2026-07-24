@@ -25,6 +25,7 @@ export type Finding = {
   confidence: number;       // 0-1
   suggested_rewrite?: string;
   rewrite_kind?: RewriteKind;
+  offending_span?: string;  // VERBATIM substring of the analyzed element the verdict rests on, verified in code
   supporting_example?: SupportingExample;
 };
 

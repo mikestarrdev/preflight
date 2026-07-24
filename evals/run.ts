@@ -95,6 +95,7 @@ async function main() {
   const { scoreRecall } = await import('./scorers/recall');
   const { scoreFalsePositives } = await import('./scorers/false-positive');
   const { scoreCitations } = await import('./scorers/citation');
+  const { scoreExplanationGrounding } = await import('./scorers/explanation-grounding');
   const { scoreRewrites } = await import('./scorers/rewrite');
 
   const toInput = (evalCase: EvalCase) => {
@@ -177,6 +178,7 @@ async function main() {
       recall: scoreRecall(tier.runs),
       false_positive: scoreFalsePositives(tier.runs),
       citation: scoreCitations(tier.runs),
+      explanation_grounding: scoreExplanationGrounding(tier.runs),
       rewrite: await scoreRewrites(tier.runs),
     });
   }
@@ -224,6 +226,7 @@ async function main() {
     console.log(`recall               ${fmt(t.recall.score)}   (${t.recall.hits}/${t.recall.total} flagged cases cite an expected clause)`);
     console.log(`false positive rate  ${fmt(t.false_positive.rate)}   (${t.false_positive.false_positives}/${t.false_positive.total} clean cases produced a violation)`);
     console.log(`citation accuracy    ${fmt(t.citation.score)}   (${t.citation.verified}/${t.citation.emitted} emitted findings verified verbatim)`);
+    console.log(`explanation grounding ${fmt(t.explanation_grounding.score)}  (${t.explanation_grounding.grounded}/${t.explanation_grounding.total} flagged findings quote a verbatim ad span)`);
     console.log(`rewrite quality      ${t.rewrite.mean_score === null ? 'n/a' : `${t.rewrite.mean_score.toFixed(2)}/5`}  (judge: ${t.rewrite.judge_model}, n=${t.rewrite.judged})`);
   }
   console.log(`\nerrors               ${errors.length}/${runs.length} cases`);

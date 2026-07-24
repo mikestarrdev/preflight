@@ -6,11 +6,15 @@ import type { AdjudicatedFinding } from './steps/adjudicate';
 // cited a policy" into "the citation is verified against the corpus". A
 // finding either cites a real chunk with an exact quote or it is dropped.
 //
-// Phase 4 addition layered on top: parent-rule resolution. A finding that
-// matches an example chunk (Meta's own ✅/❌ line) is redirected to cite the
-// governing rule and carries the example as supporting context. Set
-// EVAL_DISABLE_PARENT_RULE=1 to reproduce the pre-fix behavior for a matched
-// baseline run.
+// Two Phase 4 additions layered on top:
+//   4a parent-rule resolution: a finding that matches an example chunk
+//      (Meta's own ✅/❌ line) is redirected to cite the governing rule and
+//      carries the example as supporting context. Set EVAL_DISABLE_PARENT_RULE=1
+//      to reproduce the pre-fix behavior for a matched before/after.
+//   4b explanation grounding: the offending_span the adjudicator quotes from
+//      the ad is verified as a verbatim substring of the input, the same
+//      discipline clause_quote already gets. Ungrounded spans are stripped and
+//      counted, so explanation-grounding.ts can report the rate.
 
 // Normalizes whitespace and Unicode quote characters ONLY. Anything more
 // forgiving would let paraphrases through.
@@ -33,6 +37,9 @@ export type VerifyResult = {
   findings: Finding[];
   dropped: DroppedCitation[];
   parent_rule_redirects: number;
+  // Explanation grounding, over the violation/risk findings that survived:
+  spans_total: number;
+  spans_grounded: number;
 };
 
 function isExample(chunk: PolicyChunk): boolean {
@@ -45,10 +52,12 @@ export function verifyCitations(
   adjudicated: AdjudicatedFinding[],
   chunks: PolicyChunk[],
   element: Element,
+  inputContent: string,
 ): VerifyResult {
   const byId = new Map(chunks.map((c) => [c.id, c]));
   const dropped: DroppedCitation[] = [];
   const built: { finding: Finding; redirected: boolean }[] = [];
+  const normalizedInput = normalizeForMatch(inputContent);
 
   for (const f of adjudicated) {
     // Prefer the retrieved chunk (identical content); fall back to the corpus
@@ -64,8 +73,12 @@ export function verifyCitations(
       continue;
     }
 
-    // Redirect a matched example to its governing rule.
+    // 4a: redirect a matched example to its governing rule.
     const rule = RESOLVE_PARENT_RULE && isExample(chunk) ? governingRule(chunk) : null;
+
+    // 4b: keep the offending span only if it verifies against the input.
+    const span = f.offending_span ? normalizeForMatch(f.offending_span) : '';
+    const grounded = span.length > 0 && normalizedInput.includes(span);
 
     const finding: Finding = {
       element,
@@ -75,6 +88,7 @@ export function verifyCitations(
       source_url: rule ? rule.source_url : chunk.source_url,
       explanation: f.explanation,
       confidence: f.confidence,
+      ...(grounded ? { offending_span: f.offending_span } : {}),
       ...(rule
         ? {
             supporting_example: {
@@ -108,9 +122,15 @@ export function verifyCitations(
   const findings = [...best.values()].map((b) => b.finding);
   const parentRuleRedirects = [...best.values()].filter((b) => b.redirected).length;
 
+  // Grounding is measured over what users act on: violation and risk findings.
+  const flagged = findings.filter((f) => f.severity === 'violation' || f.severity === 'risk');
+  const spansGrounded = flagged.filter((f) => f.offending_span !== undefined).length;
+
   return {
     findings,
     dropped,
     parent_rule_redirects: parentRuleRedirects,
+    spans_total: flagged.length,
+    spans_grounded: spansGrounded,
   };
 }

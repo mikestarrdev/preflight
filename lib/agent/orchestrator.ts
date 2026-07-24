@@ -33,7 +33,9 @@ export type RunDiagnostics = {
   step_timings_ms: Record<string, number>;
   findings_emitted: number; // adjudicator output count, pre-verification
   citation_drops: number; // findings dropped by citation verification
-  parent_rule_redirects: number; // findings redirected from a matched example to its rule
+  parent_rule_redirects: number; // findings redirected from a matched example to its rule (4a)
+  explanation_spans_total: number; // violation/risk findings, the grounding denominator (4b)
+  explanation_spans_grounded: number; // of those, ones with a verbatim offending_span
   degraded: string[]; // non-fatal failures, e.g. "rewrite:meta:health-wellness:2.1"
 };
 
@@ -70,6 +72,8 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
   let findingsEmitted = 0;
   let citationDrops = 0;
   let parentRuleRedirects = 0;
+  let spansTotal = 0;
+  let spansGrounded = 0;
   let failedElements = 0;
 
   const collect = (result: ReturnType<typeof verifyCitations>, emitted: number): void => {
@@ -80,6 +84,8 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
     findingsEmitted += emitted;
     citationDrops += result.dropped.length;
     parentRuleRedirects += result.parent_rule_redirects;
+    spansTotal += result.spans_total;
+    spansGrounded += result.spans_grounded;
   };
 
   // Rewrite input per element: the copy itself, the serialized creative, or
@@ -121,7 +127,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       );
       debug('adjudicate', { element: 'copy', findings: adjudicated.length });
 
-      collect(verifyCitations(adjudicated, chunks, 'copy'), adjudicated.length);
+      collect(verifyCitations(adjudicated, chunks, 'copy', copy), adjudicated.length);
       elements.push('copy');
     } catch (err) {
       failedElements += 1;
@@ -151,7 +157,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       );
       debug('adjudicate', { element: 'image', findings: adjudicated.length });
 
-      collect(verifyCitations(adjudicated, chunks, 'image'), adjudicated.length);
+      collect(verifyCitations(adjudicated, chunks, 'image', content), adjudicated.length);
       elements.push('image');
     } catch (err) {
       failedElements += 1;
@@ -194,7 +200,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
           );
           debug('adjudicate', { element: 'landing_page', findings: adjudicated.length });
 
-          collect(verifyCitations(adjudicated, chunks, 'landing_page'), adjudicated.length);
+          collect(verifyCitations(adjudicated, chunks, 'landing_page', content), adjudicated.length);
         }
       } catch (err) {
         failedElements += 1;
@@ -244,6 +250,8 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       findings_emitted: findingsEmitted,
       citation_drops: citationDrops,
       parent_rule_redirects: parentRuleRedirects,
+      explanation_spans_total: spansTotal,
+      explanation_spans_grounded: spansGrounded,
       degraded,
     },
   };

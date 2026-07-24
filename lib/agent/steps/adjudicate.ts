@@ -10,6 +10,10 @@ const AdjudicatedFindingSchema = z.object({
   clause_quote: z.string(),
   explanation: z.string(),
   confidence: z.number().min(0).max(1),
+  // 4b: the verbatim ad span the verdict rests on, verified downstream. Optional
+  // in the schema so pre-4b cached adjudications (which never emit it) still
+  // validate; the prompt only asks for it in the grounded variant.
+  offending_span: z.string().optional(),
 });
 
 const AdjudicationSchema = z.object({
@@ -18,9 +22,10 @@ const AdjudicationSchema = z.object({
 
 export type AdjudicatedFinding = z.infer<typeof AdjudicatedFindingSchema>;
 
-// The prompt is templated per element. The 'copy' variant must stay
-// byte-identical to the Phase 2 prompt: cached adjudications and the recorded
-// baseline depend on it.
+// The prompt is templated per element. Phase 4 (4b) added the offending_span
+// requirement, which intentionally changed the prompt and invalidated the
+// Phase 2/3 adjudication cache; the pre-4b baseline is preserved as recorded
+// numbers in evals/REPORT.md rather than as reproducible cache entries.
 const SUBJECT: Record<Element, { what: string; visible: string; label: string }> = {
   copy: {
     what: 'paid social ad copy',
@@ -49,6 +54,7 @@ For each retrieved clause that is relevant to the ad, emit a finding:
       "severity": "violation" | "risk" | "clear",
       "clause_quote": "...",    // the specific sentence(s) of the clause the verdict rests on
       "explanation": "...",     // why this ad does or does not breach this clause, referencing the ad's own wording
+      "offending_span": "...",  // for "violation"/"risk": the exact words from the ad above that breach the clause, verbatim; "" for "clear"
       "confidence": 0.0-1.0     // confidence in the VERDICT, not the severity level
     }
   ]
@@ -63,6 +69,7 @@ Hard rules:
 - Cite only policy_id values from the provided clause set. Never invent an id, never use outside knowledge of platform policy.
 - "clause_quote" must be copied verbatim, character for character, from the cited clause's text. Paraphrasing, summarizing, or stitching separate sentences together is a failure: findings with quotes that are not exact substrings of the cited clause are discarded.
 - Quote only the part of the clause that supports the verdict, not the entire clause.
+- For "violation" and "risk" findings, "offending_span" must be copied verbatim, character for character, from the ad shown above: the exact words that breach the clause. It is verified against the ad the same way clause_quote is verified against the policy, and a span that is not an exact substring is dropped. Quote only the offending words, not the whole ad. Use "" for "clear" findings.
 - If no clause in the set is relevant to any part of the ad, return {"findings": []}.
 
 Respond with the JSON object only. No markdown fences, no commentary.`;
