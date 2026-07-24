@@ -1,5 +1,6 @@
 import { cached } from '@/lib/cache';
 import { corpusVersion } from '@/lib/corpus';
+import { getChunk, governingRule } from '@/lib/rag/corpus-index';
 import { EMBEDDING_MODEL } from '@/lib/rag/embed';
 import { search } from '@/lib/rag/search';
 import type { PolicyChunk } from '@/lib/types';
@@ -8,6 +9,13 @@ import type { Claim } from './classify';
 const K_PER_QUERY = 8;
 // Cap the merged set so adjudication prompts stay bounded.
 const MAX_CHUNKS = 25;
+
+// Phase 4 experiment 4a-alt: instead of redirecting a matched example to its
+// rule after adjudication (verify.ts), surface the governing rule at retrieval
+// time so the adjudicator cites the rule directly. Off by default; the flag
+// joins the cache key only when set, so the baseline cache stays valid.
+const RULE_BOOST = process.env.RETRIEVAL_RULE_BOOST === '1';
+const RULE_BOOST_FACTOR = 1.5;
 
 export type RetrievedChunk = PolicyChunk & {
   fused_score: number; // best score across the queries that surfaced it
@@ -32,6 +40,7 @@ export async function retrieve(
         copy: content,
         claims: claims.map((c) => c.text),
         ...(extraQueries.length > 0 ? { extra_queries: extraQueries.map((q) => q.text) } : {}),
+        ...(RULE_BOOST ? { rule_boost: true } : {}),
       },
     },
     async () => {
@@ -73,9 +82,34 @@ export async function retrieve(
         }
       });
 
+      if (RULE_BOOST) applyRuleBoost(merged);
+
       return [...merged.values()]
         .sort((a, b) => b.fused_score - a.fused_score)
         .slice(0, MAX_CHUNKS);
     },
   );
+}
+
+// For every matched example chunk, pull in its governing rule (if retrieval
+// missed it) and lift all rule chunks so they outrank their examples. The
+// adjudicator then has the rule in front of it to cite directly, rather than
+// quoting the near-identical example.
+function applyRuleBoost(merged: Map<string, RetrievedChunk>): void {
+  for (const chunk of [...merged.values()]) {
+    if (chunk.content_type !== 'example_compliant' && chunk.content_type !== 'example_violating') {
+      continue;
+    }
+    const rule = governingRule(getChunk(chunk.id) ?? chunk);
+    if (rule && !merged.has(rule.id)) {
+      merged.set(rule.id, {
+        ...rule,
+        fused_score: chunk.fused_score,
+        surfaced_by: [`rule_of:${chunk.id}`],
+      });
+    }
+  }
+  for (const chunk of merged.values()) {
+    if (chunk.content_type === 'rule') chunk.fused_score *= RULE_BOOST_FACTOR;
+  }
 }
