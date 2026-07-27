@@ -297,10 +297,79 @@ honest summary is that a production system would likely run both — boost for q
 redirect as the safety net — and that recall, the thing under test, was already solved by the
 cheaper of the two.
 
+### Iteration 4 (post-freeze) — document-scope guard. KEPT.
+
+This one lands after the section 8 freeze, prompted by a limitation section 8 itself flagged.
+It is dev-only and, as the numbers below show, leaves every headline rate unchanged; it is
+kept as a precision fix, not a metric win.
+
+**Hypothesis.** Some findings are emitted from clauses whose own document states an
+applicability scope the ad falls outside. The clearest case (section 8) is
+`health-wellness:1.1` cited at `risk` against `real-adlib-bizjack`, a productivity-coaching
+quiz, when the same document's `health-wellness:0.1` says the policy "covers two categories of
+ads: Weight Loss and Cosmetic Products and Procedures, and Adult Products and Reproductive
+Health." If a clause can be cited only when the ad falls within its document's stated scope,
+these out-of-scope citations should disappear without touching in-scope detection.
+
+**Change (one thing).** A code-side scope guard in `verify.ts` (logic in `lib/agent/scope.ts`),
+not a prompt instruction — the scope is a fact already stated in the corpus, so enforcing it
+deterministically is more reliable than asking the model to police itself. A small table
+declares, per document, the scope its own corpus text states, keyed to the clause that states
+it (`meta:health-wellness:0.1`), with a load-time assertion that the clause still contains the
+category names so the term list cannot silently drift from the corpus. A finding citing a
+scoped document is dropped when the ad shows no signal of belonging to that document's
+categories, matched against the ad copy **plus its classification** (vertical + restricted
+categories) — the copy alone does not always name its category (`real-wl-1` says "belly fat,"
+never "weight loss"; its `weight_loss` classification is what keeps it in scope). Only
+`health-wellness` declares a limiting scope; every other document opens with a prohibition that
+applies to all ads and stays unscoped. It is a post-hoc filter on the cached adjudications, the
+same shape as 4a, so **$0.00 to evaluate**. `EVAL_DISABLE_SCOPE_CHECK=1` reproduces the before
+(verified: the before run below reproduced the section 8 dev numbers bit-for-bit).
+
+**Result (dev, realistic + paraphrased, before → after).**
+
+| Tier | Recall | FP (violation) | Noise (viol/risk on clean) | Citation | Grounding |
+|---|---|---|---|---|---|
+| realistic | 1.00 → 1.00 | 0.17 → 0.17 | 1.00 (6/6) → 1.00 (6/6) | 0.98 → 0.98 | 0.89 → 0.90 |
+| paraphrased | 1.00 → 1.00 | 0.00 → 0.00 | 0.46 (6/13) → 0.46 (6/13) | 0.98 → 0.98 | 1.00 → 1.00 |
+
+The guard dropped **27 health-wellness findings across the full dev set** (verbatim and images
+were run too, as a regression check; both held recall 1.00). **No expected clause was ever
+dropped** — recall is 1.00 on all four tiers before and after — because the only
+health-wellness-expected case in these tiers, `real-wl-1`, is a genuine weight-loss ad and
+stays in scope. Of the 27, four were `risk` and the rest `clear` (inert for every metric): the
+named `bizjack` citation, the same pattern on `real-adlib-rosabella` (a cardiovascular beetroot
+supplement, also outside weight-loss/cosmetic/reproductive), two on the violating `para-age-1-v`,
+and one on a verbatim personal-attributes case. The clause the hypothesis targeted is gone.
+
+**What did not move, and why.** The headline rates are flat, and the honest reason is worth
+stating. Recall and citation accuracy cannot move by construction: no expected clause was
+dropped, and a scope drop is a *valid* citation, so it never counted against citation accuracy
+to begin with. The realistic false-positive rate stays 0.17 because its one violation-level
+false positive is `real-adlib-debt-gurus` on `cs-fraud-scams`, a financial clause the guard
+does not touch. The noise rate does not move because the two clean cases whose out-of-scope
+health citations were dropped, `bizjack` and `rosabella`, each still carry a
+`personal-attributes:2.1` risk finding and so stay "noisy" for an unrelated reason. Grounding
+ticks realistic up a hair (0.89 → 0.90) because two of the dropped risk findings left the
+denominator, one of them ungrounded.
+
+**Kept.** It removes exactly the failure the hypothesis named, and the same class of error on
+three other cases, with no regression on any tier and no per-run cost. It does not improve a
+headline number: the over-flagging it fixes is real but orthogonal to what the tier-level noise
+rate is dominated by (personal-attributes over-triggering on near-miss clean ads), which is a
+separate iteration. On by default; not re-run on holdout, since both permitted holdout touches
+were already spent and the guard is a precision-only filter that drops no expected clause.
+
+Runs: before `results/2026-07-27T04-17-04-189Z.json` (guard off), after
+`results/2026-07-27T04-17-50-781Z.json` (guard on).
+
 ## 8. Final numbers
 
 Final system: 4a parent-rule resolution **on**, 4b offending-span grounding **on**, no
-retrieval boost (see iteration 3 for why). Dev is the iteration-2 run
+retrieval boost (see iteration 3 for why). A fourth change, the document-scope guard
+(iteration 4), landed after this freeze; it is on by default but leaves every number in this
+section unchanged on dev (it drops no expected clause and no violation-level finding), so the
+table stands and holdout was not re-touched. Dev is the iteration-2 run
 (`results/2026-07-23T09-20-16-700Z.json`); holdout is the second and last permitted holdout
 touch, run once on the frozen system (`results/2026-07-23T09-36-01-874Z.json`).
 
@@ -478,8 +547,11 @@ debt-gurus miss and the bizjack out-of-scope citation are not framing questions 
 threshold-calibration bug and a retrieval-scope bug respectively, both real cost the single
 false-positive number does not surface on its own, which is why both are measured here.
 Reducing the hedge rate, tightening the violation threshold on hedged financial claims, and
-scoping citations to a document's own stated coverage are three separate fixes for a later
-iteration, not one problem.
+scoping citations to a document's own stated coverage are three separate fixes, not one
+problem. The third is now done (iteration 4): the `bizjack` out-of-scope citation this
+paragraph flags no longer survives verification. It does not move the number here — `bizjack`
+stays noisy on `personal-attributes` — which is exactly why the other two, both calibration
+problems, are still open.
 
 ## 9. Known limitations and what's next
 
@@ -489,13 +561,15 @@ iteration, not one problem.
   hedged financial claim into a confident `violation`; the noise rate (any `risk` or worse) is
   100% on both splits, though n is small (6 dev, 1 holdout clean cases) and several of those
   clean cases were deliberately chosen as near-misses. Full detail in section 8.
-- **A policy document got cited outside its own stated scope.** `real-adlib-bizjack`, a
-  no-hook control with no health, financial, or personal-attribute content, drew a `risk` on
-  `health-wellness:1.1` — a document whose own `0.1` clause scopes it to weight-loss, cosmetic,
-  and reproductive-health ads. This is not a hedging-calibration issue like the others on this
-  list; it is retrieval or adjudication reaching for a chunk the document itself says does not
-  apply. Worth a scope guard (filter retrieved chunks by their document's stated coverage
-  before adjudication sees them) rather than a prompt tweak.
+- **A policy document got cited outside its own stated scope. (Fixed, iteration 4.)**
+  `real-adlib-bizjack`, a no-hook control with no health, financial, or personal-attribute
+  content, drew a `risk` on `health-wellness:1.1` — a document whose own `0.1` clause scopes it
+  to weight-loss, cosmetic, and reproductive-health ads. This is not a hedging-calibration issue
+  like the others on this list; it is retrieval or adjudication reaching for a chunk the document
+  itself says does not apply. The scope guard added in iteration 4 (in code, keyed to the
+  `health-wellness:0.1` scope clause, matched against the ad's classification) now drops this
+  citation and 26 others like it across dev without dropping any expected clause. It landed after
+  the section 8 freeze and does not change the tabulated numbers.
 - **Tier 2 labels, and half of Tier 3, are authored-then-verified rather than independently
   sourced.** The leakage check (`pnpm eval:leakage`, clean) rules out n-gram overlap, and each
   case carries a note with its rule rationale, but a second human read of those labels is the
@@ -524,10 +598,9 @@ iteration, not one problem.
 
 With more time: a human label-verification pass on Tier 2 and the authored half of Tier 3;
 either exempt non-textual `risk` findings from the grounding denominator or tag them, so the
-grounding metric measures only what it can fairly measure; a scope guard so retrieval or
-adjudication cannot cite a clause outside its document's own stated coverage; and a
-threshold pass on hedged financial claims so "reduce debt by up to X%" with a vague timeline
-does not read the same as a claim that states a number and a date.
+grounding metric measures only what it can fairly measure; and a threshold pass on hedged
+financial claims so "reduce debt by up to X%" with a vague timeline does not read the same as a
+claim that states a number and a date. (The scope guard once listed here is done: iteration 4.)
 
 ## Cost
 
@@ -546,8 +619,12 @@ $12. Cumulative spend:
 | Tier 3 Ad Library dev, 2nd attempt (98, same 7 errors — confirms deterministic, not flaky) | $0.00 | $7.57 |
 | Tier 3 Ad Library dev, 3rd attempt after sequential cache warm (98, fully cached) | $0.00 | $7.57 |
 | Tier 3 Ad Library holdout (38, cached after warm) | $0.06 | $7.63 |
+| iter 4: scope guard, dev before (98, cached) | $0.00 | $7.63 |
+| iter 4: scope guard, dev after (98, cached) | $0.00 | $7.63 |
 
-**Total tracked: $7.63** against a $12 budget. The single most expensive run ($2.39, the 4b
+**Total tracked: $7.63** against a $12 budget. Iteration 4 cost nothing: like 4a it is a
+post-hoc filter over cached adjudications, so both the before and after runs were full cache
+hits (0 API calls). Its own budget was $2; actual $0.00. The single most expensive run ($2.39, the 4b
 full re-adjudication) stayed under the $3 per-run ceiling; nothing aborted. The cache earned
 its keep: iteration 1 cost $0.11 because a post-hoc change reuses adjudications, and the
 verbatim tier was free on every run after Phase 2 until 4b changed the prompt. Iterating
