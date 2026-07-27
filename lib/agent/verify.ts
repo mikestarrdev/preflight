@@ -1,12 +1,13 @@
 import { getChunk, governingRule } from '@/lib/rag/corpus-index';
 import type { Element, Finding, PolicyChunk } from '@/lib/types';
+import { inDocumentScope } from './scope';
 import type { AdjudicatedFinding } from './steps/adjudicate';
 
 // Citation verification, in code, not the prompt. Converts "the model says it
 // cited a policy" into "the citation is verified against the corpus". A
 // finding either cites a real chunk with an exact quote or it is dropped.
 //
-// Two Phase 4 additions layered on top:
+// Three Phase 4 additions layered on top:
 //   4a parent-rule resolution: a finding that matches an example chunk
 //      (Meta's own ✅/❌ line) is redirected to cite the governing rule and
 //      carries the example as supporting context. Set EVAL_DISABLE_PARENT_RULE=1
@@ -15,6 +16,11 @@ import type { AdjudicatedFinding } from './steps/adjudicate';
 //      the ad is verified as a verbatim substring of the input, the same
 //      discipline clause_quote already gets. Ungrounded spans are stripped and
 //      counted, so explanation-grounding.ts can report the rate.
+//   scope guard: a finding citing a document whose corpus text states a limited
+//      applicability scope (see scope.ts) is dropped when the ad falls outside
+//      that scope, so a clause cannot be cited against an ad its own document
+//      says it does not cover. Set EVAL_DISABLE_SCOPE_CHECK=1 to reproduce the
+//      pre-fix behavior for a matched before/after.
 
 // Normalizes whitespace and Unicode quote characters ONLY. Anything more
 // forgiving would let paraphrases through.
@@ -27,6 +33,7 @@ export function normalizeForMatch(s: string): string {
 }
 
 const RESOLVE_PARENT_RULE = process.env.EVAL_DISABLE_PARENT_RULE !== '1';
+const SCOPE_CHECK = process.env.EVAL_DISABLE_SCOPE_CHECK !== '1';
 
 export type DroppedCitation = {
   policy_id: string;
@@ -37,6 +44,10 @@ export type VerifyResult = {
   findings: Finding[];
   dropped: DroppedCitation[];
   parent_rule_redirects: number;
+  // Findings dropped by the scope guard: cited a document that verified fine
+  // but whose corpus text scopes it to categories the ad does not fall into.
+  // Kept separate from `dropped` because the citation itself was valid.
+  scope_drops: number;
   // Explanation grounding, over the violation/risk findings that survived:
   spans_total: number;
   spans_grounded: number;
@@ -53,11 +64,16 @@ export function verifyCitations(
   chunks: PolicyChunk[],
   element: Element,
   inputContent: string,
+  // Ad copy plus its classification (vertical + restricted categories), used by
+  // the scope guard to decide whether a scoped document applies to this ad.
+  scopeSignals = '',
 ): VerifyResult {
   const byId = new Map(chunks.map((c) => [c.id, c]));
   const dropped: DroppedCitation[] = [];
   const built: { finding: Finding; redirected: boolean }[] = [];
   const normalizedInput = normalizeForMatch(inputContent);
+  const scopeHaystack = `${inputContent} ${scopeSignals}`;
+  let scopeDrops = 0;
 
   for (const f of adjudicated) {
     // Prefer the retrieved chunk (identical content); fall back to the corpus
@@ -70,6 +86,17 @@ export function verifyCitations(
     const quote = normalizeForMatch(f.clause_quote);
     if (quote.length === 0 || !normalizeForMatch(chunk.content).includes(quote)) {
       dropped.push({ policy_id: f.policy_id, reason: 'quote_not_in_chunk' });
+      continue;
+    }
+
+    // Scope guard: drop a valid citation to a document the ad falls outside of.
+    // Runs before the finding is built so it is excluded from every downstream
+    // metric (grounding included), the same as any other dropped finding.
+    if (SCOPE_CHECK && !inDocumentScope(chunk.doc_slug, scopeHaystack)) {
+      scopeDrops += 1;
+      console.warn(
+        `scope guard dropped ${f.policy_id}: ad falls outside ${chunk.doc_slug}'s stated scope`,
+      );
       continue;
     }
 
@@ -130,6 +157,7 @@ export function verifyCitations(
     findings,
     dropped,
     parent_rule_redirects: parentRuleRedirects,
+    scope_drops: scopeDrops,
     spans_total: flagged.length,
     spans_grounded: spansGrounded,
   };

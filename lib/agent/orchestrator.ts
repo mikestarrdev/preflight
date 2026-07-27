@@ -11,7 +11,7 @@ import {
 import type { AnalysisResult, Element, Finding } from '@/lib/types';
 import { verifyCitations } from './verify';
 import { adjudicate } from './steps/adjudicate';
-import { classify, type Claim } from './steps/classify';
+import { classify, type Claim, type Classification } from './steps/classify';
 import { checkClaims, serializeMismatch } from './steps/mismatch';
 import { retrieve } from './steps/retrieve';
 import { rewrite } from './steps/rewrite';
@@ -33,6 +33,7 @@ export type RunDiagnostics = {
   step_timings_ms: Record<string, number>;
   findings_emitted: number; // adjudicator output count, pre-verification
   citation_drops: number; // findings dropped by citation verification
+  scope_drops: number; // valid citations dropped for falling outside a document's stated scope
   parent_rule_redirects: number; // findings redirected from a matched example to its rule (4a)
   explanation_spans_total: number; // violation/risk findings, the grounding denominator (4b)
   explanation_spans_grounded: number; // of those, ones with a verbatim offending_span
@@ -45,6 +46,15 @@ export type AnalyzeOutput = AnalysisResult & { diagnostics: RunDiagnostics };
 
 function debug(step: string, data: Record<string, unknown>): void {
   if (process.env.DEBUG_AGENT) console.error(JSON.stringify({ step, ...data }));
+}
+
+// Scope signals for the document-scope guard (verify.ts): the ad's classified
+// vertical and restricted categories. The ad copy alone does not always name
+// its own category (a weight-loss ad may only say "belly fat"), so the
+// classification is what lets a scoped document recognize an in-scope ad.
+function scopeSignals(classification: Classification | null): string {
+  if (!classification) return '';
+  return `${classification.vertical} ${classification.restricted_categories.join(' ')}`;
 }
 
 function message(err: unknown): string {
@@ -71,6 +81,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
   const degraded: string[] = [];
   let findingsEmitted = 0;
   let citationDrops = 0;
+  let scopeDrops = 0;
   let parentRuleRedirects = 0;
   let spansTotal = 0;
   let spansGrounded = 0;
@@ -83,6 +94,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
     findings.push(...result.findings);
     findingsEmitted += emitted;
     citationDrops += result.dropped.length;
+    scopeDrops += result.scope_drops;
     parentRuleRedirects += result.parent_rule_redirects;
     spansTotal += result.spans_total;
     spansGrounded += result.spans_grounded;
@@ -106,6 +118,9 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
 
   // --- copy ---
   let copyClaims: Claim[] = [];
+  // The copy's scope signals, reused by the landing-page mismatch check, which
+  // adjudicates the ad's own claims and so shares the ad's category.
+  let copySignals = '';
   if (input.copy) {
     const copy = input.copy;
     rewriteContent.copy = copy;
@@ -127,7 +142,8 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       );
       debug('adjudicate', { element: 'copy', findings: adjudicated.length });
 
-      collect(verifyCitations(adjudicated, chunks, 'copy', copy), adjudicated.length);
+      copySignals = scopeSignals(classification);
+      collect(verifyCitations(adjudicated, chunks, 'copy', copy, copySignals), adjudicated.length);
       elements.push('copy');
     } catch (err) {
       failedElements += 1;
@@ -140,9 +156,10 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
     try {
       const imageText = creative.rendered_text.join('\n');
       // Text rendered in the image is policy-checked as if it were copy.
-      const imageClaims = imageText.trim().length
-        ? (await step('image:classify', () => classify(imageText))).claims
-        : [];
+      const imageClassification = imageText.trim().length
+        ? await step('image:classify', () => classify(imageText))
+        : null;
+      const imageClaims = imageClassification?.claims ?? [];
       debug('classify', { element: 'image', claims: imageClaims.length });
 
       const chunks = await step('image:retrieve', () =>
@@ -157,7 +174,10 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       );
       debug('adjudicate', { element: 'image', findings: adjudicated.length });
 
-      collect(verifyCitations(adjudicated, chunks, 'image', content), adjudicated.length);
+      collect(
+        verifyCitations(adjudicated, chunks, 'image', content, scopeSignals(imageClassification)),
+        adjudicated.length,
+      );
       elements.push('image');
     } catch (err) {
       failedElements += 1;
@@ -200,7 +220,10 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
           );
           debug('adjudicate', { element: 'landing_page', findings: adjudicated.length });
 
-          collect(verifyCitations(adjudicated, chunks, 'landing_page', content), adjudicated.length);
+          collect(
+            verifyCitations(adjudicated, chunks, 'landing_page', content, copySignals),
+            adjudicated.length,
+          );
         }
       } catch (err) {
         failedElements += 1;
@@ -249,6 +272,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       step_timings_ms: timings,
       findings_emitted: findingsEmitted,
       citation_drops: citationDrops,
+      scope_drops: scopeDrops,
       parent_rule_redirects: parentRuleRedirects,
       explanation_spans_total: spansTotal,
       explanation_spans_grounded: spansGrounded,

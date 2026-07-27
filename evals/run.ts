@@ -195,6 +195,7 @@ async function main() {
     filter: filterTag,
     aborted,
     parent_rule_resolution: process.env.EVAL_DISABLE_PARENT_RULE !== '1',
+    scope_check: process.env.EVAL_DISABLE_SCOPE_CHECK !== '1',
     scores: Object.fromEntries(tierScores.map((t) => [t.name, t])),
     totals: {
       cases: runs.length,
@@ -229,7 +230,9 @@ async function main() {
     console.log(`explanation grounding ${fmt(t.explanation_grounding.score)}  (${t.explanation_grounding.grounded}/${t.explanation_grounding.total} flagged findings quote a verbatim ad span)`);
     console.log(`rewrite quality      ${t.rewrite.mean_score === null ? 'n/a' : `${t.rewrite.mean_score.toFixed(2)}/5`}  (judge: ${t.rewrite.judge_model}, n=${t.rewrite.judged})`);
   }
-  console.log(`\nerrors               ${errors.length}/${runs.length} cases`);
+  const scopeDrops = runs.reduce((n, r) => n + (r.result?.diagnostics.scope_drops ?? 0), 0);
+  console.log(`\nscope guard          ${process.env.EVAL_DISABLE_SCOPE_CHECK === '1' ? 'off' : 'on'}, ${scopeDrops} finding(s) dropped as out of document scope`);
+  console.log(`errors               ${errors.length}/${runs.length} cases`);
   if (skipped > 0) console.log(`skipped              ${skipped} cases (run aborted on cost ceiling)`);
   console.log(`cost                 $${usageCostUSD().toFixed(2)}  (${usage.calls} calls, in ${usage.input_tokens} tok, out ${usage.output_tokens} tok — cache hits cost nothing)`);
   console.log(`duration             ${(durationMs / 1000).toFixed(0)}s`);
