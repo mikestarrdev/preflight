@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { analyze } from '@/lib/agent/orchestrator';
+import { usageCostUSD } from '@/lib/claude';
 import { IMAGE_MEDIA_TYPES } from '@/lib/inputs/vision';
+import { checkRateLimit, dailySpendRemainingUSD, recordSpend } from '@/lib/rate-limit';
 
 const MAX_REQUEST_BYTES = 10 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+function clientIp(req: Request): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) return forwarded.split(',')[0].trim();
+  return req.headers.get('x-real-ip') ?? 'unknown';
+}
 
 const BodySchema = z
   .object({
@@ -25,6 +33,21 @@ const BodySchema = z
 export const maxDuration = 120;
 
 export async function POST(req: Request) {
+  const ip = clientIp(req);
+  const rateLimit = checkRateLimit(ip);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: `rate limit exceeded — try again in ${rateLimit.retryAfterSeconds}s` },
+      { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } },
+    );
+  }
+  if (dailySpendRemainingUSD() <= 0) {
+    return NextResponse.json(
+      { error: 'demo daily limit reached — check back tomorrow' },
+      { status: 503 },
+    );
+  }
+
   const text = await req.text();
   if (text.length > MAX_REQUEST_BYTES) {
     return NextResponse.json({ error: 'request too large (10MB max)' }, { status: 413 });
@@ -47,6 +70,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'image too large (5MB max)' }, { status: 400 });
   }
 
+  const costBefore = usageCostUSD();
   try {
     const result = await analyze({
       copy,
@@ -57,5 +81,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error('analyze failed:', err);
     return NextResponse.json({ error: 'analysis failed' }, { status: 500 });
+  } finally {
+    recordSpend(usageCostUSD() - costBefore);
   }
 }
