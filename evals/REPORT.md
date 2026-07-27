@@ -1,5 +1,21 @@
 # Eval report
 
+## Summary
+
+Final system, dev / holdout, per tier (see section 8 for the full table including citation
+accuracy, explanation grounding, and rewrite quality):
+
+| Tier | Recall | FP at violation | Noise rate (violation or risk) |
+|---|---|---|---|
+| Verbatim | 1.00 / 1.00 | 0.00 / 0.00 | 27% / 0% |
+| Paraphrased | 1.00 / 1.00 | 0.00 / 0.00 | 46% / 60% |
+| Realistic | 1.00 / 1.00 | 0.17 / 0.00 | 100% / 100% |
+| Images | 1.00 / 1.00 | 0.00 / 0.00 | 25% / 50% |
+
+The verbatim tier's inputs are lifted verbatim from the corpus, so retrieval finds them
+trivially by construction — it is a regression floor, not evidence that the system
+generalizes; paraphrased and realistic are held to that standard instead.
+
 ## 1. What the system does
 
 Preflight checks a paid social ad (copy, a creative image, or a landing-page URL)
