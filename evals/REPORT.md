@@ -56,7 +56,7 @@ things and a blended figure would hide movement in any one of them.
 |---|---|---|---|
 | 1 Verbatim | `verbatim.jsonl` | 44 | Regression floor. Leaked by construction |
 | 2 Paraphrased | `paraphrased.jsonl` | 40 | Generalization on reworded violations + near-miss hard negatives |
-| 3 Realistic | `realistic.jsonl` | 20 (+ clean ads pending) | Full-length ads, violation embedded in compliant text |
+| 3 Realistic | `realistic.jsonl` | 31 | Full-length ads, violation embedded in compliant text |
 | 4 Images | `images.jsonl` | 21 | Creatives, including cases outside the flag taxonomy |
 
 **Tier 1 is leaked and we say so.** Each input is a verbatim ✅/❌ example line lifted
@@ -74,14 +74,31 @@ positives come from. `pnpm eval:leakage` checks that no case shares a 4+ word n-
 any corpus chunk; the tier is clean by that check. Labels still need a human read: the
 notes field on each case records why it does or does not trip the rule, for verification.
 
-**Tier 3 is realistic ad copy**, 66-78 words each, with a hook, body, and CTA, where the
-violating span is embedded among compliant text rather than standing alone. The 20
-violation cases span the verticals a marketer actually gets flagged in (weight loss,
-supplements, financial services, debt relief), each labeled against a verified rule clause.
-The clean half comes from Meta's Ad Library (currently-running, therefore approved, ads in
-the same verticals), stored with source URL and retrieval date; those are the genuine
-ground truth for the false-positive rate, since a human never wrote them to be a test case.
-Creatives are not stored.
+**Tier 3 is realistic ad copy**, with a hook, body, and CTA, where the violating span is
+embedded among compliant text rather than standing alone. Two sources feed it. The first 20
+cases are authored violations spanning the verticals a marketer actually gets flagged in
+(weight loss, supplements, financial services, debt relief), each labeled against a verified
+rule clause, 66-78 words each. The other 11 are real ads pulled from Meta's Ad Library on
+2026-07-26 (`evals/dataset/sources/ad-library-2026-07-26.md`), 7 labeled clean and 4 labeled
+violation, ranging from single-sentence copy to two long-form advertorials kept unabridged
+because their compliance turns on disclaimer text at the end. These are the genuine ground
+truth for the false-positive rate, since a human never wrote them to be a test case, and
+every one carries `source_url` and `collected_date` so the claim is checkable. Creatives are
+not stored.
+
+The plan going into this was simpler than what the data showed: "currently running" was
+going to stand in for "approved." It doesn't. Several of the Ad Library ads labeled
+`violation` here were still running when collected, most likely on whitelisted accounts with
+spend history, which is a real gap between the written policy and what Meta actually
+enforces. `expected.should_flag` follows the written policy only; a separate `meta_status`
+field records the platform's own state (e.g. `running_as_of_2026-07-26`) without ever
+touching the label. Two of the cases are a matched pair by design: `real-adlib-debt-gurus`
+(clean) and `real-adlib-kingdom-debt` (violation) run the same debt-relief pitch and differ
+on one line — the latter opens with "Are you a Christian with over $30,000 in ... debt?",
+closely matching the corpus's own `personal-attributes:2.3.2` example ("Are you Christian?")
+but embedded in realistic copy instead of standing alone. Two more (`real-adlib-divinesong`,
+`real-adlib-bizjack`) are deliberate no-hook controls: emotionally intense copy with nothing
+in the policy corpus for it to turn on. What all four turned up is in section 8.
 
 **Tier 4 expands the images** from 8 to 21, deliberately including cases *not* built around
 the system's own flag taxonomy (`split_or_comparison`, `body_focus`, ...): five where the
@@ -95,8 +112,11 @@ Playwright; no scraped creatives.
 
 Each tier is split 70/30 into `dev` and `holdout` by stratified random sample, so both
 halves cover the same policy areas and the same flag/clean balance. The split is assigned
-once by `pnpm eval:split` and frozen into the data files; adding cases later (the pending
-Ad Library ads) only assigns the new ones, so the held-out set never moves under us.
+once by `pnpm eval:split` and frozen into the data files; adding cases later (the 11 Ad
+Library ads, section 4) only assigns the new ones — verified directly, not just asserted:
+re-running the split after adding them left all 20 original realistic-tier assignments
+unchanged and placed the new cases into the existing dev/holdout buckets — so the held-out
+set never moves under us.
 
 - Iteration happens against **dev only**. `pnpm eval` loads dev by default.
 - `pnpm eval --holdout` is run at most twice: once to establish a matched baseline, once
@@ -284,11 +304,20 @@ retrieval boost (see iteration 3 for why). Dev is the iteration-2 run
 (`results/2026-07-23T09-20-16-700Z.json`); holdout is the second and last permitted holdout
 touch, run once on the frozen system (`results/2026-07-23T09-36-01-874Z.json`).
 
+The realistic row is a supplementary run, `results/2026-07-27T02-23-03-857Z.json` (dev) and
+`results/2026-07-27T02-24-00-457Z.json` (holdout), made once the Ad Library cases described
+in section 4 landed, so Tier 3's false-positive rate — flagged as not yet measured — could
+finally be reported. No prompt, retrieval, or adjudication code changed between the runs
+above and these; this is a data addition, not a third round of tuning against holdout. As a
+check: verbatim, paraphrased, and images reproduce their iteration-2/holdout-touch numbers
+exactly, bit-for-bit, in these runs (temperature 0 plus a full cache hit), confirming nothing
+else moved. Only the realistic row below is new information.
+
 | Tier | Recall (dev / holdout) | FP (dev / holdout) | Citation (dev / holdout) | Grounding (dev / holdout) | Rewrite (dev / holdout) |
 |---|---|---|---|---|---|
 | verbatim | 1.00 / 1.00 | 0.00 / 0.00 | 1.00 / 1.00 | 1.00 / 1.00 | 4.33 / 3.43 |
 | paraphrased | 1.00 / 1.00 | 0.00 / 0.00 | 0.98 / 0.96 | 1.00 / 1.00 | 4.67 / 4.50 |
-| realistic | 1.00 / 1.00 | n/a / n/a | 0.98 / 0.94 | 0.89 / 0.91 | 4.50 / 3.67 |
+| realistic | 1.00 / 1.00 | **0.17 / 0.00** | 0.98 / 0.96 | 0.89 / 0.93 | 4.52 / 3.75 |
 | images | 1.00 / 1.00 | 0.00 / 0.00 | 0.99 / 1.00 | 1.00 / 1.00 | n/a / n/a |
 
 Targets, judged on the non-leaked tiers (paraphrased + realistic), dev and holdout:
@@ -296,10 +325,61 @@ Targets, judged on the non-leaked tiers (paraphrased + realistic), dev and holdo
 | Metric | Target | Result | Verdict |
 |---|---|---|---|
 | Recall | >= 0.80 | 1.00 / 1.00 | met |
-| False positive | <= 0.05 | 0.00 / 0.00 (where measured) | met |
-| Citation | >= 0.98 | 0.98 / 0.94-0.96 | met on dev, just under on holdout (small n) |
-| Grounding | >= 0.90 | 0.89-1.00 / 0.91-1.00 | met on violations (1.00) everywhere; combined realistic 0.89 dev |
-| Rewrite | >= 4.0 | 4.50-4.67 / 3.67-4.50 | met on dev; **missed on holdout** (see below) |
+| False positive | <= 0.05 | 0.00-0.17 / 0.00 | met on holdout and on paraphrased dev; **missed on realistic dev** (0.17, 1/6 clean cases — see below) |
+| Citation | >= 0.98 | 0.96-0.98 / 0.96 | met on dev, just under on holdout (small n) |
+| Grounding | >= 0.90 | 0.89-1.00 / 0.93-1.00 | met on violations (1.00) everywhere; combined realistic 0.89 dev / 0.93 holdout |
+| Rewrite | >= 4.0 | 4.52-4.67 / 3.75-4.50 | met on dev; **missed on holdout** (see below) |
+
+### Is recall 1.00 decisive or hedged?
+
+Recall counts a case as a hit if any finding on an expected `policy_id` lands at `violation`
+*or* `risk`. That single number does not say which of the two happened, and the two mean
+different things to a user: a `violation` is a confident stop, a `risk` is a hedge ("worth a
+second look"). This is a per-case decomposition, not the per-finding severity mix in the next
+section: for every violating case, look only at findings on its expected clause(s) and ask
+whether the strongest one reached `violation`, or topped out at `risk`.
+
+| Tier | Decisive (violation) dev / holdout | Hedged (risk only) dev / holdout | Miss dev / holdout |
+|---|---|---|---|
+| verbatim | 94% (15/16) / 100% (6/6) | 6% (1/16) / 0% (0/6) | 0% / 0% |
+| paraphrased | **47% (7/15)** / 86% (6/7) | **53% (8/15)** / 14% (1/7) | 0% / 0% |
+| realistic | 94% (16/17) / 100% (7/7) | 6% (1/17) / 0% (0/7) | 0% / 0% |
+| images | 88% (7/8) / 100% (3/3) | 13% (1/8) / 0% | 0% / 0% |
+
+Miss is 0% everywhere on both splits, which is just recall 1.00 restated: decisive plus
+hedged always sums to the full tier. The split between the two columns is the real story.
+
+Realistic was fully decisive on both splits in the original 20-case set (cure claims,
+guaranteed loans, debt-forgiveness promises all called `violation` outright); adding the Ad
+Library cases put one dent in that. Verbatim and images are decisive on all but one case each
+(dev only): `meta-personal-attributes-2.12.2-b` and `img-alcohol-promo`, both cases the
+report already flagged as context-dependent (alcohol hinges on licensing and age targeting
+not visible in the ad).
+
+**The one realistic hedge is worth reading in full, because it is the showcase case.**
+`real-adlib-kingdom-debt` opens with "Are you a Christian with over $30,000 in credit card or
+personal loan debt?" — built to closely match the corpus's own `personal-attributes:2.3.2`
+example ("Are you Christian?") embedded in realistic copy. Recall still counts it a hit,
+because the adjudicator cited the expected governing rule (`personal-attributes:2.1`), but at
+`risk` (confidence 0.72), and its explanation never mentions religion at all: "directly
+addresses users by their presumed debt status, similar to the prohibited example of 'Are you
+bankrupt?'" — matching a *different* example under the same rule (`2.8.2`, vulnerable
+financial status) instead of the religious targeting the case was built to test. The model
+found a real violation in the sentence; it was not the one the case was designed to
+showcase, and it stopped at a hedge rather than a stop. Sharpened by its pair:
+`real-adlib-debt-gurus`, the *clean* ad in the same vertical, drew a confident `violation` on
+a hedged claim (see section on noise below) — so on this pair the ordering of confidence is
+inverted from the ordering of ground truth.
+
+**Paraphrased dev is the outlier: only 47% decisive, 53% hedged.** On dev, the model is
+about as likely to call a paraphrased personal-attributes violation a `risk` as a
+`violation` — the eight hedged cases are `para-race-1-v`, `para-religion-1-v`,
+`para-religion-2-v`, `para-age-1-v`, `para-age-2-v`, `para-age-3-v`, `para-health-1-v`, and
+`para-criminal-1-v`. Holdout looks better (86% decisive), but n=7 means one case is 14
+points, so the gap is more likely dev being the harder sample than holdout being an easier
+one. Recall does not distinguish these from the fully decisive `real-fin-1`-style hits; a
+reader taking "recall 1.00" at face value would assume uniformly confident detection, and for
+three of the four tiers that is right, but for paraphrased personal-attributes it is not.
 
 ### Dev vs holdout: the gap analysis
 
@@ -340,7 +420,7 @@ Two measurements make that visible (final system; dev, with holdout in parenthes
 |---|---|---|
 | verbatim | 64% / 14% / 21% | 0% / 21% / 79% |
 | paraphrased | 22% / 54% / 24% | 0% / 23% / 77% |
-| realistic | 40% / 42% / 18% | (no compliant cases yet) |
+| realistic | 37% / 45% / 19% | 3% / 68% / 30% |
 | images | 37% / 52% / 11% | 0% / 21% / 79% |
 
 The model is decisive on the leaked verbatim violations (64% called `violation`) and hedges
@@ -356,59 +436,98 @@ and a stricter **noise rate** (any `violation` *or* `risk` on a compliant case):
 |---|---|---|
 | verbatim | 0% / 0% | 27% (4/15) / 0% (0/7) |
 | paraphrased | 0% / 0% | 46% (6/13) / 60% (3/5) |
+| realistic | **17% (1/6) / 0% (0/1)** | 100% (6/6) / 100% (1/1) |
 | images | 0% / 0% | 25% (2/8) / 50% (1/2) |
 
-The false-positive rate is 0.00 at the violation threshold on every tier and both splits: the
-system never tells a user their compliant ad is a violation. At the stricter threshold the
-picture is different, and honestly so. On the paraphrased tier — mostly near-miss hard
-negatives — **46% of compliant cases (dev) draw a `risk` finding**, and the noisy cases are
-exactly the ones the tier was built to stress: `para-race-1-c` ("A dating community built for
-Black singles") and `para-orientation-1-c` draw `risk` on personal-attributes:2.1, the rule
-they narrowly comply with; `img-pilates-class` draws `risk` on the same rule. The remainder
-are context hedges — `img-clean-insurance` draws six `risk` findings on financial-services
-licensing clauses a static image cannot confirm.
+The false-positive rate was 0.00 at the violation threshold on every tier and split until the
+Ad Library clean ads landed. Realistic dev breaks that: 1 of its 6 clean cases,
+`real-adlib-debt-gurus`, drew an outright `violation` on `cs-fraud-scams:2.5.s2`. The ad
+reads "reduce what you owe by up to 50%" (hedged) alongside "Specific End Date - not an
+endless cycle" (no actual duration stated), and the adjudicator's explanation reads them
+together as satisfying the clause's "reduce debt by a particular amount in a set period of
+time" — treating "has *some* end date" as if it were "in *this many* months." The source
+notes anticipated this ad as a hedge risk, not a confident miss; a `risk` finding would have
+been the defensible call the case was built to test, and the model went one step further.
+This is the one dev result that misses the <= 0.05 target (section 8), and it is a single
+case — the honest reading is "the guard against confident false violations has a real gap on
+hedged financial claims," not "the false-positive rate is 17%" as a stable estimate at n=6.
 
-The reading: the clean 0.00 false-positive rate is real, but it partly reflects the model
-preferring `risk` to `violation` on ambiguous compliant cases rather than confidently
-clearing them. A user would see a yellow "worth a look" flag on a quarter to a half of
-compliant near-miss ads. Whether that is acceptable is a product-framing question (`risk`
-means "check this," not "rejected"), but it is a real cost the single false-positive number
-does not surface, which is why it is measured here. Reducing the hedge without giving up the
-0.00 violation-FP is a prompt/threshold problem for a later iteration, not something to paper
-over now.
+At the stricter noise threshold, realistic runs 100% on both splits (6/6 dev, 1/1 holdout) —
+higher than paraphrased's 46-60%, but the comparison is not apples to apples: paraphrased's
+clean half is *all* deliberate near-misses, while realistic's clean seven mix genuine
+near-misses (`real-adlib-beauty-bees`, `real-adlib-rosabella`, `real-adlib-ulike`,
+`real-adlib-roc-serum` — each one the source notes already flag as arguably risk-worthy) with
+two cases built to have **no** policy hook at all (`real-adlib-divinesong`,
+`real-adlib-bizjack`). Both no-hook controls drew a `risk` anyway. `real-adlib-divinesong`
+drew `unacceptable-business-practices:3.1` for ordinary testimonial superlatives ("radio-quality,"
+"the best thing I have ever done for her") — a stretch, but at least the right document.
+`real-adlib-bizjack` drew three, including `health-wellness:1.1` against a productivity-coaching
+quiz — and `health-wellness:0.1` states the policy's own scope is weight-loss, cosmetic, and
+reproductive-health ads only. That citation is not a defensible hedge; it is the adjudicator
+reaching for a clause outside the document's stated domain, a different and more fixable
+failure than the calibration question the rest of this section is about.
+
+The reading: the clean 0.00 false-positive rate on the earlier tiers was real, but it partly
+reflected the model preferring `risk` to `violation` on ambiguous compliant cases rather than
+confidently clearing them, and realistic now shows that preference has a limit — hedge far
+enough (debt-gurus) and it tips into a confident wrong answer. A user would see a yellow
+"worth a look" flag on most compliant near-miss ads across every tier measured here, and on
+the two realistic no-hook controls in this small sample too. Whether the noise rate is
+acceptable is a product-framing question (`risk` means "check this," not "rejected"), but the
+debt-gurus miss and the bizjack out-of-scope citation are not framing questions — they are a
+threshold-calibration bug and a retrieval-scope bug respectively, both real cost the single
+false-positive number does not surface on its own, which is why both are measured here.
+Reducing the hedge rate, tightening the violation threshold on hedged financial claims, and
+scoping citations to a document's own stated coverage are three separate fixes for a later
+iteration, not one problem.
 
 ## 9. Known limitations and what's next
 
-- **Tier 3's false-positive rate is not yet measured.** The 20 realistic violation cases are
-  in; the 10 clean Ad Library ads (the genuine ground truth, since a human never wrote them
-  as test cases) are pending and slot in without moving the split. Until then the
-  false-positive rate rests on the verbatim, paraphrased, and image clean cases, all 0.00.
-- **Tier 2 and 3 labels are authored-then-verified, not independently sourced.** The leakage
-  check (`pnpm eval:leakage`, clean) rules out n-gram overlap, and each case carries a note
-  with its rule rationale, but a second human read of those labels is the remaining step. A
-  dataset where the model wrote both the question and the answer measures less than one where
-  it did not.
+- **Tier 3's false-positive rate is now measured, and it misses the target on dev (0.17,
+  1/6).** The 11 Ad Library ads (7 clean, 4 violation, section 4) close the gap flagged in the
+  prior version of this report. The miss is one case, `real-adlib-debt-gurus`, tipping a
+  hedged financial claim into a confident `violation`; the noise rate (any `risk` or worse) is
+  100% on both splits, though n is small (6 dev, 1 holdout clean cases) and several of those
+  clean cases were deliberately chosen as near-misses. Full detail in section 8.
+- **A policy document got cited outside its own stated scope.** `real-adlib-bizjack`, a
+  no-hook control with no health, financial, or personal-attribute content, drew a `risk` on
+  `health-wellness:1.1` — a document whose own `0.1` clause scopes it to weight-loss, cosmetic,
+  and reproductive-health ads. This is not a hedging-calibration issue like the others on this
+  list; it is retrieval or adjudication reaching for a chunk the document itself says does not
+  apply. Worth a scope guard (filter retrieved chunks by their document's stated coverage
+  before adjudication sees them) rather than a prompt tweak.
+- **Tier 2 labels, and half of Tier 3, are authored-then-verified rather than independently
+  sourced.** The leakage check (`pnpm eval:leakage`, clean) rules out n-gram overlap, and each
+  case carries a note with its rule rationale, but a second human read of those labels is the
+  remaining step. The other half of Tier 3 — the 11 Ad Library ads — is now independently
+  sourced: a human wrote the ad to sell a product, not to test this system, which is exactly
+  what the authored cases cannot claim.
 - **Grounding on visual-only violations is soft by nature.** For an image whose violation is
   compositional (a before/after body shot with no text), there is no verbatim ad-text span to
   quote; grounding there is against the vision step's serialization, not raw copy. The metric
   is most meaningful on text-bearing elements.
-- **The model hedges to `risk` rather than committing.** On paraphrased violations only 22%
-  of findings are `violation` (54% `risk`); on compliant near-misses the noise rate (any
-  `risk` on a clean case) runs 25-60% even though the violation-level false-positive rate is
-  0.00 (see section 8). The consequences: hedged findings get no rewrite (so paraphrased
-  rewrite quality is measured on few cases), and a user sees a yellow flag on many compliant
-  near-miss ads. Tightening the hedge without reintroducing violation-level false positives
-  is a prompt/threshold iteration for later.
-- **Holdout tiers are small** (6-13 cases each), so a single case swings a tier's number by
-  0.08-0.17. The dev numbers carry the weight; holdout is a generalization check, not a
-  precise measurement.
+- **The model hedges to `risk` rather than committing, and the hedge has a breaking point.**
+  On paraphrased violations only 22% of findings are `violation` (54% `risk`); on compliant
+  near-misses the noise rate (any `risk` on a clean case) runs 25-100% across tiers even though
+  the violation-level false-positive rate was 0.00 everywhere except realistic dev (see section
+  8), where one hedged claim (debt-gurus) went the other way and became a confident false
+  violation. The consequences: hedged findings get no rewrite (so paraphrased rewrite quality
+  is measured on few cases), and a user sees a yellow flag on most compliant near-miss ads.
+  Tightening the hedge without reintroducing violation-level false positives is a
+  prompt/threshold iteration for later.
+- **Holdout tiers are small** (5-13 cases each), so a single case swings a tier's number by
+  0.08-0.20; the realistic tier's clean-case holdout slice is a single case (`real-adlib-roc-serum`),
+  so its FP and noise numbers there are a data point, not an estimate. The dev numbers carry
+  the weight; holdout is a generalization check, not a precise measurement.
 - **Corpus is Meta-only.** Every chunk carries a `platform` field and retrieval filters on it,
   so other platforms are an ingest, not a refactor, but they are not in this corpus.
 
-With more time: source the Ad Library clean ads and get Tier 3's false-positive number; a
-human label-verification pass on Tiers 2-3; and either exempt non-textual `risk` findings
-from the grounding denominator or tag them, so the grounding metric measures only what it can
-fairly measure.
+With more time: a human label-verification pass on Tier 2 and the authored half of Tier 3;
+either exempt non-textual `risk` findings from the grounding denominator or tag them, so the
+grounding metric measures only what it can fairly measure; a scope guard so retrieval or
+adjudication cannot cite a clause outside its document's own stated coverage; and a
+threshold pass on hedged financial claims so "reduce debt by up to X%" with a vague timeline
+does not read the same as a claim that states a number and a date.
 
 ## Cost
 
@@ -423,9 +542,25 @@ $12. Cumulative spend:
 | iter 2: 4b full dev (89, cold) | $2.39 | $5.04 |
 | iter 3: retrieval-boost subset (58, cold) | $1.15 | $6.19 |
 | final holdout (36, cold) | $1.12 | $7.31 |
+| Tier 3 Ad Library dev, 1st attempt (98, 7 cases hit a concurrency error) | $0.26 | $7.57 |
+| Tier 3 Ad Library dev, 2nd attempt (98, same 7 errors — confirms deterministic, not flaky) | $0.00 | $7.57 |
+| Tier 3 Ad Library dev, 3rd attempt after sequential cache warm (98, fully cached) | $0.00 | $7.57 |
+| Tier 3 Ad Library holdout (38, cached after warm) | $0.06 | $7.63 |
 
-**Total: $7.31** against a $12 budget. The single most expensive run ($2.39, the 4b full
-re-adjudication) stayed under the $3 per-run ceiling; nothing aborted. The cache earned its
-keep: iteration 1 cost $0.11 because a post-hoc change reuses adjudications, and the verbatim
-tier was free on every run after Phase 2 until 4b changed the prompt. Iterating without the
-cache would have multiplied the cost of the four full re-runs several times over.
+**Total tracked: $7.63** against a $12 budget. The single most expensive run ($2.39, the 4b
+full re-adjudication) stayed under the $3 per-run ceiling; nothing aborted. The cache earned
+its keep: iteration 1 cost $0.11 because a post-hoc change reuses adjudications, and the
+verbatim tier was free on every run after Phase 2 until 4b changed the prompt. Iterating
+without the cache would have multiplied the cost of the four full re-runs several times over.
+
+One run is missing from this ledger on purpose. The 9 new Ad Library dev/holdout cases first
+hit a `TypeError: fetch failed` under the runner's concurrency of 4 — reproducible in
+isolation (a single case always succeeded), so the cause was request volume, not content: each
+case's retrieval fans out one search per extracted claim, and the two long-form advertorials
+in particular extract enough claims to spike concurrent load against Supabase and OpenAI.
+The fix was to pre-warm the cache by running those 9 cases sequentially, outside
+`evals/run.ts`, so the two tracked reruns above landed warm. That sequential pass made the
+same classify/retrieve/adjudicate/rewrite calls the tracked runs would otherwise have made,
+at this table's usual per-case rates, but it called `analyze()` directly rather than through
+the runner and so was never passed to `usageCostUSD()` — there is no exact figure for it, only
+the honest note that it happened and roughly what it would have cost at the rates above.
