@@ -17,10 +17,12 @@
     "eval:seed": "tsx evals/build-seed.ts",
     "eval:split": "tsx evals/split.ts",
     "eval:leakage": "tsx evals/check-leakage.ts",
-    "eval:fixtures": "tsx evals/fixtures/generate.ts"
+    "eval:fixtures": "tsx evals/fixtures/generate.ts",
+    "mcp": "tsx mcp/server.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.5",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@supabase/supabase-js": "^2.110.8",
     "cheerio": "^1.2.0",
     "next": "15.5.21",
