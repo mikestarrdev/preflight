@@ -1,103 +1,397 @@
-import Image from "next/image";
+'use client';
+
+import { useRef, useState } from 'react';
+import type { AnalysisResult } from '@/lib/types';
+import { EXAMPLE_ADS } from '@/lib/example-ads';
+import { ANALYSIS_STEPS, StepProgress } from './components/StepProgress';
+import { FindingCard } from './components/FindingCard';
+
+// Mirrors lib/agent/orchestrator.ts's RunDiagnostics shape without importing
+// that module: the import would be type-only and erased at build time either
+// way, but keeping the client bundle decoupled from lib/agent/ internals
+// means changes to the pipeline can never accidentally drag server-only code
+// into this file.
+type RunDiagnostics = {
+  step_timings_ms: Record<string, number>;
+  findings_emitted: number;
+  citation_drops: number;
+  scope_drops: number;
+  parent_rule_redirects: number;
+  explanation_spans_total: number;
+  explanation_spans_grounded: number;
+  degraded: string[];
+};
+
+type AnalyzeResponse = AnalysisResult & { diagnostics: RunDiagnostics };
+
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+// Cumulative offsets (ms) at which the simulated progress advances past
+// classify / retrieve / adjudicate+verify. Roughly proportional to observed
+// step_timings_ms in evals/results/*.json — adjudicate dominates. Rewrite has
+// no fixed end; the last step just waits for the response.
+const STEP_DURATIONS_MS = [2500, 4000, 20000];
+
+type Status = 'idle' | 'loading' | 'done' | 'error';
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve((reader.result as string).split(',')[1] ?? '');
+    reader.onerror = () => reject(reader.error ?? new Error('failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// Formats orchestrator.ts diagnostics.degraded entries, e.g.
+// "landing_page:not_checked:<reason>" or "rewrite:<policy_id>" — policy_id
+// itself contains colons, so this matches on known prefixes rather than
+// splitting positionally.
+function degradedMessage(entry: string): string {
+  if (entry.startsWith('landing_page:not_checked:')) {
+    return `Landing page not checked: ${entry.slice('landing_page:not_checked:'.length)}`;
+  }
+  if (entry.startsWith('image:failed:')) {
+    return `Creative analysis failed: ${entry.slice('image:failed:'.length)}`;
+  }
+  if (entry.startsWith('landing_page:failed:')) {
+    return `Landing page analysis failed: ${entry.slice('landing_page:failed:'.length)}`;
+  }
+  if (entry.startsWith('copy:failed:')) {
+    return `Ad copy analysis failed: ${entry.slice('copy:failed:'.length)}`;
+  }
+  if (entry.startsWith('rewrite:')) {
+    return `Rewrite unavailable for ${entry.slice('rewrite:'.length)}`;
+  }
+  return entry;
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [copy, setCopy] = useState('');
+  const [url, setUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const [status, setStatus] = useState<Status>('idle');
+  const [stepIndex, setStepIndex] = useState(0);
+  const [result, setResult] = useState<AnalyzeResponse | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  function clearTimers() {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  }
+
+  function pickImage(file: File | null) {
+    setImageError(null);
+    if (!file) {
+      setImageFile(null);
+      setImagePreview(null);
+      return;
+    }
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setImageError('unsupported file type — use JPG, PNG, or WebP');
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setImageError('image too large — 5MB max');
+      return;
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  }
+
+  function loadExample(id: string) {
+    const example = EXAMPLE_ADS.find((e) => e.id === id);
+    if (!example) return;
+    setCopy(example.copy);
+    setUrl('');
+    pickImage(null);
+    setResult(null);
+    setStatus('idle');
+    setErrorMsg(null);
+  }
+
+  function reset() {
+    setCopy('');
+    setUrl('');
+    pickImage(null);
+    setResult(null);
+    setStatus('idle');
+    setErrorMsg(null);
+  }
+
+  const hasInput = copy.trim().length > 0 || url.trim().length > 0 || imageFile !== null;
+
+  async function analyze() {
+    setStatus('loading');
+    setErrorMsg(null);
+    setResult(null);
+    setStepIndex(0);
+    clearTimers();
+    let elapsed = 0;
+    STEP_DURATIONS_MS.forEach((duration, i) => {
+      elapsed += duration;
+      timers.current.push(setTimeout(() => setStepIndex(i + 1), elapsed));
+    });
+
+    try {
+      const body: Record<string, unknown> = {};
+      if (copy.trim()) body.copy = copy.trim();
+      if (url.trim()) body.url = url.trim();
+      if (imageFile) {
+        body.image = { data: await fileToBase64(imageFile), media_type: imageFile.type };
+      }
+
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? `request failed (${res.status})`);
+      clearTimers();
+      setResult(json as AnalyzeResponse);
+      setStatus('done');
+    } catch (err) {
+      clearTimers();
+      setErrorMsg(err instanceof Error ? err.message : String(err));
+      setStatus('error');
+    }
+  }
+
+  const violations = result?.findings.filter((f) => f.severity === 'violation') ?? [];
+  const risks = result?.findings.filter((f) => f.severity === 'risk') ?? [];
+  const clears = result?.findings.filter((f) => f.severity === 'clear') ?? [];
+
+  return (
+    <div className="mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6">
+      <header className="mb-8">
+        <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">Preflight</h1>
+        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+          Pre-flight compliance checking for Meta ads. Paste copy, upload a creative, or check a
+          landing page — get back policy findings cited to the exact clause, plus a compliant
+          rewrite.
+        </p>
+      </header>
+
+      <section className="mb-6">
+        <label
+          htmlFor="copy"
+          className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+        >
+          Ad copy
+        </label>
+        <textarea
+          id="copy"
+          value={copy}
+          onChange={(e) => setCopy(e.target.value)}
+          placeholder="Paste your ad copy here..."
+          rows={6}
+          className="w-full rounded-md border border-neutral-300 bg-white p-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+        />
+
+        {status === 'idle' && !hasInput && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-neutral-500 dark:text-neutral-500">Try an example:</span>
+            {EXAMPLE_ADS.map((ex) => (
+              <button
+                key={ex.id}
+                type="button"
+                onClick={() => loadExample(ex.id)}
+                className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+              >
+                {ex.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="mb-6 grid gap-4 sm:grid-cols-2">
+        <div>
+          <span className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            Creative <span className="font-normal text-neutral-400">(optional)</span>
+          </span>
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Upload creative image"
+            onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click();
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              pickImage(e.dataTransfer.files[0] ?? null);
+            }}
+            className={
+              'flex h-[88px] cursor-pointer flex-col items-center justify-center rounded-md border border-dashed p-3 text-center text-xs ' +
+              (dragOver
+                ? 'border-neutral-500 bg-neutral-100 dark:bg-neutral-800'
+                : 'border-neutral-300 text-neutral-500 dark:border-neutral-700 dark:text-neutral-500')
+            }
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {imagePreview ? (
+              <div className="flex items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={imagePreview} alt="" className="h-12 w-12 rounded object-cover" />
+                <div className="text-left">
+                  <p className="text-neutral-700 dark:text-neutral-300">{imageFile?.name}</p>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      pickImage(null);
+                    }}
+                    className="text-blue-700 hover:underline dark:text-blue-400"
+                  >
+                    remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p>
+                Drag an image here or click to upload
+                <br />
+                JPG, PNG, or WebP, up to 5MB
+              </p>
+            )}
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ACCEPTED_IMAGE_TYPES.join(',')}
+            onChange={(e) => pickImage(e.target.files?.[0] ?? null)}
+            className="hidden"
+          />
+          {imageError && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{imageError}</p>}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div>
+          <label
+            htmlFor="url"
+            className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+          >
+            Landing page <span className="font-normal text-neutral-400">(optional)</span>
+          </label>
+          <input
+            id="url"
+            type="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://example.com/landing"
+            className="h-[88px] w-full rounded-md border border-neutral-300 bg-white p-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+      </section>
+
+      <button
+        type="button"
+        onClick={analyze}
+        disabled={!hasInput || status === 'loading'}
+        className="w-full rounded-md bg-neutral-900 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-neutral-100 dark:text-neutral-900"
+      >
+        {status === 'loading' ? 'Analyzing…' : 'Analyze'}
+      </button>
+
+      {status === 'loading' && (
+        <div className="mt-8 rounded-md border border-neutral-200 p-4 dark:border-neutral-800">
+          <StepProgress activeIndex={stepIndex} />
+          <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-500">
+            A full run makes several model calls across {ANALYSIS_STEPS.length} steps and can take
+            30-60s.
+          </p>
+        </div>
+      )}
+
+      {status === 'error' && errorMsg && (
+        <div className="mt-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300">
+          {errorMsg}
+        </div>
+      )}
+
+      {status === 'done' && result && (
+        <div className="mt-8">
+          {result.diagnostics.degraded.length > 0 && (
+            <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-900 dark:bg-amber-950/20 dark:text-amber-300">
+              {result.diagnostics.degraded.map((d, i) => (
+                <p key={i}>{degradedMessage(d)}</p>
+              ))}
+            </div>
+          )}
+
+          {result.findings.length === 0 ? (
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              No policy findings for the elements analyzed.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-6">
+              {violations.length > 0 && (
+                <div>
+                  <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                    Violations ({violations.length})
+                  </h2>
+                  <ul className="flex flex-col gap-3">
+                    {violations.map((f, i) => (
+                      <FindingCard key={`${f.element}:${f.policy_id}:${i}`} finding={f} />
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {risks.length > 0 && (
+                <div>
+                  <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                    Worth a second look ({risks.length})
+                  </h2>
+                  <ul className="flex flex-col gap-3">
+                    {risks.map((f, i) => (
+                      <FindingCard key={`${f.element}:${f.policy_id}:${i}`} finding={f} />
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {clears.length > 0 && (
+                <details className="group">
+                  <summary className="cursor-pointer text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                    Clear ({clears.length})
+                  </summary>
+                  <ul className="mt-2 flex flex-col gap-3">
+                    {clears.map((f, i) => (
+                      <FindingCard key={`${f.element}:${f.policy_id}:${i}`} finding={f} />
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </div>
+          )}
+
+          <div className="mt-6 flex items-center justify-between text-xs text-neutral-400 dark:text-neutral-600">
+            <span>
+              {result.duration_ms}ms · {result.model_version} · corpus {result.corpus_version}
+            </span>
+            <button
+              type="button"
+              onClick={reset}
+              className="text-blue-700 hover:underline dark:text-blue-400"
+            >
+              analyze another ad
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
