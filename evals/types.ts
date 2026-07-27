@@ -16,6 +16,14 @@ export type EvalCase = {
   source: string;
   tags: string[];
   split?: Split; // assigned by evals/split.ts; the runner asserts it is present
+  // Provenance for cases lifted from a live source (e.g. Meta's Ad Library),
+  // set together and omitted otherwise. meta_status records the platform's own
+  // enforcement state (e.g. still running) separately from expected.should_flag,
+  // which always follows the written policy, not enforcement — a violating ad
+  // can still be running (unenforced or whitelisted) without changing its label.
+  source_url?: string;
+  collected_date?: string; // ISO date the ad was retrieved from the source
+  meta_status?: string;
 };
 
 // A case paired with the tier it came from (the dataset filename stem). Tiers
