@@ -10,7 +10,7 @@ import {
 } from '@/lib/inputs/vision';
 import type { AnalysisResult, Element, Finding } from '@/lib/types';
 import { verifyCitations } from './verify';
-import { adjudicate } from './steps/adjudicate';
+import { ADJUDICATE_PROMPT_HASH, adjudicate } from './steps/adjudicate';
 import { classify, type Claim, type Classification } from './steps/classify';
 import { checkClaims, serializeMismatch } from './steps/mismatch';
 import { retrieve } from './steps/retrieve';
@@ -37,6 +37,7 @@ export type RunDiagnostics = {
   parent_rule_redirects: number; // findings redirected from a matched example to its rule (4a)
   explanation_spans_total: number; // violation/risk findings, the grounding denominator (4b)
   explanation_spans_grounded: number; // of those, ones with a verbatim offending_span
+  prompt_hash: string; // ADJUDICATE_PROMPT_HASH — which adjudicator prompt version produced this run
   degraded: string[]; // non-fatal failures, e.g. "rewrite:meta:health-wellness:2.1"
 };
 
@@ -276,6 +277,7 @@ export async function analyze(input: AnalyzeInput): Promise<AnalyzeOutput> {
       parent_rule_redirects: parentRuleRedirects,
       explanation_spans_total: spansTotal,
       explanation_spans_grounded: spansGrounded,
+      prompt_hash: ADJUDICATE_PROMPT_HASH,
       degraded,
     },
   };

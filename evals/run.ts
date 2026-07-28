@@ -92,6 +92,7 @@ async function main() {
   const { MEDIA_TYPE_BY_EXT } = await import('../lib/inputs/vision');
   const { getUsage, usageCostUSD, MODEL_REASONING } = await import('../lib/claude');
   const { corpusVersion } = await import('../lib/corpus');
+  const { ADJUDICATE_PROMPT_HASH } = await import('../lib/agent/steps/adjudicate');
   const { scoreRecall } = await import('./scorers/recall');
   const { scoreFalsePositives } = await import('./scorers/false-positive');
   const { scoreCitations } = await import('./scorers/citation');
@@ -191,6 +192,7 @@ async function main() {
     timestamp: new Date().toISOString(),
     model_version: MODEL_REASONING,
     corpus_version: corpusVersion(),
+    prompt_hash: ADJUDICATE_PROMPT_HASH,
     split,
     filter: filterTag,
     aborted,
@@ -221,7 +223,9 @@ async function main() {
   const outPath = join(RESULTS_DIR, `${record.timestamp.replace(/[:.]/g, '-')}.json`);
   writeFileSync(outPath, JSON.stringify(record, null, 2) + '\n');
 
-  console.log(`\n=== results [split: ${split}] (model ${MODEL_REASONING}, corpus ${corpusVersion()}) ===`);
+  console.log(
+    `\n=== results [split: ${split}] (model ${MODEL_REASONING}, corpus ${corpusVersion()}, prompt ${ADJUDICATE_PROMPT_HASH}) ===`,
+  );
   for (const t of tierScores) {
     console.log(`\n--- ${t.name} tier (${t.cases} cases) ---`);
     console.log(`recall               ${fmt(t.recall.score)}   (${t.recall.hits}/${t.recall.total} flagged cases cite an expected clause)`);

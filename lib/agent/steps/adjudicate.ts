@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { cachedCallJSON } from '@/lib/agent/llm';
 import type { Element } from '@/lib/types';
@@ -74,6 +75,18 @@ Hard rules:
 - If no clause in the set is relevant to any part of the ad, return {"findings": []}.
 
 Respond with the JSON object only. No markdown fences, no commentary.`;
+
+// Identifies which version of this prompt produced a given result, independent
+// of the cache key (which also folds in the ad content and retrieved chunks).
+// Recorded in diagnostics and eval results so a report can say which prompt a
+// number came from without diffing full prompt text. Already-cached
+// adjudications survive an unrelated code change (e.g. verify.ts) with this
+// hash unchanged, and a real prompt edit changes both this and the cache key
+// together.
+export const ADJUDICATE_PROMPT_HASH = createHash('sha256')
+  .update((['copy', 'image', 'landing_page'] as const).map(system).join('\n---\n'))
+  .digest('hex')
+  .slice(0, 12);
 
 export async function adjudicate(
   content: string,
