@@ -379,6 +379,111 @@ were already spent and the guard is a precision-only filter that drops no expect
 Runs: before `results/2026-07-27T04-17-04-189Z.json` (guard off), after
 `results/2026-07-27T04-17-50-781Z.json` (guard on).
 
+### Iteration 5 — severity semantics for out-of-topic clauses. KEPT.
+
+Found in manual testing, not the eval suite: an iPhone-price ad drew a `risk` finding on
+`cs-fraud-scams:2.8`, a clause whose retrieved sub-topic is misleading weight-loss claims.
+The adjudicator's own explanation said "this clause is specific to misleading health/weight
+loss claims and does not apply" — and then emitted `risk` anyway. `risk` is defined as "the
+ad plausibly breaks the clause, or the verdict depends on context not visible in the ad";
+neither applies when the model's own reasoning concludes the clause is off-topic. That is a
+`clear` verdict misfiled as a hedge, and it matters beyond one case: `risk` is what a user
+acts on, so a clause the model already dismissed showing up as "worth a second look" is
+noise wearing the wrong label.
+
+**Hypothesis.** The severity definitions conflate two different kinds of hedge: "this clause
+could genuinely be broken, pending context I can't see" and "this clause was retrieved but
+isn't about what the ad does." Only the first is `risk`. If the prompt draws that line
+explicitly, and adds a hard rule tying severity to the model's own explanation ("if your
+explanation concludes the clause does not apply, severity must be clear"), off-topic clauses
+should stop surfacing as `risk`.
+
+**Change (one thing).** Reworded the severity definitions and added one hard rule in
+`lib/agent/steps/adjudicate.ts`'s system prompt: `risk` now requires the clause's subject
+matter to "genuinely apply"; `clear` explicitly covers clauses whose subject matter doesn't
+apply at all, not just clauses that apply but are satisfied; and a new hard rule states
+plainly that `risk` is not a hedge for "retrieved but unrelated," and that a self-contradicting
+explanation (concludes non-applicability, emits risk anyway) is a `clear`, never a `risk`.
+Nothing else changed — not retrieval, not the schema, not verification. This rewrites the
+prompt, so it invalidated the full adjudicate cache: a cold re-run on all four dev tiers (98
+cases, $1.05 against the $6 ceiling — the concurrent-abort at the default $3 ceiling on the
+first attempt cost $3.28 before landing on the cache; the reported cost here is the useful
+figure, not the retry). The matched "before" is a same-code re-run with the prompt reverted,
+which reproduced the pre-fix numbers bit for bit from cache at $0.00 — the true baseline, not
+an old report snapshot.
+
+**Result (dev, all four tiers).**
+
+| Tier | Recall | FP (violation) | Noise (viol/risk on clean) | Citation | Grounding | Rewrite |
+|---|---|---|---|---|---|---|
+| verbatim | 1.00 → 1.00 | 0.00 → 0.00 | 27% (4/15) → 27% (4/15) | 1.00 → 0.99 | 1.00 → 1.00 | 4.33 (n=18) → 4.17 (n=18) |
+| paraphrased | 1.00 → 1.00 | 0.00 → 0.00 | 46% (6/13) → **62% (8/13)** | 0.98 → 1.00 | 1.00 → 0.98 | 4.67 (n=9) → 4.30 (n=10) |
+| realistic | **1.00 → 0.94 (16/17)** | 0.17 → 0.17 | 100% (6/6) → 100% (6/6) | 0.98 → 0.98 | 0.90 → 0.89 | 4.52 (n=46) → 4.58 (n=43) |
+| images | 1.00 → 1.00 | 0.00 → 0.00 | 25% (2/8) → 25% (2/8) | 0.99 → 0.98 | 1.00 → 0.98 | n/a |
+
+Runs: before `results/2026-07-28T03-13-55-784Z.json` (old prompt, reproduced from cache),
+after `results/2026-07-28T03-13-32-220Z.json` (new prompt, cold).
+
+**The fix does what it was meant to do.** Diffing every `(case, policy_id)` pair between the
+two runs, the aggregate severity mix shifts from 90 violation / 140 risk / 87 clear to 88 / 161
+/ 426 — the model now explicitly closes the loop on far more retrieved-but-irrelevant clauses
+instead of silently omitting them (368 `(case, policy_id)` pairs appear only in the after run,
+nearly all `clear`). Two cases show the exact bug pattern, and one is worse than the reported
+instance: `img-hookah-lounge` had `tobacco:3.1` at **`violation`** before (not just `risk`) with
+a reasonable-looking citation; `real-debt-1` had `cs-fraud-scams:3.1` (a weight-loss clause) at
+`violation` with the explanation talking itself into relevance — "while this clause references
+weight-loss results, it establishes the principle that... this clause is literally about weight
+loss, so the direct applicability is limited; the finding is noted but confidence is moderate."
+After the fix both are `clear`: "The ad is about debt relief, not weight loss. This clause's
+subject matter does not apply." A direct repro (a plain "iPhone 15 Pro, $999" ad, outside the
+eval set) confirms the same shape: `cs-fraud-scams:2.8` goes from a `risk` finding under the old
+prompt to `clear` — "It does not involve device manipulation... or misleading health claims" —
+under the new one.
+
+**The one regression is a citation-verification drop, not a severity-labeling failure.**
+`real-fin-1`'s expected clause, `financial-services:2.1`, was emitted as `violation` in both
+runs — but in the after run the model quoted all three matching sub-clauses (Payday Loans,
+Paycheck Advances, Short-term Loans) as one stitched `clause_quote`, skipping over the
+intervening "Bail Bonds" line in the source clause. That is not a contiguous substring of the
+chunk, so the existing verbatim-quote guard dropped it — correctly, per its own contract
+(`CLAUDE.md`: "If the model cannot produce an exact substring match... drop the finding rather
+than emitting an unverifiable citation"). The hard rule against stitching separate sentences
+together already existed pre-fix; this run is the first time the model tripped it on this case.
+Recall on `real-fin-1` was carried by a single citation with no fallback, so the drop cost the
+case its hit and pulled realistic dev recall off ceiling (still far above the 0.80 target).
+Not a reason to revert: the alternative is emitting an unverified quote, which is the
+trust-destroying failure this project is built to avoid.
+
+**Paraphrased noise ticks up** (46% → 62%, 2 more clean cases carrying a `risk` finding):
+`para-race-2-c` and `para-financial-2-c` each had a clause flip from `clear` to `risk` on a
+clean-labeled ad. Consistent with the rest of section 8's noise discussion — the model hedges
+more than it should on near-miss clean ads — and not a new failure mode, just more of an
+existing one, on cases the broadened `clear` definition also touched.
+
+**A secondary wrinkle, not a metric regression:** on `img-hookah-lounge`, the model separately
+cited a *compliant example* chunk (`tobacco:3.1.1`, "compliant because it promotes an
+anti-smoking campaign") as `clear` — a defensible read of that narrow example — and the 4a
+parent-rule redirect (iteration 1) mechanically carried that `clear` verdict onto the governing
+rule `tobacco:3.1`, which the ad actually violates directly ("Hookah lounges and cigar bars" is
+listed by name). The case's recall is unaffected only because two sibling clauses
+(`tobacco:1.1`, `tobacco:2.1`) independently catch the same violation. The redirect was designed
+for violating examples ("matched a ❌ example, cite the rule instead"); it was never checked
+against a *compliant* example dismissed as `clear`, where redirecting the verdict onto the rule
+doesn't follow the same logic. Flagged for later, not fixed here — out of scope for a
+severity-wording change, and not the failure this iteration measures.
+
+**Kept.** No target is newly missed: realistic recall (0.94) stays well above the 0.80 bar,
+paraphrased noise (62%) was never a target metric, and every other number holds or improves.
+Weighed against confirmed instances of the actual bug — including one worse than the reported
+case (`img-hookah-lounge` was a false `violation`, not just a false `risk`) — reverting to
+recover one recall point on one case would restore a real, repeatable mislabeling for a
+one-case, root-caused-elsewhere citation drop. Not re-run on holdout: both permitted holdout
+touches are already spent (section 8), and this is a dev-only measurement. **This means
+section 8's realistic-tier dev numbers now predate this fix** — they reflect the iteration
+2/4 system, not this one. Section 8 is left as that historical snapshot rather than
+partially rewritten against a holdout run that hasn't happened; the current dev numbers for
+all four tiers are the table above.
+
 ## 8. Final numbers
 
 Final system: 4a parent-rule resolution **on**, 4b offending-span grounding **on**, no
@@ -611,6 +716,17 @@ problems, are still open.
   the weight; holdout is a generalization check, not a precise measurement.
 - **Corpus is Meta-only.** Every chunk carries a `platform` field and retrieval filters on it,
   so other platforms are an ingest, not a refactor, but they are not in this corpus.
+- **The parent-rule redirect (iteration 1) doesn't distinguish why an example was dismissed.**
+  Found while verifying iteration 5: on `img-hookah-lounge`, the model cited a *compliant*
+  example (`tobacco:3.1.1`, "compliant because it promotes an anti-smoking campaign") as
+  `clear`, and the redirect carried that `clear` verdict onto the governing rule
+  (`tobacco:3.1`) — a rule the ad actually violates directly ("Hookah lounges and cigar bars"
+  is named in it). The redirect logic was built for violating examples (cite the rule the ❌
+  example illustrates); it doesn't check severity or example type before firing, so a
+  dismissed compliant example produces a misleadingly clean verdict on its rule by the same
+  mechanism. No case in the dataset lost recall to this — sibling clauses caught the same
+  violation both times it was seen — but it is a latent citation-targeting bug, the same
+  category as the one 4a fixed, just in the opposite direction.
 
 With more time: a human label-verification pass on Tier 2 and the authored half of Tier 3;
 either exempt non-textual `risk` findings from the grounding denominator or tag them, so the
@@ -637,14 +753,28 @@ $12. Cumulative spend:
 | Tier 3 Ad Library holdout (38, cached after warm) | $0.06 | $7.63 |
 | iter 4: scope guard, dev before (98, cached) | $0.00 | $7.63 |
 | iter 4: scope guard, dev after (98, cached) | $0.00 | $7.63 |
+| iter 5: severity fix, dev after, 1st attempt (60/98, aborted on default $3 ceiling) | $3.28 | $10.91 |
+| iter 5: severity fix, dev after, 2nd attempt (98, 63 cached + 35 cold, ceiling raised to $6) | $1.05 | $11.96 |
+| iter 5: severity fix, dev before, reverted-prompt re-run (98, fully cached) | $0.00 | $11.96 |
 
-**Total tracked: $7.63** against a $12 budget. Iteration 4 cost nothing: like 4a it is a
-post-hoc filter over cached adjudications, so both the before and after runs were full cache
-hits (0 API calls). Its own budget was $2; actual $0.00. The single most expensive run ($2.39, the 4b
-full re-adjudication) stayed under the $3 per-run ceiling; nothing aborted. The cache earned
-its keep: iteration 1 cost $0.11 because a post-hoc change reuses adjudications, and the
-verbatim tier was free on every run after Phase 2 until 4b changed the prompt. Iterating
-without the cache would have multiplied the cost of the four full re-runs several times over.
+**Total tracked: $11.96** against the $12 budget — $0.04 of headroom left. Iteration 5 is the
+reason: unlike 4a and 4 (post-hoc filters over cached adjudications), a prompt edit invalidates
+every cached adjudication, so it is a full cold re-run by construction, and it landed after the
+dataset had already grown to 98 dev cases. The 1st attempt tripped the default $3 per-run
+ceiling at 60/98 cases — the ceiling did its job (aborted rather than overspending), and because
+the cache persists across runs, the 2nd attempt at a raised ceiling paid only for the 35
+remaining cases ($1.05) instead of repeating the first 60. The "before" comparison was free: a
+prompt revert on the same code hit 98/98 cached entries. Iteration 4 cost nothing: like 4a it is
+a post-hoc filter over cached adjudications, so both the before and after runs were full cache
+hits (0 API calls). Its own budget was $2; actual $0.00. The single most expensive run ($3.28,
+iteration 5's aborted attempt) exceeded the $3 default ceiling by design (it aborts *after*
+crossing it, draining in-flight work rather than stopping instantly) but stayed under the
+raised $6 ceiling used for its own retry. The cache earned its keep throughout: iteration 1 cost
+$0.11 because a post-hoc change reuses adjudications, and the verbatim tier was free on every
+run after Phase 2 until 4b changed the prompt. Iterating without the cache would have multiplied
+the cost of the five full re-runs several times over. **Any further prompt-level iteration needs
+a budget increase first** — there is not enough headroom left for another cold re-run at the
+current 98-case dev size.
 
 One run is missing from this ledger on purpose. The 9 new Ad Library dev/holdout cases first
 hit a `TypeError: fetch failed` under the runner's concurrency of 4 — reproducible in
