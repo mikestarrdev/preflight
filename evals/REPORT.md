@@ -870,15 +870,38 @@ problems, are still open.
   paraphrase and checks whether the verdict on unchanged text agrees with itself. A system could
   post a perfect scorecard here and still be this unstable, because stability across
   near-identical inputs is not one of the five things being measured.
+- **Findings are redundant when several clauses cover the same conduct.** Found in manual
+  testing, not the eval suite: "Lose 20 pounds in 30 days, guaranteed" run against a landing
+  page that doesn't support the claim returned 7 findings — 5 landing-page findings that each
+  cite a different clause but all state the same ad-versus-page mismatch, plus 2 copy findings
+  on the identical guaranteed-weight-loss claim. Every finding is individually correct: each
+  clause cited is genuinely broken and each citation verifies. But the count overstates the
+  number of distinct problems — a user triaging 7 findings is doing more work than an ad with
+  really 2 underlying issues (an unsupported claim, and a page that doesn't back it up)
+  warrants. Like the stability failure above, **this is invisible to every metric in this
+  report**: recall, false-positive rate, citation accuracy, grounding, and rewrite quality all
+  grade findings individually or count them, never ask whether two findings describe the same
+  underlying conduct.
+- **The copy length cap is a deployment constraint, not a product one.** The analyze route
+  has a 120s `maxDuration` on Vercel. The 21k-character `real-adlib-rosabella` case — a
+  long-form advertorial, not a pathological input — takes 184s locally against a cold cache,
+  well past that ceiling. `MAX_COPY_CHARS` is set to 8,000 to keep the deployed function
+  reliably under the timeout, which means copy that would otherwise be handled correctly (the
+  Rosabella case itself is a true negative the system gets right) is rejected purely on length.
+  A background job queue or a streaming/chunked analysis path would remove the cap; neither is
+  in scope for v1.
 
 With more time: a human label-verification pass on Tier 2 and the authored half of Tier 3;
 either exempt non-textual `risk` findings from the grounding denominator or tag them, so the
 grounding metric measures only what it can fairly measure; a threshold pass on hedged
 financial claims so "reduce debt by up to X%" with a vague timeline does not read the same as a
-claim that states a number and a date; and a stability metric — rerun each case with a handful
+claim that states a number and a date; a stability metric — rerun each case with a handful
 of trivially varied phrasings (punctuation, whitespace, word order) and score verdict agreement
 on the clauses whose underlying text didn't change, since nothing currently measures whether the
-system agrees with itself. (The scope guard once listed here is done: iteration 4.)
+system agrees with itself; and grouping findings by the conduct they describe rather than
+listing one per clause, surfacing the strongest citation per group, so triage reflects the
+number of distinct problems rather than the number of clauses that happen to cover them. (The
+scope guard once listed here is done: iteration 4.)
 
 ## Cost
 
