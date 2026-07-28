@@ -32,6 +32,11 @@ export function cacheGet<T>(key: string): T | null {
 }
 
 export function cacheSet(key: string, value: unknown): void {
+  // Vercel's filesystem is read-only outside /tmp, so the write must be
+  // skipped in production. NO_CACHE=1 disables the cache entirely; the
+  // read path already honors it, and the write has to as well or every
+  // call throws EROFS.
+  if (process.env.NO_CACHE === '1') return;
   mkdirSync(CACHE_DIR, { recursive: true });
   writeFileSync(join(CACHE_DIR, `${key}.json`), JSON.stringify(value));
 }
