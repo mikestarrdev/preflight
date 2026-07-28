@@ -853,12 +853,32 @@ problems, are still open.
   mechanism. No case in the dataset lost recall to this — sibling clauses caught the same
   violation both times it was seen — but it is a latent citation-targeting bug, the same
   category as the one 4a fixed, just in the opposite direction.
+- **The system is unstable under trivial input changes — same claim, different verdict.**
+  Found in manual testing, not the eval suite: the same ad (`SmoothSpine`) run three times,
+  varying only trailing exclamation marks, produced three different outcomes on the same
+  clause. The violation on the ad's 14-day outcome claim appeared in one run and disappeared in
+  the other two, despite that claim's own text being identical, character for character, across
+  all three runs. Escalating *other* findings as punctuation ramps up toward clickbait is a
+  defensible read — Meta's own sensationalism clauses turn on exactly that kind of intensity
+  signal — but a verdict changing on text that never changed is not calibration, it is
+  instability. Likely cause: claim extraction (`classify.ts`) is not verified against the input
+  the way citations are, so a punctuation change elsewhere in the ad can shift how the claims get
+  split, which cascades into a different retrieved set and a different adjudication for a claim
+  whose own wording never moved. **This class of failure is invisible to every metric in this
+  report.** Recall, false-positive rate, citation accuracy, grounding, and rewrite quality all
+  grade one run of one case against its label; none of them reruns a case with a trivial
+  paraphrase and checks whether the verdict on unchanged text agrees with itself. A system could
+  post a perfect scorecard here and still be this unstable, because stability across
+  near-identical inputs is not one of the five things being measured.
 
 With more time: a human label-verification pass on Tier 2 and the authored half of Tier 3;
 either exempt non-textual `risk` findings from the grounding denominator or tag them, so the
-grounding metric measures only what it can fairly measure; and a threshold pass on hedged
+grounding metric measures only what it can fairly measure; a threshold pass on hedged
 financial claims so "reduce debt by up to X%" with a vague timeline does not read the same as a
-claim that states a number and a date. (The scope guard once listed here is done: iteration 4.)
+claim that states a number and a date; and a stability metric — rerun each case with a handful
+of trivially varied phrasings (punctuation, whitespace, word order) and score verdict agreement
+on the clauses whose underlying text didn't change, since nothing currently measures whether the
+system agrees with itself. (The scope guard once listed here is done: iteration 4.)
 
 ## Cost
 
