@@ -7,9 +7,18 @@
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 5;
 
+const LOCALHOST_IPS = new Set(['127.0.0.1', '::1']);
+
 const requestLog = new Map<string, number[]>();
 
+function isBypassed(ip: string): boolean {
+  if (process.env.DISABLE_RATE_LIMIT === '1') return true;
+  if (process.env.NODE_ENV === 'development') return true;
+  return LOCALHOST_IPS.has(ip);
+}
+
 export function checkRateLimit(ip: string): { allowed: boolean; retryAfterSeconds: number } {
+  if (isBypassed(ip)) return { allowed: true, retryAfterSeconds: 0 };
   const now = Date.now();
   const recent = (requestLog.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
   if (recent.length >= MAX_REQUESTS_PER_WINDOW) {
