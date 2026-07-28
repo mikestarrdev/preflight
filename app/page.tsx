@@ -169,6 +169,10 @@ export default function Home() {
   const violations = result?.findings.filter((f) => f.severity === 'violation') ?? [];
   const risks = result?.findings.filter((f) => f.severity === 'risk') ?? [];
   const clears = result?.findings.filter((f) => f.severity === 'clear') ?? [];
+  // Each rewrite only addresses the one finding it's attached to. Whenever
+  // there's more than one flagged finding, that needs saying out loud, or a
+  // copied rewrite reads as "the ad, fixed" instead of "this one issue, fixed."
+  const hasOtherFindings = violations.length + risks.length > 1;
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6">
@@ -346,7 +350,11 @@ export default function Home() {
                   </h2>
                   <ul className="flex flex-col gap-3">
                     {violations.map((f, i) => (
-                      <FindingCard key={`${f.element}:${f.policy_id}:${i}`} finding={f} />
+                      <FindingCard
+                        key={`${f.element}:${f.policy_id}:${i}`}
+                        finding={f}
+                        hasOtherFindings={hasOtherFindings}
+                      />
                     ))}
                   </ul>
                 </div>
@@ -358,7 +366,11 @@ export default function Home() {
                   </h2>
                   <ul className="flex flex-col gap-3">
                     {risks.map((f, i) => (
-                      <FindingCard key={`${f.element}:${f.policy_id}:${i}`} finding={f} />
+                      <FindingCard
+                        key={`${f.element}:${f.policy_id}:${i}`}
+                        finding={f}
+                        hasOtherFindings={hasOtherFindings}
+                      />
                     ))}
                   </ul>
                 </div>
@@ -370,7 +382,11 @@ export default function Home() {
                   </summary>
                   <ul className="mt-2 flex flex-col gap-3">
                     {clears.map((f, i) => (
-                      <FindingCard key={`${f.element}:${f.policy_id}:${i}`} finding={f} />
+                      <FindingCard
+                        key={`${f.element}:${f.policy_id}:${i}`}
+                        finding={f}
+                        hasOtherFindings={hasOtherFindings}
+                      />
                     ))}
                   </ul>
                 </details>

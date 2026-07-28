@@ -28,7 +28,15 @@ const ELEMENT_LABEL: Record<Finding['element'], string> = {
   landing_page: 'Landing page',
 };
 
-export function FindingCard({ finding }: { finding: Finding }) {
+export function FindingCard({
+  finding,
+  hasOtherFindings = false,
+}: {
+  finding: Finding;
+  // Whether this finding's rewrite is one of several on the same ad — if so,
+  // it fixes only the issue it's attached to, and the others need their own.
+  hasOtherFindings?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function copyRewrite() {
@@ -94,7 +102,7 @@ export function FindingCard({ finding }: { finding: Finding }) {
         <div>
           <div className="mb-1 flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-              {finding.rewrite_kind === 'guidance' ? 'Guidance' : 'Suggested rewrite'}
+              {finding.rewrite_kind === 'guidance' ? 'Guidance' : 'Rewrite for this issue only'}
             </span>
             {finding.rewrite_kind !== 'guidance' && (
               <button
@@ -111,6 +119,11 @@ export function FindingCard({ finding }: { finding: Finding }) {
             <pre className="overflow-x-auto rounded border border-neutral-300 bg-neutral-100 p-3 text-sm whitespace-pre-wrap text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
               {finding.suggested_rewrite}
             </pre>
+          )}
+          {finding.rewrite_kind !== 'guidance' && hasOtherFindings && (
+            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-500">
+              Fixes only the claim above — other findings on this ad need their own rewrite.
+            </p>
           )}
         </div>
       )}
