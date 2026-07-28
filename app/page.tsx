@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import type { AnalysisResult } from '@/lib/types';
 import { EXAMPLE_ADS } from '@/lib/example-ads';
+import { MAX_COPY_CHARS } from '@/lib/limits';
 import { ANALYSIS_STEPS, StepProgress } from './components/StepProgress';
 import { FindingCard } from './components/FindingCard';
 
@@ -128,6 +129,7 @@ export default function Home() {
   }
 
   const hasInput = copy.trim().length > 0 || url.trim().length > 0 || imageFile !== null;
+  const copyTooLong = copy.length > MAX_COPY_CHARS;
 
   async function analyze() {
     setStatus('loading');
@@ -200,6 +202,25 @@ export default function Home() {
           rows={6}
           className="w-full rounded-md border border-neutral-300 bg-white p-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
         />
+
+        <div className="mt-1 flex justify-end">
+          <span
+            className={
+              'text-xs ' +
+              (copyTooLong
+                ? 'text-red-600 dark:text-red-400'
+                : 'text-neutral-400 dark:text-neutral-600')
+            }
+          >
+            {copy.length.toLocaleString()} / {MAX_COPY_CHARS.toLocaleString()} characters
+          </span>
+        </div>
+        {copyTooLong && (
+          <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+            Copy is over the {MAX_COPY_CHARS.toLocaleString()}-character limit — trim it before
+            analyzing.
+          </p>
+        )}
 
         {status === 'idle' && !hasInput && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -305,7 +326,7 @@ export default function Home() {
       <button
         type="button"
         onClick={analyze}
-        disabled={!hasInput || status === 'loading'}
+        disabled={!hasInput || copyTooLong || status === 'loading'}
         className="w-full rounded-md bg-neutral-900 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-neutral-100 dark:text-neutral-900"
       >
         {status === 'loading' ? 'Analyzing…' : 'Analyze'}

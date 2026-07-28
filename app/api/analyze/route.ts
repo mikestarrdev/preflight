@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { analyze } from '@/lib/agent/orchestrator';
 import { usageCostUSD } from '@/lib/claude';
 import { IMAGE_MEDIA_TYPES } from '@/lib/inputs/vision';
+import { MAX_COPY_CHARS } from '@/lib/limits';
 import { checkRateLimit, dailySpendRemainingUSD, recordSpend } from '@/lib/rate-limit';
 
 const MAX_REQUEST_BYTES = 10 * 1024 * 1024;
@@ -16,7 +17,12 @@ function clientIp(req: Request): string {
 
 const BodySchema = z
   .object({
-    copy: z.string().trim().min(1, 'copy must not be empty').max(5000, 'copy too long').optional(),
+    copy: z
+      .string()
+      .trim()
+      .min(1, 'copy must not be empty')
+      .max(MAX_COPY_CHARS, `copy is too long (${MAX_COPY_CHARS.toLocaleString()} characters max)`)
+      .optional(),
     image: z
       .object({
         data: z.base64('image data must be base64'),
@@ -62,7 +68,8 @@ export async function POST(req: Request) {
 
   const parsed = BodySchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: z.prettifyError(parsed.error) }, { status: 400 });
+    const message = parsed.error.issues.map((issue) => issue.message).join('; ');
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 
   const { copy, image, url } = parsed.data;
