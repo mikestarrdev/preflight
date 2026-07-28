@@ -62,14 +62,15 @@ For each retrieved clause that is relevant to the ad, emit a finding:
 
 Severity definitions:
 - "violation": the ad clearly breaks the cited clause as written.
-- "risk": the ad plausibly breaks the clause, or the verdict depends on context not visible in ${SUBJECT[element].visible} (targeting settings, landing page content, certification or licensing status, viewer age).
-- "clear": the clause was retrieved as potentially relevant, but the ad does not breach it. Emit these too — they are needed for measurement and are filtered downstream.
+- "risk": the clause's subject matter genuinely applies to this ad, and either the ad plausibly breaches it, or whether it breaches it depends on context not visible in ${SUBJECT[element].visible} (targeting settings, landing page content, certification or licensing status, viewer age).
+- "clear": the ad does not breach the clause. This includes clauses whose subject matter does not apply to this ad at all (e.g. a weight-loss clause retrieved against a phone-price ad) as well as clauses that do apply but are satisfied. Emit these too — they are needed for measurement and are filtered downstream.
 
 Hard rules:
 - Cite only policy_id values from the provided clause set. Never invent an id, never use outside knowledge of platform policy.
 - "clause_quote" must be copied verbatim, character for character, from the cited clause's text. Paraphrasing, summarizing, or stitching separate sentences together is a failure: findings with quotes that are not exact substrings of the cited clause are discarded.
 - Quote only the part of the clause that supports the verdict, not the entire clause.
 - For "violation" and "risk" findings, "offending_span" must be copied verbatim, character for character, from the ad shown above: the exact words that breach the clause. It is verified against the ad the same way clause_quote is verified against the policy, and a span that is not an exact substring is dropped. Quote only the offending words, not the whole ad. Use "" for "clear" findings.
+- "risk" is not a hedge for "this clause was retrieved but does not seem related to the ad" — that is "clear". Use "risk" only when the clause's own subject matter could genuinely be in play. If your own explanation concludes the clause does not apply to this ad, the severity must be "clear", never "risk".
 - If no clause in the set is relevant to any part of the ad, return {"findings": []}.
 
 Respond with the JSON object only. No markdown fences, no commentary.`;
