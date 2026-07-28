@@ -78,17 +78,50 @@ export async function POST(req: Request) {
   }
 
   const costBefore = usageCostUSD();
-  try {
-    const result = await analyze({
-      copy,
-      image: image ? { data: image.data, mediaType: image.media_type } : undefined,
-      url,
-    });
-    return NextResponse.json(result);
-  } catch (err) {
-    console.error('analyze failed:', err);
-    return NextResponse.json({ error: 'analysis failed' }, { status: 500 });
-  } finally {
-    recordSpend(usageCostUSD() - costBefore);
-  }
+
+  // The orchestrator runs several sequential model calls and can take up to
+  // ~90s. With no bytes on the wire in that window, VPNs and corporate
+  // proxies that kill idle connections past ~60s drop the client before the
+  // response ever arrives, even though the request succeeds server-side.
+  // Sending a periodic heartbeat keeps the connection alive end to end.
+  const HEARTBEAT_MS = 10000;
+
+  const stream = new ReadableStream<Uint8Array>({
+    start(controller) {
+      const encoder = new TextEncoder();
+      const interval = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode('\n'));
+        } catch {
+          // controller already closed; next tick's clearInterval will stop this
+        }
+      }, HEARTBEAT_MS);
+
+      (async () => {
+        try {
+          const result = await analyze({
+            copy,
+            image: image ? { data: image.data, mediaType: image.media_type } : undefined,
+            url,
+          });
+          controller.enqueue(encoder.encode(JSON.stringify(result) + '\n'));
+        } catch (err) {
+          console.error('analyze failed:', err);
+          controller.enqueue(encoder.encode(JSON.stringify({ error: 'analysis failed' }) + '\n'));
+        } finally {
+          clearInterval(interval);
+          recordSpend(usageCostUSD() - costBefore);
+          controller.close();
+        }
+      })();
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'application/x-ndjson; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      'X-Accel-Buffering': 'no',
+    },
+  });
 }

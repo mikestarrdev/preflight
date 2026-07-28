@@ -158,10 +158,29 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? `request failed (${res.status})`);
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json.error ?? `request failed (${res.status})`);
+      }
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let text = '';
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        text += decoder.decode(value, { stream: true });
+      }
+
+      const lines = text.split('\n').filter((line) => line.length > 0);
+      const lastLine = lines[lines.length - 1];
+      if (!lastLine) throw new Error('empty response from server');
+
+      const parsed = JSON.parse(lastLine);
+      if (parsed.error) throw new Error(parsed.error);
+
       clearTimers();
-      setResult(json as AnalyzeResponse);
+      setResult(parsed as AnalyzeResponse);
       setStatus('done');
     } catch (err) {
       clearTimers();
