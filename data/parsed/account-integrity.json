@@ -1,0 +1,31 @@
+[
+  {
+    "id": "meta:account-integrity:0.1",
+    "platform": "meta",
+    "doc_slug": "account-integrity",
+    "doc_title": "Account Integrity",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Account Integrity"
+    ],
+    "content": "Business assets must comply with the Community Standard on Account Integrity.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/business-assets/account-integrity/",
+    "fetched_at": "2026-07-22T06:43:48.520Z"
+  },
+  {
+    "id": "meta:account-integrity:1.1",
+    "platform": "meta",
+    "doc_slug": "account-integrity",
+    "doc_title": "Account Integrity",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Account Integrity",
+      "Overview"
+    ],
+    "content": "In order to maintain a safe environment and empower free expression, we restrict or remove accounts that are harmful to the community. We have built a combination of automated and manual systems to restrict and remove accounts that are used to egregiously or persistently violate our policies across any of our products.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/business-assets/account-integrity/",
+    "fetched_at": "2026-07-22T06:43:48.520Z"
+  }
+]

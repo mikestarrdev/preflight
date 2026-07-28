@@ -1,0 +1,46 @@
+[
+  {
+    "id": "meta:deceptive-practices:0.1",
+    "platform": "meta",
+    "doc_slug": "deceptive-practices",
+    "doc_title": "Fraud, Scams and Deceptive Practices",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Fraud, Scams and Deceptive Practices"
+    ],
+    "content": "Ads Must Comply with the Community Standard on Fraud, Scams and Deceptive Practices.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+    "fetched_at": "2026-07-22T06:40:17.242Z"
+  },
+  {
+    "id": "meta:deceptive-practices:1.1",
+    "platform": "meta",
+    "doc_slug": "deceptive-practices",
+    "doc_title": "Fraud, Scams and Deceptive Practices",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Fraud, Scams and Deceptive Practices",
+      "Overview"
+    ],
+    "content": "We aim to protect users and businesses from being deceived out of their money, property or personal information. We achieve this by removing content and combatting behavior that purposefully employs deceptive means – such as wilful misrepresentation, stolen information and exaggerated claims – to either scam or defraud users and businesses, or to drive engagement. This includes content that seeks to coordinate or promote these activities using our platform. We allow people to raise awareness and educate others as well as condemn these activities.\nThis policy provides specific additional protections beyond what is prohibited in the Community Standards for Fraud, Scam and Deceptive Practices.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+    "fetched_at": "2026-07-22T06:40:17.242Z"
+  },
+  {
+    "id": "meta:deceptive-practices:2.1",
+    "platform": "meta",
+    "doc_slug": "deceptive-practices",
+    "doc_title": "Fraud, Scams and Deceptive Practices",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Fraud, Scams and Deceptive Practices",
+      "Additional Guidelines for Ads"
+    ],
+    "content": "The following are additional requirements ads must follow, in addition to the requirements in our Community Standard on Frauds, Scams and Deceptive Practices.\nMisleading Health Practices\nAds can't\nPromote claims (including those from health professionals or health organizations) to cure, heal, or eliminate any of the following incurable diseases and/or terminal illnesses (exhaustive list):\nDiabetes\nHerpes\nThyroid\nPsoriasis\nEbola\nCancer\nAutism\nAlzheimer's\nParkinson's\nAmyotrophic Lateral Sclerosis (ALS)\nHuman immunodeficiency virus (HIV)\nPromise specific health-related results in specific time with no qualifying or disclaimer language.\nEmploy click-bait tactics in a health context, such as the use of sensational language that makes exaggerated or extreme health claims.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/fraud-scams-deceptive-practices/",
+    "fetched_at": "2026-07-22T06:40:17.242Z"
+  }
+]

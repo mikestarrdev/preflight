@@ -1,0 +1,30 @@
+[
+  {
+    "id": "meta:discriminatory-practices:0.1",
+    "platform": "meta",
+    "doc_slug": "discriminatory-practices",
+    "doc_title": "Discriminatory Practices",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Discriminatory Practices"
+    ],
+    "content": "Ads must not discriminate or encourage discrimination against people based on personal attributes such as race, ethnicity, color, national origin, religion, age, sex, sexual orientation, gender identity, family status, disability, medical or genetic condition.\nMeta prohibits advertisers from using our ads products to discriminate against people. This means that advertisers may not (1) use our audience selection tools to (a) wrongfully target specific groups of people for advertising (see advertising policy on Targeting), or (b) wrongfully exclude specific groups of people from seeing their ads; or (2) include discriminatory content in their ads. Advertisers are also required to comply with applicable laws that prohibit discrimination (see advertising policy on Illegal Products or Services). These include laws that prohibit discriminating against groups of people in connection with, for example, offers of housing, employment, and financial products and services.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+    "fetched_at": "2026-07-22T06:44:29.470Z"
+  },
+  {
+    "id": "meta:discriminatory-practices:0.2",
+    "platform": "meta",
+    "doc_slug": "discriminatory-practices",
+    "doc_title": "Discriminatory Practices",
+    "clause_path": "0.2",
+    "heading_trail": [
+      "Discriminatory Practices"
+    ],
+    "content": "Any United States advertiser or advertiser targeting the United States, Canada or certain parts of Europe that is running financial products and services, housing or employment ads, must self identify as a Special Ad Category, as it becomes available, and run such ads with approved targeting options.\nAdditional information and resources on United States non-discrimination laws:\nU.S. Department of Housing and Urban Development\nU.S. Equal Employment Opportunity Commission\nConsumer Financial Protection Bureau\nAmerican Civil Liberties Union\nLeadership Conferences on Civil and Human Rights\nDepartment of Justice – Civil Rights Division\nNational Fair Housing Alliance\nDisclaimer: This guide is not a substitute for legal advice. Consult a legal professional for specific advice about your situation.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/unacceptable-content/discriminatory-practices/",
+    "fetched_at": "2026-07-22T06:44:29.470Z"
+  }
+]

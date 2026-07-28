@@ -1,0 +1,61 @@
+[
+  {
+    "id": "meta:alcohol:0.1",
+    "platform": "meta",
+    "doc_slug": "alcohol",
+    "doc_title": "Alcohol",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Alcohol"
+    ],
+    "content": "Ads that promote or reference alcohol must comply with all applicable local laws, required or established industry codes, guidelines, licenses and approvals, and include age and country targeting criteria consistent with Meta's targeting requirements and applicable local laws. Note that our policies prohibit ads promoting or referencing alcohol in some countries, based on local law.\nAdvertisers must follow all applicable laws, including targeting their ads in accordance with legal requirements. At a minimum, ads may not be targeted to people under 18 years of age.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/alcohol/",
+    "fetched_at": "2026-07-22T06:41:47.197Z"
+  },
+  {
+    "id": "meta:alcohol:1.1",
+    "platform": "meta",
+    "doc_slug": "alcohol",
+    "doc_title": "Alcohol",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Alcohol",
+      "Overview"
+    ],
+    "content": "Advertisers can run ads that promote alcohol as long as they:\nFollow the targeting requirements for the location of the audience\nDon’t target people under the age of 18\nAds that promote alcohol include:\nVenues and events in which the primary business model depends on alcohol sales\nInvitation to an alcohol venue\nAvailability of alcohol sales\nDepiction of alcohol brands/logos\nConsumption of alcohol beverages\nPromotion of alcohol brands\nRecipes for alcoholic beverages\nAdvertisers must follow our Community Standards, in addition to our Advertising Standards.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/alcohol/",
+    "fetched_at": "2026-07-22T06:41:47.197Z"
+  },
+  {
+    "id": "meta:alcohol:2.1",
+    "platform": "meta",
+    "doc_slug": "alcohol",
+    "doc_title": "Alcohol",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Alcohol",
+      "Guidelines"
+    ],
+    "content": "As global alcohol laws vary, advertisers need to make sure they comply with all applicable targeting requirements. Some countries don’t allow the sale or promotion of alcohol, while others have minimum drinking ages.\nAdvertisers can’t run alcohol ads in the following countries or regions:\nAfghanistan\nBrunei\nBangladesh\nEgypt\nGambia\nIndia (specifically Bihar, Gujarat, Lakshadweep, Manipur and Nagaland)\nKuwait\nLibya\nLithuania\nNepal\nNorway\nPakistan\nRussia\nSaudi Arabia\nThailand\nTurkey\nUnited Arab Emirates\nYemen\nAdvertisers can run alcohol ads in the following countries, subject to age restrictions:\nCameroon: 21 years or older\nCanada: 19 years or older\nIceland: 20 years or older\nIndia: Various\n25 years or older in Chandigarh, Delhi, Haryana, Maharashtra, or Punjab.\n21 years or older in Andhra Pradesh, Arunachal Pradesh, Assam, Chhattisgarh, Dadra and Nagar Haveli, Dama and Diu, Goa, Jammu and Kashmir, Jharkhand, Kerala, Madhya Pradesh, Meghalaya, Odisha, Tamil Nadu, Telangana, Tripura, Uttar Pradesh, Uttarakhand, or West Bengal.\n18 years or older in Andaman and Nicobar Islands, Himachal Pradesh, Karnataka, Mizoram, Puducherry, Rajasthan and Sikkim.\nJapan: 20 years or older\nKorea: 19 years or older\nMicronesia: 21 years or older\nNicaragua: 19 years or older\nPalau: 21 years or older\nParaguay: 20 years or older\nSolomon Islands: 21 years or older\nSri Lanka: 21 years or older\nSweden: 25 years or older\nUnited States: 21 years or older",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/alcohol/",
+    "fetched_at": "2026-07-22T06:41:47.197Z"
+  },
+  {
+    "id": "meta:alcohol:2.2",
+    "platform": "meta",
+    "doc_slug": "alcohol",
+    "doc_title": "Alcohol",
+    "clause_path": "2.2",
+    "heading_trail": [
+      "Alcohol",
+      "Guidelines"
+    ],
+    "content": "Advertisers that promote alcohol products or brands in countries not included in the permitted list above, may promote alcohol products, as long as they comply with their local laws and target people who are at least 18 years old.\nAdvertisers can run ads that promote:\nNews, documentary, educational materials, or PSA context that reference or depict alcohol\nNon-alcoholic products, including non-alcoholic beverage and alcohol accessories, as long as they do not depict alcohol or consumption\nEntertainment ads such as; movie trailers, TV shows, video game trailers and other similar content, visit the Video Ads policy for tips on how to comply with this policy.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/alcohol/",
+    "fetched_at": "2026-07-22T06:41:47.197Z"
+  }
+]

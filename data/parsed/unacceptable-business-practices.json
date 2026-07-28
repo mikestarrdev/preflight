@@ -1,0 +1,62 @@
+[
+  {
+    "id": "meta:unacceptable-business-practices:1.1",
+    "platform": "meta",
+    "doc_slug": "unacceptable-business-practices",
+    "doc_title": "Unacceptable Business Practices",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Unacceptable Business Practices",
+      "Unacceptable Business Practices in Advertising"
+    ],
+    "content": "Ads must not promote products, services, schemes or offers using identified deceptive or misleading practices, including those meant to scam people out of money or personal information. When we detect that advertisers are engaging in potentially suspicious behavior, including potential inauthentic behavior, or are running ads in certain categories likely to be targeted by scammers, we may require those advertisers to complete additional verification processes.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+    "fetched_at": "2026-07-22T06:40:34.203Z"
+  },
+  {
+    "id": "meta:unacceptable-business-practices:2.1",
+    "platform": "meta",
+    "doc_slug": "unacceptable-business-practices",
+    "doc_title": "Unacceptable Business Practices",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Unacceptable Business Practices",
+      "Overview"
+    ],
+    "content": "Advertisers can’t run ads that promote products, services, schemes or offers that use identified deceptive or misleading practices, including scams to take money from people or access personal information. We do this to protect people from being taken advantage of by advertisers.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+    "fetched_at": "2026-07-22T06:40:34.203Z"
+  },
+  {
+    "id": "meta:unacceptable-business-practices:3.1",
+    "platform": "meta",
+    "doc_slug": "unacceptable-business-practices",
+    "doc_title": "Unacceptable Business Practices",
+    "clause_path": "3.1",
+    "heading_trail": [
+      "Unacceptable Business Practices",
+      "Guidelines for Ads"
+    ],
+    "content": "Ads can't:\nUse deceptive or exaggerated claims about the success of a product or service to mislead people into purchasing or sharing sensitive information\nUse deceptive or exaggerated claims about health-related benefits of a product or service to mislead people into purchasing or sharing sensitive information\nUse the image of a famous person and misleading tactics in order to bait people into engaging with an ad\nPromise financial benefits by misrepresenting an entity, industry association or news outlet to mislead people or ask them to share sensitive information\nWe often see these types of violations in schemes related to:\nInvestment or banking opportunities\nHealth or weight loss\nMisleading schemes that promote free products or services\nProducts or services with functionalities that don’t exist",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+    "fetched_at": "2026-07-22T06:40:34.203Z"
+  },
+  {
+    "id": "meta:unacceptable-business-practices:3.2",
+    "platform": "meta",
+    "doc_slug": "unacceptable-business-practices",
+    "doc_title": "Unacceptable Business Practices",
+    "clause_path": "3.2",
+    "heading_trail": [
+      "Unacceptable Business Practices",
+      "Guidelines for Ads"
+    ],
+    "content": "Scams are a problem that affects people across platforms and industries, and we take a comprehensive approach to making our technologies a safer place. Learn how we’re working to help keep you safer on our technologies.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/fraud-scams/unacceptable-business-practices/",
+    "fetched_at": "2026-07-22T06:40:34.203Z"
+  }
+]

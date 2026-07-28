@@ -1,0 +1,76 @@
+[
+  {
+    "id": "meta:weapons:0.1",
+    "platform": "meta",
+    "doc_slug": "weapons",
+    "doc_title": "Weapons, Ammunition or Explosives",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Weapons, Ammunition or Explosives"
+    ],
+    "content": "Ads must not promote the sale or use of weapons, ammunition or explosives. This includes ads for weapon modification accessories.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/weapons-ammunitions-explosives/",
+    "fetched_at": "2026-07-22T06:42:30.631Z"
+  },
+  {
+    "id": "meta:weapons:1.1",
+    "platform": "meta",
+    "doc_slug": "weapons",
+    "doc_title": "Weapons, Ammunition or Explosives",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Weapons, Ammunition or Explosives",
+      "Overview"
+    ],
+    "content": "Advertisers can’t run ads that promote the sale or use of weapons, weapon modification accessories, ammunition or explosives. However, they can run ads that promote products that aren’t directly sold as part of a physical weapon, as long as they are targeted to people 18 years or older.\nAdvertisers must follow our Community Standards, in addition to our Advertising Standards.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/weapons-ammunitions-explosives/",
+    "fetched_at": "2026-07-22T06:42:30.631Z"
+  },
+  {
+    "id": "meta:weapons:2.1",
+    "platform": "meta",
+    "doc_slug": "weapons",
+    "doc_title": "Weapons, Ammunition or Explosives",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Weapons, Ammunition or Explosives",
+      "Guidelines"
+    ],
+    "content": "Ads can't promote:\nWeapons or weapon accessories that can cut, slice, strike, penetrate, shoot or harm people or animals, including but not limited to:\nFirearms, including firearms parts, ammunition, paintball guns and BBguns\nPepper spray, non-culinary knives/blades/spears, tasers, nunchucks, batons, or weapons intended for self-defense\nProducts that might be attached or used with a weapon to enhance or customize its form or function, including but not limited to:\nFirearm silencers or suppressors\nOptics and flashlights, such as telescopic sight, iron sight, target magnification or focus\nExplosives, including fireworks\nEntities where the exchange of weapons is the primary business model\nReviews of firearms, other prohibited weapons or weapon modifications, or bladed items\nThe pure depiction of weapons if there is no discussion or advocacy\nSales, gifts, exchanges, transfers, coordinates, promotes (by which we mean speaks positively about, encourages the use of) or provides access to 3D printing or computer-aided manufacturing instructions for firearms or firearms parts regardless of context or poster.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/weapons-ammunitions-explosives/",
+    "fetched_at": "2026-07-22T06:42:30.631Z"
+  },
+  {
+    "id": "meta:weapons:2.2",
+    "platform": "meta",
+    "doc_slug": "weapons",
+    "doc_title": "Weapons, Ammunition or Explosives",
+    "clause_path": "2.2",
+    "heading_trail": [
+      "Weapons, Ammunition or Explosives",
+      "Guidelines"
+    ],
+    "content": "Ads can promote:\nSafety courses for firearm training or licenses as well as books and videos about firearm safety\nThe right to bear arms, such as U.S. second amendment rights content\nInformative content on the subject of weapons\nBlogs or groups connecting people with weapons-related interests, as long as the service doesn't lead to the sale of these products\nPlastic guns, swords and toy weapons\nAds can promote the following when targeted to people 18 years or older:\nItems that aren’t directly sold as part of a physical weapon, including but not limited to:\nEquipment related to the practice of hunting, self defense or competition, like clay throwers, shooting targets, belts, protective vests, holsters, pouches or magazine holders\nMilitary clothing\nItems that carry, encase or support a weapon for easier transport or positioning\nItems that coat or wrap a weapon, including gun cases, safes, locking devices, paint coatings, gun slings or tripod mounts",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/weapons-ammunitions-explosives/",
+    "fetched_at": "2026-07-22T06:42:30.631Z"
+  },
+  {
+    "id": "meta:weapons:2.3",
+    "platform": "meta",
+    "doc_slug": "weapons",
+    "doc_title": "Weapons, Ammunition or Explosives",
+    "clause_path": "2.3",
+    "heading_trail": [
+      "Weapons, Ammunition or Explosives",
+      "Guidelines"
+    ],
+    "content": "Ads can depict:\nWeapons in a military, police, sporting or hunting context providing the context is non-violent and there is no attempt to buy, sell, trade, gift, donate or ask for weapons.\nWeapons when in a fictional context, e.g. in video games, music, movies or tv.\nFireworks or explosives in a celebratory non-violent/dangerous context.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/weapons-ammunitions-explosives/",
+    "fetched_at": "2026-07-22T06:42:30.631Z"
+  }
+]

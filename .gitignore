@@ -34,9 +34,10 @@ yarn-error.log*
 .env*
 !.env.example
 
-# scraped policy content stays out of the repo; rebuild with scripts/scrape-policies.ts
+# raw scraped HTML stays out of the repo; rebuild with scripts/scrape-policies.ts
 /data/raw/
-/data/parsed/
+# NOTE: data/parsed/ is intentionally NOT ignored — corpus-index.ts reads it
+# at runtime in production, and Vercel's build only has what's in git.
 
 # local tooling
 .claude/

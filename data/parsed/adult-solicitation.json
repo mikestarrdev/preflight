@@ -1,0 +1,46 @@
+[
+  {
+    "id": "meta:adult-solicitation:0.1",
+    "platform": "meta",
+    "doc_slug": "adult-solicitation",
+    "doc_title": "Adult Sexual Solicitation and Sexually Explicit Language",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Adult Sexual Solicitation and Sexually Explicit Language"
+    ],
+    "content": "Ads Must Comply with the Community Standard on Adult Sexual Solicitation and Sexually Explicit Language\nAds must not contain content that facilitates sexual encounters, commercial sexual services between adults, or content asking for or offering pornographic content. In addition, we also restrict the use of sexually explicit language.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/adult-sexual-solicitation-and-sexually-explicit-language/",
+    "fetched_at": "2026-07-22T06:41:27.853Z"
+  },
+  {
+    "id": "meta:adult-solicitation:1.1",
+    "platform": "meta",
+    "doc_slug": "adult-solicitation",
+    "doc_title": "Adult Sexual Solicitation and Sexually Explicit Language",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Adult Sexual Solicitation and Sexually Explicit Language",
+      "Overview"
+    ],
+    "content": "This policy provides specific additional protections beyond what is prohibited per the Community Standard on Adult Sexual Solicitation and Sexually Explicit Language. Ads must also comply with our Health and Wellness Advertising Standard.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/adult-sexual-solicitation-and-sexually-explicit-language/",
+    "fetched_at": "2026-07-22T06:41:27.853Z"
+  },
+  {
+    "id": "meta:adult-solicitation:2.1",
+    "platform": "meta",
+    "doc_slug": "adult-solicitation",
+    "doc_title": "Adult Sexual Solicitation and Sexually Explicit Language",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Adult Sexual Solicitation and Sexually Explicit Language",
+      "Guidelines"
+    ],
+    "content": "In addition to the requirements in our Community Standards, Ads can’t:\nContain content discussing sexual practices or experiences, even without sexual solicitation\nWhen targeting people aged 18 or older, advertisers can run ads that:\nContain content that contains usernames, links to or logos of Adult Subscription Websites\nContain content with sexually explicit language in satirical or humorous contexts\nContain content with sexually suggestive language referring to sexual encounters\nWe require additional information and/or context to enforce the following advertising rules. Ads can’t:\nInclude content that would otherwise be prohibited by this policy where its violating elements are being satirized or attributed to something or someone else to mock or criticize them.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/adult-sexual-solicitation-and-sexually-explicit-language/",
+    "fetched_at": "2026-07-22T06:41:27.853Z"
+  }
+]

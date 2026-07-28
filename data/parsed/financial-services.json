@@ -1,0 +1,76 @@
+[
+  {
+    "id": "meta:financial-services:0.1",
+    "platform": "meta",
+    "doc_slug": "financial-services",
+    "doc_title": "Financial and Insurance Products and Services",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Financial and Insurance Products and Services"
+    ],
+    "content": "Ads promoting credit cards, loans or insurance services must be targeted to people 18 years or older. We prohibit ads that directly request the input of any personally identifiable information or certain types of financial information under our Fraud, Scam and Deceptive Practices and/or Privacy Violations policies.\nAdvertisers promoting financial products and services may be required to verify their business and/or individual identity and demonstrate they are authorized by the relevant regulatory authorities where this is a requirement; and any such authorization may be subject to review by Meta. Advertisers are also required to comply with disclosure requirements set by law.\nLearn more about the authorization process in our Business Help Center.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+    "fetched_at": "2026-07-22T06:43:10.998Z"
+  },
+  {
+    "id": "meta:financial-services:1.1",
+    "platform": "meta",
+    "doc_slug": "financial-services",
+    "doc_title": "Financial and Insurance Products and Services",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Financial and Insurance Products and Services",
+      "Overview"
+    ],
+    "content": "Advertisers can run ads that promote credit cards, loans or insurance services as long as they only target people 18 years or older. Ads that directly request the input of any personally identifiable information or certain types of financial information are prohibited by our Fraud, Scam and Deceptive Practices and/or Privacy Violations policies.\nAdvertisers may be required to be licensed in the country they are targeting if they wish to run ads for financial products or services. Meta may review any relevant licensing or otherwise confirm such advertisers’ authorization to run such ads.\nAdvertisers are required to comply with all applicable laws and regulations, including any licensing or disclosure requirements.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+    "fetched_at": "2026-07-22T06:43:10.998Z"
+  },
+  {
+    "id": "meta:financial-services:2.1",
+    "platform": "meta",
+    "doc_slug": "financial-services",
+    "doc_title": "Financial and Insurance Products and Services",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Financial and Insurance Products and Services",
+      "Guidelines for Ads"
+    ],
+    "content": "Prohibited Loan Products\nAds can't\nPromote Payday Loans, which are short-term loans that are typically due on the borrower's next payday. These loans are generally for small amounts and come with high interest rates and fees.\nPromote Paycheck Advances, which are short-term loans that are an advance on a future paycheck.\nPromote Bail Bonds, which are loans that allow criminal defendants to get conditional release from custody by paying a sum of money determined by the court.\nPromote Short-term Loans of 90 days or less, which are loans that require repayment in full in 90 days or less from the date the loan is issued.\nPromote misleading content related to student loan consolidation, forgiveness, or refinancing services by using deceptive practices, such as overstating the benefits to the user or not disclosing terms upfront.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+    "fetched_at": "2026-07-22T06:43:10.998Z"
+  },
+  {
+    "id": "meta:financial-services:2.2",
+    "platform": "meta",
+    "doc_slug": "financial-services",
+    "doc_title": "Financial and Insurance Products and Services",
+    "clause_path": "2.2",
+    "heading_trail": [
+      "Financial and Insurance Products and Services",
+      "Guidelines for Ads"
+    ],
+    "content": "Deceptive and Misleading Financial Instruments\nAds can't\nPromote Binary Options, which are financial products where the payoff is either a fixed monetary amount or nothing at all.\nPromote Contract for Difference trading, which involves a financial contract that pays the differences in the settlement price between the open and closing trades.\nPromote Initial Coin Offerings, which are a type of funding for cryptocurrencies that is often a form of crowdfunding.\nPromote Penny Auctions, bidding fee auctions or other similar business models, which are a type of auction where all participants have to pay a non-refundable fee to place a bid.\nAdvertisers can run ads that promote credit cards, insurance services or long-term loans over 90 days as long as they:\nOnly target people 18 years or older\nProvide disclosures as required by law\nAs per the terms of our Privacy Violations Policy, don't request any personally identifiable information or financial information, such as bank account information, cred/debit card information or routing numbers",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+    "fetched_at": "2026-07-22T06:43:10.998Z"
+  },
+  {
+    "id": "meta:financial-services:2.3",
+    "platform": "meta",
+    "doc_slug": "financial-services",
+    "doc_title": "Financial and Insurance Products and Services",
+    "clause_path": "2.3",
+    "heading_trail": [
+      "Financial and Insurance Products and Services",
+      "Guidelines for Ads"
+    ],
+    "content": "Authorization: Targeting some countries with a financial product or service ad requires a license from the relevant regulatory authorities. If that is the case, advertisers will have to demonstrate they have the appropriate authorization, which may be subject to review by Meta.\nFinancial products and services that may require a license include but are not limited to:\nInsurance products\nMortgages\nLoans (long and short-term)\nInvestment products and opportunities\nCredit card applications\nAdditional Restrictions: Investment Products and Opportunities\nFor ads targeting the United States ads can’t\nPromote investment products or opportunities that suggest user interaction with the advertiser via on-platform or off-platform direct messaging services.\nAdvertisers can run the following types of ads without authorization or the restrictions above:\nBrand ads for banks or insurance companies\nAds for news articles, as long as they don’t make offers for credit cards, long-term loans or insurance services\nAds that promote or provide information about education, training or skillbuilding to apply for loans or manage them\nAds that only mention a financial service or product without the ability to obtain or connect with that product/service",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/restricted-goods-services/financial-services/",
+    "fetched_at": "2026-07-22T06:43:10.998Z"
+  }
+]

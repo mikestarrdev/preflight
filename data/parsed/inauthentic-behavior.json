@@ -1,0 +1,31 @@
+[
+  {
+    "id": "meta:inauthentic-behavior:0.1",
+    "platform": "meta",
+    "doc_slug": "inauthentic-behavior",
+    "doc_title": "Inauthentic Behavior",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Inauthentic Behavior"
+    ],
+    "content": "Ads must comply with the Community Standard on Inauthentic Behavior.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/business-assets/inauthentic-behavior/",
+    "fetched_at": "2026-07-22T06:44:11.402Z"
+  },
+  {
+    "id": "meta:inauthentic-behavior:1.1",
+    "platform": "meta",
+    "doc_slug": "inauthentic-behavior",
+    "doc_title": "Inauthentic Behavior",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Inauthentic Behavior",
+      "Overview"
+    ],
+    "content": "Advertisers cannot create or use inauthentic assets to deceive Meta or our users about their identity or the origin, popularity, or purpose of their content. Advertisers cannot use inauthentic assets - including business manager accounts - to evade enforcement under our Community or Advertising Standards, and must not engage in any form of Coordinated Inauthentic Behavior.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/business-assets/inauthentic-behavior/",
+    "fetched_at": "2026-07-22T06:44:11.402Z"
+  }
+]

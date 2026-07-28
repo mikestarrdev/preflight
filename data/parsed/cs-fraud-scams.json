@@ -1,0 +1,197 @@
+[
+  {
+    "id": "meta:cs-fraud-scams:1.1",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "Policy Rationale"
+    ],
+    "content": "We aim to protect users and businesses from being deceived out of their money, property or personal information. We achieve this by removing content and combatting behavior that purposefully employs deceptive means - such as wilful misrepresentation, stolen information and exaggerated claims - to either scam or defraud users and businesses, or to drive engagement. This includes content that seeks to coordinate or promote those activities using our services. We allow people to raise awareness and educate others as well as condemn these activities.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.1",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Content that attempts to scam or defraud users and/or businesses by means of:\nLoan Fraud and Scams\nContent that:\nOffers loans requiring the user to pay an advance fee to obtain a loan.\nOffers loans with guarantee or near-guarantee of approval, either explicitly stated or implicitly understood based on context (such as claims to approve loan without asking for financial information).\nNote: We also look for other signals to determine if an entity is posting legitimate, non-fraudulent content, such as when it is a verified entity and a bank or financial institution.\nGambling Fraud and Scams\nContent that:\nOffers real money gambling services (“Real money” is real-world currency that can be used to buy goods or services in the real world, including national currencies such as U.S. Dollars and virtual currencies such as Bitcoin):\nwith a guarantee of winning.\nimplying or admitting to have rigged the outcome of a game or match.\nsoliciting people to enable match fixing or looking for help or tips on how to fix a match or game.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.2",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.2",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Social casino games that simulate gambling with no opportunity to win real money fall under our Community Standard for Restricted Goods and Services.\nInvestment or Financial Fraud and Scams\nInvestment Opportunities. Content that:\nOffers investment opportunities where returns on investment are guaranteed or risk-free.\nOffers investment opportunities where returns on investment or compensation is partly or fully based on recruitment of others to participate in the scheme.\nOffers investment opportunities where the opportunity is of a “get-rich-quick” nature and/or claims that a small investment can be turned into a large amount.\nMoney/Cash Flip. Content that:\nOffers to turn a certain sum of money into a larger one through flipping or trick or strategy involving explicit mentions of ”cash flip,” \"money flip,” or similar terminology.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.3",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.3",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Money Muling and Laundering Fraud and Scams\nMoney Muling. Content that:\nOffers or asks for money muling (causing victims to be unknowing participants in money laundering by offering money or share of profits in exchange for allowing others to use their bank accounts or transferring money on behalf of others).\nOffers or asks for money muling by offering employment to accept and transfer money to third parties using the victim’s bank account.\nMoney Laundering. Content that:\nRequests, solicits, or offers to facilitate money laundering, which is an attempt to make illegally obtained money appear legitimate by disguising the origin of the money through a complex sequence of financial transactions, including through any of the following means:\nSeeking transfer of funds through SWIFT (Society for Worldwide Interbank Financial Telecommunications) or similar methods,\nSeeking or offering details on types of bank accounts available to support receipt or transfer of cash.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.4",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.4",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Inauthentic Identity Fraud and Scams\nContent that:\nAttempts to scam or defraud users by misrepresenting the identity of the poster or nature of a request:\nCharity Fraud and Scam, which are fraudulent requests for money or donations for charitable causes together with claims that the donation is urgent and includes information, such as bank accounts, where money can be sent.\nRomance Fraud and Scam, which are fraudulent attempts to establish online romantic relationships by seeking non-sexual companionship or relationship and offering or asking for money or its equivalent in exchange.\nEstablished Business/Entity Fraud and Scams, which involve falsely claiming to represent, or speak in the voice of, an established business or entity, in an attempt to scam or defraud.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.5.s1",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.5.s1",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Product or Reward Fraud and Scams\nGovernment Grant Fraud and Scam. Content that:\nFalsely offers money from government grants or any other governmental source of funding. We consider various signals to determine if an entity is posting legitimate, non-fraudulent content, such as when it comes from a verified entity. Tangible, Spiritual or Illuminati Fraud and Scam. Content that:\nOffers tangible rewards, such as money, goods, or services that have a monetary value including physical, digital and virtual currencies, and physical or digital goods and services for membership in or joining an association, cult, religious sect (for example, the Illuminati brotherhood). Offers tangible rewards for using black magic or spells or magical items (for example, spells, lucky charms, amulets, tokens, potions, magic wallet, etc.). Insurance Fraud and Scams. Content that:\nOffers false, heavily discounted insurance with requests for an up-front fee (admin fee, or deposit, or otherwise). Offers false, heavily discounted insurance with promises of large savings on insurance compared to conventional insurance providers (at least 30% less). Note: We also look for other signals to determine if an entity is posting legitimate, non-fraudulent content, such as when it is a verified entity and a bank or financial institution\nJob Fraud and Scams. Content that:\nOffers jobs with an unclear or vague job description and get-rich-quick opportunities promising money with little time investment or effort. Offers jobs containing no job information, simply referencing job vacancies. Offers work from home but the job title implies the employee cannot WFH. Offers jobs with advance promises of salary. Offers guaranteed jobs. Offers jobs with a demand for an advance fee before the job is granted. Note: We also look for other signals to determine if an entity is posting legitimate, non-fraudulent content, such as when it is a verified entity\nDebt Relief and Credit Repair Fraud and Scam.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.5.s2",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.5.s2",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Content that:\nPromises to delete or eliminate or reduce debt by a particular amount in a set period of time. Promises to stop or delete all debt collections or lawsuits. Promises to forgive or cancel debt through \"new government program” or change in law or equivalent statement. Promises to delete or remove credit information from credit reports or create new \"credit identity\". Note: We also look for other signals to determine an entity is posting legitimate, non-fraudulent content, such as when it is a verified entity and a bank or financial institution\nGiveaway Fraud and Scam. Content that:\nOffers a guaranteed reward of real money in exchange for users needing to:\nRegister at an off-site link. Share Personal Identifiable Information (PII) or Other Personal Information. Contact off-platform or on-platform via private message. Take no action. Advance Fee Fraud and Scam. Content that:\nFalsely promises money in exchange for an up-front fee/wire transfer/payment.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.6",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.6",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Fake Documents Fraud and Scams\nFake or Forged Documents. Content that:\nOffers solicitation, creation, sale, purchase or trade of fake or forged documents.\nOffers sale of visas or green cards.\nGuarantees visa or green card approval.\nEnables users to get visa approvals without fulfilling normal requirements.\nFake or Counterfeit Currency. Content that:\nOffers sale, purchase or trade of fake or counterfeit currency, except board-game currency (e.g., Monopoly money) if there is clear context that it is for board-game purposes.\nFake or Counterfeit Vouchers. Content that:\nOffers sharing, sale, purchase or trade of fake or counterfeit vouchers.\nAdmits to, promotes, or solicits the use of physical or digital coupons or vouchers to achieve atypical pricing by either:\nusing coupons or vouchers to purchase items those coupons or vouchers are not intended for; or\nby using expired coupons or vouchers.\nFake or forged educational and professional certificates. Content that:\nOffers sale, purchase or trade of fake or forged educational and professional certificates.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.7",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.7",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Stolen Information, Goods or Services Fraud and Scam\nCarding Fraud and Scam. Content that:\nInvolves buying, selling or trading of stolen credit cards or other financial instruments that can be used for unauthorized purchases (also known as \"carding\").\nPII Fraud and Scam. Content that:\nOffers buying, selling or trading of Personal Identifiable Information (PII) or Other Personal Information except if it belongs to a fictional character.\nFake Review Fraud and Scam. Content that:\nCalls for buying, selling or trading of product reviews/ratings.\nImplicitly or explicitly incentivises users to provide reviews in exchange for discounts, refunds or free items.\nSubscription Fraud and Scam. Content that:\nOffers buying, selling or trading of credentials for subscription services (login credentials to online services which require a recurring payment at regular intervals) by making references to a paid online service, either by naming it or by sharing its logo.\nNote: We also look for other signals to determine if an entity is posting legitimate, non-fraudulent content, such as when it is a verified entity and a bank or financial institution.\nCheating Fraud and Scam. Content that:\nInvolves sharing, selling, trading, or buying of:\nfuture exam papers or answer sheets.\nProducts or services that enable cheating in exams.\nProducts or services that enable passing drug tests in an unauthorized manner",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:2.8",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "2.8",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "We do not allow:"
+    ],
+    "content": "Unauthorized Use of Devices Fraud and Scam\nDevice Manipulation Fraud and Scam. Content that\nCalls for buying, selling, trading or sharing of any manipulated, altered, or fake measurement devices.\nAdmits to, promotes or solicits use of physical manipulation of devices to achieve inaccurate pricing.\nDigital Content Fraud and Scam. Content that\nOffers or asks for products that facilitate or encourage access to digital content in an unauthorized manner. These include but are not limited to: augmented set top boxes, fully loaded/KODI installed boxes and KODI services.\nDeceptive and Misleading Practices\nMisleading Health Practices. Content that\nPromotes false or misleading health claims or guarantees in a weight loss context by employing click-bait tactics, such as the use of sensational language that make exaggerated or extreme claims",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:3.1",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "3.1",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "For the following content, we limit the ability to view the content to adults, ages 18 and older:"
+    ],
+    "content": "Content that\nPromises specific weight-loss results in specific time with no qualifying or disclaimer language.\nNotwithstanding the above, we do not prohibit content that condemns, raises awareness of or educates others about fraud and scams, without either revealing sensitive information or promoting fraud or scams",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:4.1",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "4.1",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "For the following Community Standards, we require additional information and/or context to enforce:"
+    ],
+    "content": "We may remove content:\nInvolving fraud/scam that have been reported by a trusted entity.\nRelated to bribery or embezzlement.\nThat offers vaccines in an attempt to scam or defraud users.\nThat attempts to establish a fake persona, pretends to be a famous person, or makes unauthorized use of an image of a famous person in an attempt to scam or defraud.\nThat offers or asks for products or services designed to facilitate the surreptitious viewing or recording of individuals, e.g., spy cams, mobile phone trackers (including those that allow tracing unknown phone numbers), or other hidden surveillance equipment.\nThat offers litigant recruitment opportunities for people to participate in class action lawsuits by impersonating a government entity or a news outlet, by using sensationalist language, or by using exaggerated claims.\nThat offers subscription services that prompt users to enter Personal Information.\nWe do not allow entities to participate in or claim to engage in organized Fraud or Scam behavior, including the use of multiple accounts on our services in concert to perpetrate fraudulent behaviors.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  },
+  {
+    "id": "meta:cs-fraud-scams:4.2",
+    "platform": "meta",
+    "doc_slug": "cs-fraud-scams",
+    "doc_title": "Fraud, Scams, and Deceptive Practices",
+    "clause_path": "4.2",
+    "heading_trail": [
+      "Fraud, Scams, and Deceptive Practices",
+      "For the following Community Standards, we require additional information and/or context to enforce:"
+    ],
+    "content": "In certain cases, we allow content that may otherwise violate the Community Standards when it is determined that the content is satirical. Content will only be allowed if the violating elements of the content are being satirized or attributed to something or someone else in order to mock or criticize them.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/community-standards/fraud-scams/",
+    "fetched_at": "2026-07-22T06:44:45.022Z"
+  }
+]

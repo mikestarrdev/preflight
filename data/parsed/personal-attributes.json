@@ -1,0 +1,430 @@
+[
+  {
+    "id": "meta:personal-attributes:0.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "0.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes"
+    ],
+    "content": "Ads Must Comply with the Community Standard on Privacy Violations. Ads must not contain content that shares or asks for private information about users. In addition, ads must not contain content that asserts or implies personal attributes. This includes direct or indirect assertions or implications about a person’s race, ethnicity, religion, beliefs, age, sexual orientation or practices, gender identity, disability, physical or mental health (including medical conditions), vulnerable financial status, voting status, membership in a trade union, criminal record, or name.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:1.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "1.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Overview"
+    ],
+    "content": "At Meta, we want people in our community to have a positive experience when they see ads. Ads that make assumptions about people could be perceived as intrusive, unsettling or inaccurate. For this reason, we don't allow advertisers to run ads that assert or imply the personal attributes of their audience. Instead, ads should focus on the benefits of the product or service being advertised.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads"
+    ],
+    "content": "In addition to the requirements in our Community Standard on Privacy Violations, which prohibits soliciting or sharing certain personal information, Ads can’t:\nShare or ask for personal attributes of a user or user’s family\nImply that the advertiser is aware of someone's personal attributes or the personal attributes of their family\nImply knowledge of personal or organizational financial information of a user or user’s family\nImply that the advertiser is aware of someone’s personally identifiable information, such as their name\nImply knowledge of Medical information of a user or user’s family\nAds can:\nBroadly reference personal attributes that aren’t listed above, such as calling someone “American” or “New Yorker” to reference where they live.\nContain passing reference to a personal attribute. This includes gender, age groups or age ranges.\nInclude names of celebrities or fictional characters.\nUse “you/your” language without a personal attribute.\nMake Public Service Announcements that inform the public about issues related to personal health attributes, as long as they don’t assert someone or their family has a health condition.",
+    "content_type": "rule",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.1.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.1.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "GENERAL GUIDANCE"
+    ],
+    "content": "✅ Ad creative that describes or shows the promoted product or service\n✅ Using the words like \"you/other” without referencing a personal attribute",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.1.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.1.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "GENERAL GUIDANCE"
+    ],
+    "content": "❌ Text referencing or alluding to personal attributes or characteristics of the targeted group or individual\n❌ Using the word \"you/your/other\" to reference a personal attribute",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.2.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.2.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "RACE OR ETHNICITY"
+    ],
+    "content": "✅ “Meet Hispanic men online now!”\n✅ “Find black singles today.”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.2.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.2.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "RACE OR ETHNICITY"
+    ],
+    "content": "❌ “Meet other black singles near you!”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.3.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.3.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "RELIGION"
+    ],
+    "content": "✅ “Date Christian singles!”\n✅ “Meet Hindu singles online now!”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.3.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.3.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "RELIGION"
+    ],
+    "content": "❌ \"Are you Christian?”\n❌ “Meet other Buddhists”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.4.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.4.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "AGE"
+    ],
+    "content": "✅ \"Meet seniors\"\n✅ “A service for teens”\n✅ “Our new lotion and creams fight wrinkles like never before!”\n✅ “Age is just a number. Anyone can now learn coding with our C program.”\n✅ “Join us this summer at Nature Camp. Open to all teenagers.””",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.4.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.4.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "AGE"
+    ],
+    "content": "❌ “Meet other seniors”\n❌ \"Are you 18 years old?\"\n❌ “Ready to upgrade your skin to look younger?\"",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.5.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.5.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "SEXUAL ORIENTATION OR PRACTICES"
+    ],
+    "content": "✅ “Atlantis Gay Cruises”\n✅ “Gay dating online now!”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.5.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.5.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "SEXUAL ORIENTATION OR PRACTICES"
+    ],
+    "content": "❌ “Are you gay?”\n❌ “Meet other lesbians now!”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.6.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.6.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "GENDER IDENTITY"
+    ],
+    "content": "✅ “Come meet transgender singles”\n✅ “A monthly meetup for trans persons and trans allies”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.6.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.6.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "GENDER IDENTITY"
+    ],
+    "content": "❌ “Questioning your gender identity?”\n❌ “Meet other transgender singles at our monthly meetup”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.7.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.7.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "PHYSICAL OR MENTAL HEALTH AND DISABILITY"
+    ],
+    "content": "✅ “Bulimia counseling available”\n✅ “Depression counseling”\n✅ “New diabetes treatment available”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.7.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.7.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "PHYSICAL OR MENTAL HEALTH AND DISABILITY"
+    ],
+    "content": "❌ “Do you have diabetes?”l\n❌ “Depression getting you down? Get help now.”\n❌ “Don’t wait!! Get your spouse treated for cancer today with help from our medical experts.”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.8.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.8.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "VULNERABLE FINANCIAL STATUS"
+    ],
+    "content": "✅ “Don’t wait!! Get your spouse treated for cancer today with help from our medical experts.”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.8.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.8.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "VULNERABLE FINANCIAL STATUS"
+    ],
+    "content": "❌ Are you bankrupt? Check out our services.”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.9.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.9.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "VOTING STATUS"
+    ],
+    "content": "✅ \"Learn about voter registration\"\n✅ “I voted”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.9.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.9.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "VOTING STATUS"
+    ],
+    "content": "❌ \"Your ballot hasn't been received yet\"\n❌ “Records show that your voter registration is incomplete”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.10.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.10.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "MEMBERSHIP IN A TRADE UNION"
+    ],
+    "content": "✅ \"Be a part of our Union today\"",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.10.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.10.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "MEMBERSHIP IN A TRADE UNION"
+    ],
+    "content": "❌ “Dislike your Union rep? Join our union today.”",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.11.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.11.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "CRIMINAL RECORD"
+    ],
+    "content": "✅ \"Services to clean up any previous offenses\"",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.11.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.11.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "CRIMINAL RECORD"
+    ],
+    "content": "❌ \"Are you a convicted felon?\"",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.12.1",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.12.1",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "NAME OR IDENTIFICATION"
+    ],
+    "content": "✅ “We print customizable t-shirts and stickers with your name.”\n✅ “Have a driver's license?”",
+    "content_type": "example_compliant",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  },
+  {
+    "id": "meta:personal-attributes:2.12.2",
+    "platform": "meta",
+    "doc_slug": "personal-attributes",
+    "doc_title": "Privacy Violations and Personal Attributes",
+    "clause_path": "2.12.2",
+    "heading_trail": [
+      "Privacy Violations and Personal Attributes",
+      "Additional Guidelines for Ads",
+      "NAME OR IDENTIFICATION"
+    ],
+    "content": "❌ “Billy Taylor, get this t-shirt with your name in print!”\n❌ “It's a Billy thing” (if their name is Billy).\n❌ \"What is your driver's license number?\"",
+    "content_type": "example_violating",
+    "source_url": "https://transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/",
+    "fetched_at": "2026-07-22T06:39:57.518Z"
+  }
+]
