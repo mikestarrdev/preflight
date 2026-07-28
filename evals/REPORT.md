@@ -428,17 +428,26 @@ after `results/2026-07-28T03-13-32-220Z.json` (new prompt, cold).
 two runs, the aggregate severity mix shifts from 90 violation / 140 risk / 87 clear to 88 / 161
 / 426 — the model now explicitly closes the loop on far more retrieved-but-irrelevant clauses
 instead of silently omitting them (368 `(case, policy_id)` pairs appear only in the after run,
-nearly all `clear`). Two cases show the exact bug pattern, and one is worse than the reported
-instance: `img-hookah-lounge` had `tobacco:3.1` at **`violation`** before (not just `risk`) with
-a reasonable-looking citation; `real-debt-1` had `cs-fraud-scams:3.1` (a weight-loss clause) at
-`violation` with the explanation talking itself into relevance — "while this clause references
-weight-loss results, it establishes the principle that... this clause is literally about weight
-loss, so the direct applicability is limited; the finding is noted but confidence is moderate."
-After the fix both are `clear`: "The ad is about debt relief, not weight loss. This clause's
-subject matter does not apply." A direct repro (a plain "iPhone 15 Pro, $999" ad, outside the
-eval set) confirms the same shape: `cs-fraud-scams:2.8` goes from a `risk` finding under the old
-prompt to `clear` — "It does not involve device manipulation... or misleading health claims" —
-under the new one.
+nearly all `clear`). One case shows the exact bug pattern one severity level worse than the
+reported instance: `real-debt-1` had `cs-fraud-scams:3.1` (a weight-loss clause) at `violation`
+with the explanation talking itself into relevance — "while this clause references weight-loss
+results, it establishes the principle that... this clause is literally about weight loss, so the
+direct applicability is limited; the finding is noted but confidence is moderate." After the fix
+it is `clear`: "The ad is about debt relief, not weight loss. This clause's subject matter does
+not apply." A direct repro (a plain "iPhone 15 Pro, $999" ad, outside the eval set) confirms the
+same shape: `cs-fraud-scams:2.8` goes from a `risk` finding under the old prompt to `clear` — "It
+does not involve device manipulation... or misleading health claims" — under the new one.
+
+*Correction:* an earlier version of this paragraph also named `img-hookah-lounge`'s `tobacco:3.1`
+as a second instance of this bug. That was wrong — checked directly against the run's own
+result file, `tobacco:3.1`'s pre-fix explanation ("an establishment where tobacco products
+(shisha/hookah) are sold/used") never contradicts itself, and the clause is correct as a
+`violation` in the *pre*-fix run (hookah lounges are named directly in `tobacco:3.1`'s text).
+What actually happens to it post-fix is the unrelated redirect-mechanism regression described
+below ("secondary wrinkle") — a real citation lost to a different bug, not a self-contradiction
+resolved by this one. `real-debt-1` is the only dataset instance of the actual pattern this
+iteration fixes. (It would not stay the only one: iteration 6 found a second, `real-debt-5`,
+still present after this exact fix — see below.)
 
 **The one regression is a citation-verification drop, not a severity-labeling failure.**
 `real-fin-1`'s expected clause, `financial-services:2.1`, was emitted as `violation` in both
@@ -474,15 +483,125 @@ severity-wording change, and not the failure this iteration measures.
 
 **Kept.** No target is newly missed: realistic recall (0.94) stays well above the 0.80 bar,
 paraphrased noise (62%) was never a target metric, and every other number holds or improves.
-Weighed against confirmed instances of the actual bug — including one worse than the reported
-case (`img-hookah-lounge` was a false `violation`, not just a false `risk`) — reverting to
-recover one recall point on one case would restore a real, repeatable mislabeling for a
-one-case, root-caused-elsewhere citation drop. Not re-run on holdout: both permitted holdout
+Weighed against a confirmed instance of the actual bug one severity level worse than the
+reported case (`real-debt-1`'s `cs-fraud-scams:3.1` was a false `violation` pre-fix, not just a
+false `risk`) — reverting to recover one recall point on one case would restore a real,
+repeatable mislabeling for a one-case, root-caused-elsewhere citation drop. Not re-run on holdout: both permitted holdout
 touches are already spent (section 8), and this is a dev-only measurement. **This means
 section 8's realistic-tier dev numbers now predate this fix** — they reflect the iteration
 2/4 system, not this one. Section 8 is left as that historical snapshot rather than
 partially rewritten against a holdout run that hasn't happened; the current dev numbers for
 all four tiers are the table above.
+
+### Iteration 6 — code-enforced grounding backstop for severity. KEPT.
+
+Iteration 5 tried to fix "risk/violation on a clause the model's own explanation says doesn't
+apply" with a prompt rule alone. It helped but did not close the bug: a direct repro on a plain
+"Buy an iphone for $5.99" ad, run with `NO_CACHE=1` after iteration 5's prompt was already live,
+still came back with `meta:cs-fraud-scams:2.1` (loan-approval guarantees) at `risk`, explanation
+"neither of which directly applies to a product sale ad ... this clause's subject matter does
+not genuinely apply," and no `offending_span`. Same failure, same shape, after the prompt fix
+that was supposed to close it.
+
+**Hypothesis.** The prompt already states the rule iteration 5 needed ("risk"/"violation"
+require the clause's subject matter to genuinely apply) and separately requires an
+`offending_span` for both severities — but nothing checks that the model actually followed
+either rule. If a `violation`/`risk` finding without a verbatim `offending_span` is downgraded
+to `clear` in code, the self-contradiction bug closes deterministically regardless of prompt
+compliance, and the noise rate (any `violation`/`risk` on a clean ad) should drop with no
+recall cost, since a downgrade only fires on findings that were never groundable in the ad's
+own text to begin with.
+
+**Change (one thing, corrected once before landing).** In `verify.ts`, a `violation` or `risk`
+finding on **copy or a landing page** whose `offending_span` does not verify as a grounded
+substring of the input is downgraded to `clear`, mirroring how `clause_quote` is already
+enforced in code rather than trusted from the model (`CLAUDE.md`: "Enforce this in code, not in
+the prompt"). Images are exempt: the first version of this change applied to every element, and
+the dev run below caught it clearing a real image violation (see "found and fixed" below), so
+the shipped version gates on `element !== 'image'` before downgrading — a compositional visual
+violation can be entirely correct with nothing in the vision description worth quoting, unlike
+copy or a landing page, where the ad's own text *is* the violation. `EVAL_DISABLE_SEVERITY_GROUNDING=1`
+reproduces the pre-fix behavior for both element types. The `explanation_grounding` metric's
+denominator is computed from the severities the model emitted, before this downgrade and
+regardless of element — so the grounding rate still measures what it always measured, images
+included, and does not trivially jump to 1.00 as a side effect of the fix. I also tried
+restating the rule more forcefully in the prompt itself (tying severity explicitly to "can you
+quote a span") but reverted that addition: the code enforces the invariant regardless of prompt
+wording, so a redundant prompt restatement only makes it harder to say which change produced
+which effect, for no measured benefit. The adjudicator prompt is therefore byte-identical to
+iteration 5's; every adjudication needed for this run was already cached, so every measurement
+below cost **$0.00** — a post-hoc filter over cached adjudications, the same shape as 4a and the
+scope guard. This also lands `ADJUDICATE_PROMPT_HASH`, a short hash of the adjudicator prompt
+recorded in `diagnostics.prompt_hash` and in every eval result and run summary line, so a report
+or a cached entry can name which prompt version produced it without diffing full prompt text
+(every run below: `282a78fc554b`).
+
+**Result (dev, all four tiers).**
+
+| Tier | Recall | FP (violation) | Noise (viol/risk on clean) | Citation | Grounding | Rewrite |
+|---|---|---|---|---|---|---|
+| verbatim | 1.00 (16/16) → 1.00 | 0.00 (0/15) → 0.00 | 27% (4/15) → 27% (4/15) | 0.99 → 0.99 | 1.00 → 1.00 | 4.17 (n=18) → 4.17 (n=18) |
+| paraphrased | 1.00 (15/15) → 1.00 | 0.00 (0/13) → 0.00 | 62% (8/13) → **54% (7/13)** | 1.00 → 1.00 | 0.98 → 0.98 | 4.30 (n=10) → 4.30 (n=10) |
+| realistic | 0.94 (16/17) → 0.94 | 0.17 (1/6) → 0.17 | 100% (6/6) → 100% (6/6) | 0.98 → 0.98 | 0.89 → 0.89 | 4.58 (n=43) → 4.62 (n=42) |
+| images | 1.00 (8/8) → 1.00 | 0.00 (0/8) → 0.00 | 25% (2/8) → 25% (2/8) | 0.98 → 0.98 | 0.98 → 0.98 | n/a |
+
+Runs: before `results/2026-07-28T04-15-01-393Z.json` (`EVAL_DISABLE_SEVERITY_GROUNDING=1`,
+98/98 cached, $0.00 — reproduces iteration 5's after-state numbers and its 88/161/426
+violation/risk/clear split bit-for-bit, confirmed programmatically), after (shipped, image-exempt)
+`results/2026-07-28T04-28-10-650Z.json` (98/98 cached, $0.00). A first attempt at "after,"
+`results/2026-07-28T04-15-11-794Z.json`, applied the downgrade to every element and is discussed
+below, not tabulated — it was not the shipped version.
+
+**The fix does what it was meant to do, at no cost, with no recall regression anywhere** —
+checked exhaustively across all 98 dev cases, not just the flagged tiers. 16 `(case,
+policy_id)` pairs moved to `clear`: 15 `risk → clear` and 1 `violation → clear` (`real-debt-5`,
+below). Aggregate severity mix shifts 88 violation / 161 risk / 426 clear → **87 / 146 / 442**.
+Paraphrased noise improves 62% → 54% (one clean case, `para-age-2-c`, loses its last `risk`
+finding and clears entirely). Recall, citation accuracy, and grounding are unchanged on every
+tier, by construction: citation and grounding are both computed before this downgrade runs, and
+now regardless of it for images specifically, which the downgrade no longer touches.
+
+**The dataset caught a second, independent instance of the exact bug iteration 5 aimed at.**
+`real-debt-5` had `meta:cs-fraud-scams:3.1` (a weight-loss clause) at **`violation`** — not
+just `risk` — with the explanation "this clause is specifically about weight-loss content, not
+debt. The ad does not involve weight loss," self-contradicting in the same way the originally
+reported bug did, under the exact iteration-5 prompt that was supposed to have closed it. Its
+near-twin, `real-debt-1`, right next to it in the same tier, gets the identical clause right
+(`clear`, "The ad is about debt relief, not weight loss. This clause's subject matter does not
+apply.") — proof the prompt-only fix is not reliable even across two structurally identical
+cases in the same run, which is exactly why a prompt restatement alone was not trusted as the
+fix this time. Both cases keep their recall via their actual expected clause
+(`cs-fraud-scams:2.5.s2`, cited separately on both), so neither shows up in the recall column.
+
+**Found and fixed before landing: the first version of this change was not element-aware.** A
+downgrade applied to every element cleared `img-hookah-lounge`'s `tobacco:2.1` — a `violation`
+with no self-contradiction at all ("The ad promotes a hookah lounge ... This constitutes
+promoting the use of tobacco-related paraphernalia" is a correct, non-contradicting explanation)
+— because the violation is the hookah-pipe *imagery* itself, not any rendered text, so there was
+never an `offending_span` to ground it against. That version's numbers, in
+`results/2026-07-28T04-15-11-794Z.json` (mix 86/161/443), are otherwise identical to the table
+above — no headline metric moves either way, since `img-hookah-lounge` keeps its recall on
+sibling findings and is a violating, not a clean, case, so a reader skimming only the table
+would never notice the difference. Exempting images (the `Change` above) restores it:
+`tobacco:2.1` is `violation` again in the shipped run, confirmed directly against
+`results/2026-07-28T04-28-10-650Z.json`; sibling findings `tobacco:3.2` ("SHISHA NIGHTS") and
+`tobacco:1.1` ("Premium hookah lounge") — both grounded in rendered text — were `violation`
+throughout and never needed the exemption. This is section 9's existing "grounding on
+visual-only violations is soft by nature" limitation, made concrete once and then closed in the
+same iteration rather than shipped as a live tradeoff.
+
+**Kept.** No target is newly missed and none is newly met — noise rate and the specific
+findings this fixes are not among the five tracked targets, so this is a precision fix on the
+same axis as iteration 4, not a headline-metric win. Weighed against two independently confirmed
+instances of a confident wrong answer one severity level worse than the originally reported bug
+(`real-debt-1`, closed by iteration 5; `real-debt-5`, closed here — the exact pattern iteration 5
+was supposed to have already closed), at zero API spend and, after the image exemption, no
+remaining known cost on the measured dataset, keeping it is not a close call. Not re-run on
+holdout: both permitted holdout touches are already spent (section 8). **Paraphrased
+dev noise is now 54%**, one point past even iteration 5's own 62% figure and further past
+section 8's original 46% — section 8 remains the pre-iteration-5 snapshot it already said it
+was, not updated here either, for the same reason iteration 5 gave: partially rewriting section
+8 against a holdout run that has not happened would misstate what is frozen and what is not.
 
 ## 8. Final numbers
 
@@ -698,9 +817,16 @@ problems, are still open.
   sourced: a human wrote the ad to sell a product, not to test this system, which is exactly
   what the authored cases cannot claim.
 - **Grounding on visual-only violations is soft by nature.** For an image whose violation is
-  compositional (a before/after body shot with no text), there is no verbatim ad-text span to
-  quote; grounding there is against the vision step's serialization, not raw copy. The metric
-  is most meaningful on text-bearing elements.
+  compositional (a before/after body shot, hookah-pipe imagery with no caption), there is no
+  verbatim ad-text span to quote; grounding there is against the vision step's serialization, not
+  raw copy. This bit iteration 6 concretely: the first version of its code-level downgrade
+  applied to every element, and cleared `img-hookah-lounge`'s `tobacco:2.1` — a correctly
+  identified, correctly explained violation ("promoting the use of tobacco-related
+  paraphernalia") — purely because a depicted object has nothing to quote as an offending span.
+  Caught before landing and fixed by exempting `element === 'image'` from the downgrade (iteration
+  6); images keep whatever severity the model assigns regardless of grounding. The metric is
+  still most meaningful on text-bearing elements, but the downgrade no longer costs a real
+  visual violation to make that point.
 - **The model hedges to `risk` rather than committing, and the hedge has a breaking point.**
   On paraphrased violations only 22% of findings are `violation` (54% `risk`); on compliant
   near-misses the noise rate (any `risk` on a clean case) runs 25-100% across tiers even though
@@ -756,8 +882,15 @@ $12. Cumulative spend:
 | iter 5: severity fix, dev after, 1st attempt (60/98, aborted on default $3 ceiling) | $3.28 | $10.91 |
 | iter 5: severity fix, dev after, 2nd attempt (98, 63 cached + 35 cold, ceiling raised to $6) | $1.05 | $11.96 |
 | iter 5: severity fix, dev before, reverted-prompt re-run (98, fully cached) | $0.00 | $11.96 |
+| iter 6: grounding backstop, dev before (98, `EVAL_DISABLE_SEVERITY_GROUNDING=1`, fully cached) | $0.00 | $11.96 |
+| iter 6: grounding backstop, dev after, 1st attempt (98, not element-aware, fully cached) | $0.00 | $11.96 |
+| iter 6: grounding backstop, dev after, shipped (98, image-exempt, fully cached) | $0.00 | $11.96 |
 
-**Total tracked: $11.96** against the $12 budget — $0.04 of headroom left. Iteration 5 is the
+**Total tracked: $11.96** against the $12 budget — $0.04 of headroom left, unchanged by
+iteration 6: unlike iteration 5's prompt edit, the fix lives entirely in `verify.ts`, which runs
+after the cached adjudication call, so there was nothing to re-run against the API on either
+side of the before/after. Budgeted at $3 for this run (the default ceiling); actual spend $0.00.
+Iteration 5 is the
 reason: unlike 4a and 4 (post-hoc filters over cached adjudications), a prompt edit invalidates
 every cached adjudication, so it is a full cold re-run by construction, and it landed after the
 dataset had already grown to 98 dev cases. The 1st attempt tripped the default $3 per-run
