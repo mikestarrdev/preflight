@@ -6,6 +6,7 @@ import { EXAMPLE_ADS } from '@/lib/example-ads';
 import { MAX_COPY_CHARS } from '@/lib/limits';
 import { ANALYSIS_STEPS, StepProgress } from './components/StepProgress';
 import { FindingCard } from './components/FindingCard';
+import { HelpModal } from './components/HelpModal';
 
 // Mirrors lib/agent/orchestrator.ts's RunDiagnostics shape without importing
 // that module: the import would be type-only and erased at build time either
@@ -80,6 +81,7 @@ export default function Home() {
   const [stepIndex, setStepIndex] = useState(0);
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -179,13 +181,27 @@ export default function Home() {
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6">
       <header className="mb-8">
-        <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">Preflight</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+            Pre<span className="text-emerald-600 dark:text-emerald-500">flight</span>
+          </h1>
+          <button
+            type="button"
+            onClick={() => setHelpOpen(true)}
+            aria-label="How it works"
+            className="flex h-5 w-5 items-center justify-center rounded-full border border-neutral-300 text-[11px] text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
+          >
+            ?
+          </button>
+        </div>
         <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
           Pre-flight compliance checking for Meta ads. Paste copy, upload a creative, or check a
           landing page — get back policy findings cited to the exact clause, plus a compliant
           rewrite.
         </p>
       </header>
+
+      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
 
       <section className="mb-6">
         <label
