@@ -4,7 +4,12 @@ import { analyze } from '@/lib/agent/orchestrator';
 import { usageCostUSD } from '@/lib/claude';
 import { IMAGE_MEDIA_TYPES } from '@/lib/inputs/vision';
 import { MAX_COPY_CHARS } from '@/lib/limits';
-import { checkRateLimit, dailySpendRemainingUSD, recordSpend } from '@/lib/rate-limit';
+import {
+  checkRateLimit,
+  dailySpendRemainingUSD,
+  hasValidBypassToken,
+  recordSpend,
+} from '@/lib/rate-limit';
 
 const MAX_REQUEST_BYTES = 10 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -39,13 +44,16 @@ const BodySchema = z
 export const maxDuration = 120;
 
 export async function POST(req: Request) {
-  const ip = clientIp(req);
-  const rateLimit = checkRateLimit(ip);
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      { error: `rate limit exceeded, try again in ${rateLimit.retryAfterSeconds}s` },
-      { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } },
-    );
+  const bypassed = hasValidBypassToken(req);
+  if (!bypassed) {
+    const ip = clientIp(req);
+    const rateLimit = checkRateLimit(ip);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: `rate limit exceeded, try again in ${rateLimit.retryAfterSeconds}s` },
+        { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } },
+      );
+    }
   }
   if (dailySpendRemainingUSD() <= 0) {
     return NextResponse.json(
