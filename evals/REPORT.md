@@ -760,6 +760,12 @@ been the defensible call the case was built to test, and the model went one step
 This is the one dev result that misses the <= 0.05 target (section 8), and it is a single
 case — the honest reading is "the guard against confident false violations has a real gap on
 hedged financial claims," not "the false-positive rate is 17%" as a stable estimate at n=6.
+A separate run on this same case reached the same `violation` on the same clause by a
+different route, asserting the clause applies regardless of whether a time period is stated
+rather than reading "Specific End Date" as satisfying it. The verdict reproduces; the
+reasoning that gets there does not — since both runs cited the correct clause and quoted the
+same span verbatim, this reads as a severity-calibration gap, not a retrieval or citation
+problem.
 
 At the stricter noise threshold, realistic runs 100% on both splits (6/6 dev, 1/1 holdout) —
 higher than paraphrased's 46-60%, but the comparison is not apples to apples: paraphrased's
@@ -836,6 +842,34 @@ problems, are still open.
   is measured on few cases), and a user sees a yellow flag on most compliant near-miss ads.
   Tightening the hedge without reintroducing violation-level false positives is a
   prompt/threshold iteration for later.
+- **A production run turned up a live, repeated instance of the hedge above, and separately
+  exposed that the local cache masks how stable the reported numbers actually are.**
+  `real-adlib-kingdom-debt` (the P1 case discussed in section 8) was run three times against
+  the live deployment at preflightads.com on 2026-07-29. All three runs returned zero
+  `violation` findings; `personal-attributes:2.1` fired in every run, citing the correct
+  clause, explaining the reasoning correctly, and matching the wording of Meta's own
+  prohibited example ("Are you bankrupt? Check out our services.") — retrieval and reasoning
+  were right every time, which argues the severity label is the problem here, not the
+  citation or the explanation — but the finding landed at `risk`, 70-78% confidence, in all
+  three runs. This is a concrete, repeated instance of the hedge already documented in the
+  bullet above ("The model hedges to `risk` rather than committing"), not a new failure mode.
+  The repetition is what exposes the second issue: this report's own recorded result for this
+  case is `violation` at 82% confidence, which reads as settled, but it is not — confirmed by
+  reading `evals/run.ts` and the `eval` script in `package.json`, neither sets `NO_CACHE`, so
+  an eval run reads through `lib/cache.ts` and, for any case whose input and prompt hash are
+  unchanged, replays the stored response rather than calling the model again. The 82% figure
+  is one sample from one run, cached and then replayed by every local re-run of this case
+  since; it was never re-measured until the three fresh production runs above, which disagree
+  with it three out of three times. This is not scoped to one case: **every result in
+  sections 6 and 8 reflects one sample per case**, not a stable expectation, and re-running
+  `pnpm eval` does not resample anything whose input and prompt hash are unchanged. Whether
+  other cases are similarly one lucky or unlucky sample is unverified — checking would
+  require rerunning with `NO_CACHE=1`, which nothing in the harness does today. This is also
+  a second, separate reason the instability bullet below ("The system is unstable under
+  trivial input changes") is invisible to the current metrics: that bullet's reason is that
+  no metric reruns a case to check self-agreement; this is the other half, since even a rerun
+  would, for any case whose cache key hasn't changed, return the exact response already on
+  file instead of a new sample — agreement guaranteed by the cache, not measured by the eval.
 - **Holdout tiers are small** (5-13 cases each), so a single case swings a tier's number by
   0.08-0.20; the realistic tier's clean-case holdout slice is a single case (`real-adlib-roc-serum`),
   so its FP and noise numbers there are a data point, not an estimate. The dev numbers carry
