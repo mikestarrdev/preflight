@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_URL = "https://preflightads.com";
-const TITLE = "Preflight — Meta ad policy checker";
+const TITLE = "Preflight | Meta ad policy checker";
 const DESCRIPTION =
   "Check ad copy, creatives, and landing pages against Meta advertising policy before you spend a dollar on media. Findings cited to the exact clause, plus a compliant rewrite.";
 
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Preflight — Meta ad policy checker",
+        alt: "Preflight | Meta ad policy checker",
       },
     ],
     locale: "en_US",

@@ -122,7 +122,7 @@ export function FindingCard({
           )}
           {finding.rewrite_kind !== 'guidance' && hasOtherFindings && (
             <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-500">
-              Fixes only the claim above — other findings on this ad need their own rewrite.
+              Fixes only the claim above. Other findings on this ad need their own rewrite.
             </p>
           )}
         </div>

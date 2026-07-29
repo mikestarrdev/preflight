@@ -99,11 +99,11 @@ export default function Home() {
       return;
     }
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setImageError('unsupported file type — use JPG, PNG, or WebP');
+      setImageError('unsupported file type, use JPG, PNG, or WebP');
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
-      setImageError('image too large — 5MB max');
+      setImageError('image too large, 5MB max');
       return;
     }
     setImageFile(file);
@@ -215,7 +215,7 @@ export default function Home() {
         </div>
         <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
           Pre-flight compliance checking for Meta ads. Paste copy, upload a creative, or check a
-          landing page — get back policy findings cited to the exact clause, plus a compliant
+          landing page, and get back policy findings cited to the exact clause, plus a compliant
           rewrite.
         </p>
       </header>
@@ -252,7 +252,7 @@ export default function Home() {
         </div>
         {copyTooLong && (
           <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-            Copy is over the {MAX_COPY_CHARS.toLocaleString()}-character limit — trim it before
+            Copy is over the {MAX_COPY_CHARS.toLocaleString()}-character limit. Trim it before
             analyzing.
           </p>
         )}

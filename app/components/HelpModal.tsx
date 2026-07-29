@@ -48,8 +48,8 @@ export function HelpModal({ open, onClose }: { open: boolean; onClose: () => voi
           <section>
             <h3 className="mb-1 font-medium text-neutral-700 dark:text-neutral-300">Running a check</h3>
             <p className="text-neutral-600 dark:text-neutral-400">
-              Paste ad copy, upload a creative, or point at a landing page — any combination. Only
-              the elements you provide get analyzed.
+              Paste ad copy, upload a creative, or point at a landing page, in any combination.
+              Only the elements you provide get analyzed.
             </p>
           </section>
 
@@ -58,15 +58,15 @@ export function HelpModal({ open, onClose }: { open: boolean; onClose: () => voi
             <ul className="flex flex-col gap-1.5 text-neutral-600 dark:text-neutral-400">
               <li className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-red-600" />
-                <span>Violation — likely breaks a specific policy clause as written.</span>
+                <span>Violation: likely breaks a specific policy clause as written.</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-amber-500" />
-                <span>Risk — could draw review; worth a second look before spending.</span>
+                <span>Risk: could draw review, worth a second look before spending.</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-neutral-400 dark:bg-neutral-600" />
-                <span>Clear — checked against relevant policy, no issue found.</span>
+                <span>Clear: checked against relevant policy, no issue found.</span>
               </li>
             </ul>
           </section>

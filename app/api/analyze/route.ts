@@ -43,13 +43,13 @@ export async function POST(req: Request) {
   const rateLimit = checkRateLimit(ip);
   if (!rateLimit.allowed) {
     return NextResponse.json(
-      { error: `rate limit exceeded — try again in ${rateLimit.retryAfterSeconds}s` },
+      { error: `rate limit exceeded, try again in ${rateLimit.retryAfterSeconds}s` },
       { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } },
     );
   }
   if (dailySpendRemainingUSD() <= 0) {
     return NextResponse.json(
-      { error: 'demo daily limit reached — check back tomorrow' },
+      { error: 'demo daily limit reached, check back tomorrow' },
       { status: 503 },
     );
   }
