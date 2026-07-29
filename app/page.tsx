@@ -1,12 +1,14 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import type { AnalysisResult } from '@/lib/types';
+import type { AnalysisResult, Element } from '@/lib/types';
 import { EXAMPLE_ADS } from '@/lib/example-ads';
 import { MAX_COPY_CHARS } from '@/lib/limits';
 import { ANALYSIS_STEPS, StepProgress } from './components/StepProgress';
 import { groupFindings, FindingGroupCard } from './components/FindingGroup';
 import { HelpModal } from './components/HelpModal';
+import { StatusStrip, type StripField } from './components/StatusStrip';
+import { ThemeToggle } from './components/ThemeToggle';
 
 // Mirrors lib/agent/orchestrator.ts's RunDiagnostics shape without importing
 // that module: the import would be type-only and erased at build time either
@@ -28,6 +30,14 @@ type AnalyzeResponse = AnalysisResult & { diagnostics: RunDiagnostics };
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+// Short codes for the status strip's ELEMENTS field, which is a fixed-width
+// readout rather than prose.
+const ELEMENT_CODE: Record<Element, string> = {
+  copy: 'COPY',
+  image: 'IMG',
+  landing_page: 'LP',
+};
 
 // Cumulative offsets (ms) at which the simulated progress advances past
 // classify / retrieve / adjudicate+verify. Roughly proportional to observed
@@ -67,6 +77,28 @@ function degradedMessage(entry: string): string {
     return `Rewrite unavailable for ${entry.slice('rewrite:'.length)}`;
   }
   return entry;
+}
+
+// The header mark: a flight progress strip seen end on, which is the same
+// object the results render as.
+function StripMark() {
+  return (
+    <svg viewBox="0 0 24 16" aria-hidden="true" className="h-4 w-6 shrink-0 text-signal">
+      <rect x="0.7" y="0.7" width="22.6" height="14.6" rx="2.4" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      <rect x="2.4" y="2.4" width="3.6" height="11.2" rx="1" fill="currentColor" />
+      <path d="M13.5 1.4v13.2M18.4 1.4v13.2" stroke="currentColor" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+// Caps label with a rule running out to the right, for the result sections.
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="label-micro flex items-center gap-3 text-[11px]">
+      <span>{children}</span>
+      <span aria-hidden="true" className="h-px flex-1 bg-line" />
+    </span>
+  );
 }
 
 export default function Home() {
@@ -203,23 +235,49 @@ export default function Home() {
   const riskGroups = groupFindings(risks);
   const clearGroups = groupFindings(clears);
 
+  // The strip's fixed fields: what was checked, how long it took, and against
+  // which corpus. Provenance, not verdict.
+  const stripFields: StripField[] = result
+    ? [
+        {
+          label: 'Elements',
+          value: result.elements_analyzed.map((e) => ELEMENT_CODE[e]).join(' · '),
+        },
+        { label: 'Run time', value: `${(result.duration_ms / 1000).toFixed(1)}s` },
+        { label: 'Corpus', value: result.corpus_version },
+      ]
+    : [];
+
+  const countsLine = result ? (
+    <>
+      {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
+      {violations.length} violation{violations.length === 1 ? '' : 's'} · {risks.length} risk
+      {risks.length === 1 ? '' : 's'} · {clears.length} clear
+    </>
+  ) : null;
+
   return (
-    <div className="mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6">
-      <header className="mb-8">
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-            Pre<span className="text-emerald-600 dark:text-emerald-500">flight</span>
-          </h1>
-          <button
-            type="button"
-            onClick={() => setHelpOpen(true)}
-            aria-label="How it works"
-            className="flex h-5 w-5 items-center justify-center rounded-full border border-neutral-300 text-[11px] text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
-          >
-            ?
-          </button>
+    <div className="mx-auto min-h-screen max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+      <header className="mb-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <StripMark />
+            <h1 className="text-xl font-bold tracking-tight text-ink">Preflight</h1>
+            <span className="label-micro rounded border border-line px-1.5 py-0.5">Meta</span>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setHelpOpen(true)}
+              aria-label="How it works"
+              className="flex h-7 w-7 items-center justify-center rounded-md border border-line text-xs text-muted hover:bg-sunken hover:text-ink"
+            >
+              ?
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
-        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+        <p className="mt-2.5 max-w-2xl text-sm text-muted">
           Pre-flight compliance checking for Meta ads. Paste copy, upload a creative, or check a
           landing page, and get back policy findings cited to the exact clause, plus a compliant
           rewrite.
@@ -228,155 +286,145 @@ export default function Home() {
 
       <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
 
-      <section className="mb-6">
-        <label
-          htmlFor="copy"
-          className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-        >
-          Ad copy
-        </label>
+      <section className="rounded-lg border border-line bg-panel p-4 shadow-[var(--lift)] sm:p-5">
+        <div className="mb-1.5 flex items-baseline justify-between gap-3">
+          <label htmlFor="copy" className="label-micro">
+            Ad copy
+          </label>
+          <span
+            className={
+              'font-mono text-[10px] tabular-nums ' + (copyTooLong ? 'text-violation' : 'text-faint')
+            }
+          >
+            {copy.length.toLocaleString()} / {MAX_COPY_CHARS.toLocaleString()}
+          </span>
+        </div>
         <textarea
           id="copy"
           value={copy}
           onChange={(e) => setCopy(e.target.value)}
           placeholder="Paste your ad copy here..."
           rows={6}
-          className="w-full rounded-md border border-neutral-300 bg-white p-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+          className="sunken w-full rounded-md border border-line p-3 text-sm text-ink placeholder:text-faint focus:border-line-strong focus:outline-none"
         />
 
-        <div className="mt-1 flex justify-end">
-          <span
-            className={
-              'text-xs ' +
-              (copyTooLong
-                ? 'text-red-600 dark:text-red-400'
-                : 'text-neutral-400 dark:text-neutral-600')
-            }
-          >
-            {copy.length.toLocaleString()} / {MAX_COPY_CHARS.toLocaleString()} characters
-          </span>
-        </div>
         {copyTooLong && (
-          <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+          <p className="mt-1.5 text-xs text-violation">
             Copy is over the {MAX_COPY_CHARS.toLocaleString()}-character limit. Trim it before
             analyzing.
           </p>
         )}
 
         {status === 'idle' && !hasInput && (
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-neutral-500 dark:text-neutral-500">Try an example:</span>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <span className="label-micro">Try an example</span>
             {EXAMPLE_ADS.map((ex) => (
               <button
                 key={ex.id}
                 type="button"
                 onClick={() => loadExample(ex.id)}
-                className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                className="rounded-md border border-line px-2.5 py-1 text-xs text-muted hover:border-line-strong hover:text-ink"
               >
                 {ex.label}
               </button>
             ))}
           </div>
         )}
-      </section>
 
-      <section className="mb-6 grid gap-4 sm:grid-cols-2">
-        <div>
-          <span className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            Creative <span className="font-normal text-neutral-400">(optional)</span>
-          </span>
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label="Upload creative image"
-            onClick={() => fileInputRef.current?.click()}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click();
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-              pickImage(e.dataTransfer.files[0] ?? null);
-            }}
-            className={
-              'flex h-[88px] cursor-pointer flex-col items-center justify-center rounded-md border border-dashed p-3 text-center text-xs ' +
-              (dragOver
-                ? 'border-neutral-500 bg-neutral-100 dark:bg-neutral-800'
-                : 'border-neutral-300 text-neutral-500 dark:border-neutral-700 dark:text-neutral-500')
-            }
-          >
-            {imagePreview ? (
-              <div className="flex items-center gap-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imagePreview} alt="" className="h-12 w-12 rounded object-cover" />
-                <div className="text-left">
-                  <p className="text-neutral-700 dark:text-neutral-300">{imageFile?.name}</p>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      pickImage(null);
-                    }}
-                    className="text-blue-700 hover:underline dark:text-blue-400"
-                  >
-                    remove
-                  </button>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div>
+            <span className="label-micro mb-1.5 block">Creative (optional)</span>
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label="Upload creative image"
+              onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click();
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(false);
+                pickImage(e.dataTransfer.files[0] ?? null);
+              }}
+              className={
+                'sunken flex h-[88px] cursor-pointer flex-col items-center justify-center rounded-md border border-dashed p-3 text-center text-xs ' +
+                (dragOver ? 'border-signal text-ink' : 'border-line-strong text-muted')
+              }
+            >
+              {imagePreview ? (
+                <div className="flex items-center gap-2.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imagePreview} alt="" className="h-12 w-12 rounded object-cover" />
+                  <div className="text-left">
+                    <p className="text-ink">{imageFile?.name}</p>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        pickImage(null);
+                      }}
+                      className="rounded-sm text-signal hover:underline"
+                    >
+                      remove
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <p>
-                Drag an image here or click to upload
-                <br />
-                JPG, PNG, or WebP, up to 5MB
-              </p>
-            )}
+              ) : (
+                <p>
+                  Drag an image here or click to upload
+                  <br />
+                  <span className="text-faint">JPG, PNG, or WebP, up to 5MB</span>
+                </p>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ACCEPTED_IMAGE_TYPES.join(',')}
+              onChange={(e) => pickImage(e.target.files?.[0] ?? null)}
+              className="hidden"
+            />
+            {imageError && <p className="mt-1.5 text-xs text-violation">{imageError}</p>}
           </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept={ACCEPTED_IMAGE_TYPES.join(',')}
-            onChange={(e) => pickImage(e.target.files?.[0] ?? null)}
-            className="hidden"
-          />
-          {imageError && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{imageError}</p>}
+
+          <div>
+            <label htmlFor="url" className="label-micro mb-1.5 block">
+              Landing page (optional)
+            </label>
+            <input
+              id="url"
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://example.com/landing"
+              className="sunken h-10 w-full rounded-md border border-line px-3 text-sm text-ink placeholder:text-faint focus:border-line-strong focus:outline-none"
+            />
+            <p className="mt-1.5 text-xs text-faint">Fetched and checked against the ad&apos;s claims.</p>
+          </div>
         </div>
 
-        <div>
-          <label
-            htmlFor="url"
-            className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+        <div className="mt-4 border-t border-line pt-4">
+          <button
+            type="button"
+            onClick={analyze}
+            disabled={!hasInput || copyTooLong || status === 'loading'}
+            className="w-full rounded-md bg-ink py-2.5 text-sm font-semibold text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
           >
-            Landing page <span className="font-normal text-neutral-400">(optional)</span>
-          </label>
-          <input
-            id="url"
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://example.com/landing"
-            className="h-[88px] w-full rounded-md border border-neutral-300 bg-white p-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
-          />
+            {status === 'loading' ? 'Analyzing…' : 'Analyze'}
+          </button>
         </div>
       </section>
-
-      <button
-        type="button"
-        onClick={analyze}
-        disabled={!hasInput || copyTooLong || status === 'loading'}
-        className="w-full rounded-md bg-neutral-900 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-neutral-100 dark:text-neutral-900"
-      >
-        {status === 'loading' ? 'Analyzing…' : 'Analyze'}
-      </button>
 
       {status === 'loading' && (
-        <div className="mt-8 rounded-md border border-neutral-200 p-4 dark:border-neutral-800">
+        <div className="mt-6 rounded-lg border border-line bg-panel p-4 shadow-[var(--lift)]">
           <StepProgress activeIndex={stepIndex} />
-          <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-500">
+          <p className="mt-3.5 border-t border-line pt-3 text-xs text-muted">
             A full run makes several model calls across {ANALYSIS_STEPS.length} steps and can take
             30-60s.
           </p>
@@ -384,15 +432,21 @@ export default function Home() {
       )}
 
       {status === 'error' && errorMsg && (
-        <div className="mt-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300">
+        <div
+          data-sev="violation"
+          className="sev-surface mt-6 rounded-lg border p-4 text-sm text-violation"
+        >
           {errorMsg}
         </div>
       )}
 
       {status === 'done' && result && (
-        <div className="mt-8">
+        <div className="mt-6">
           {result.diagnostics.degraded.length > 0 && (
-            <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-900 dark:bg-amber-950/20 dark:text-amber-300">
+            <div
+              data-sev="risk"
+              className="sev-surface mb-4 rounded-lg border p-3 text-xs text-risk"
+            >
               {result.diagnostics.degraded.map((d, i) => (
                 <p key={i}>{degradedMessage(d)}</p>
               ))}
@@ -400,62 +454,59 @@ export default function Home() {
           )}
 
           {result.findings.length === 0 ? (
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              No policy findings for the elements analyzed.
-            </p>
+            <StatusStrip
+              severity="clear"
+              headline="No policy findings for the elements analyzed."
+              fields={stripFields}
+            />
           ) : (
             <>
               {violationGroups.length > 0 ? (
-                <div className="mb-4">
-                  <p className="text-base font-semibold text-red-700 dark:text-red-400">
-                    {violationGroups.length}{' '}
-                    {violationGroups.length === 1 ? 'problem needs' : 'problems need'} attention
-                    before you publish.
-                  </p>
-                  <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                    {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
-                    <span className="text-neutral-400 dark:text-neutral-600">
-                      {violations.length} violation{violations.length === 1 ? '' : 's'} ·{' '}
-                      {risks.length} risk{risks.length === 1 ? '' : 's'} ·{' '}
-                      {clears.length} clear
-                    </span>
-                  </p>
-                </div>
+                <StatusStrip
+                  severity="violation"
+                  headline={
+                    <>
+                      {violationGroups.length}{' '}
+                      {violationGroups.length === 1 ? 'problem needs' : 'problems need'} attention
+                      before you publish.
+                    </>
+                  }
+                  subline={countsLine}
+                  fields={stripFields}
+                />
               ) : riskGroups.length > 0 ? (
-                <div className="mb-4">
-                  <p className="text-base font-semibold text-amber-700 dark:text-amber-400">
-                    No clear violations. {riskGroups.length}{' '}
-                    {riskGroups.length === 1 ? 'area' : 'areas'} worth reviewing before you publish.
-                  </p>
-                  <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                    {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
-                    <span className="text-neutral-400 dark:text-neutral-600">
-                      {violations.length} violation{violations.length === 1 ? '' : 's'} ·{' '}
-                      {risks.length} risk{risks.length === 1 ? '' : 's'} ·{' '}
-                      {clears.length} clear
-                    </span>
-                  </p>
-                </div>
+                <StatusStrip
+                  severity="risk"
+                  headline={
+                    <>
+                      No clear violations. {riskGroups.length}{' '}
+                      {riskGroups.length === 1 ? 'area' : 'areas'} worth reviewing before you
+                      publish.
+                    </>
+                  }
+                  subline={countsLine}
+                  fields={stripFields}
+                />
               ) : (
-                <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20">
-                  <p className="text-base font-semibold text-emerald-800 dark:text-emerald-300">
-                    No violations found. {clearGroups.length}{' '}
-                    {clearGroups.length === 1 ? 'policy area' : 'policy areas'} checked against
-                    Meta&apos;s advertising standards.
-                  </p>
-                  <p className="mt-1 text-sm text-emerald-700/80 dark:text-emerald-400/70">
-                    {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
-                    {violations.length} violation{violations.length === 1 ? '' : 's'} ·{' '}
-                    {risks.length} risk{risks.length === 1 ? '' : 's'} · {clears.length}{' '}
-                    clear
-                  </p>
-                </div>
+                <StatusStrip
+                  severity="clear"
+                  headline={
+                    <>
+                      No violations found. {clearGroups.length}{' '}
+                      {clearGroups.length === 1 ? 'policy area' : 'policy areas'} checked against
+                      Meta&apos;s advertising standards.
+                    </>
+                  }
+                  subline={countsLine}
+                  fields={stripFields}
+                />
               )}
-              <div className="flex flex-col gap-6">
+
+              <div className="mt-6 flex flex-col gap-6">
                 {violations.length > 0 && (
                   <div>
-                    <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                      Violations ({violations.length})
+                    <h2 className="mb-2.5">
+                      <SectionLabel>Violations ({violations.length})</SectionLabel>
                     </h2>
                     <ul className="flex flex-col gap-3">
                       {violationGroups.map((g) => (
@@ -466,10 +517,10 @@ export default function Home() {
                 )}
                 {risks.length > 0 && (
                   <div>
-                    <h2 className="mb-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                      Worth a second look ({risks.length})
+                    <h2 className="mb-1.5">
+                      <SectionLabel>Worth a second look ({risks.length})</SectionLabel>
                     </h2>
-                    <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-500">
+                    <p className="mb-2.5 text-xs text-muted">
                       These aren&apos;t confirmed violations. They&apos;re findings the model
                       couldn&apos;t resolve from the ad alone and need a human judgment call.
                     </p>
@@ -482,10 +533,25 @@ export default function Home() {
                 )}
                 {clears.length > 0 && (
                   <details className="group">
-                    <summary className="cursor-pointer text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                      Clear ({clears.length})
+                    <summary className="cursor-pointer list-none rounded-sm [&::-webkit-details-marker]:hidden">
+                      <span className="label-micro flex items-center gap-3 text-[11px]">
+                        <svg
+                          viewBox="0 0 8 8"
+                          aria-hidden="true"
+                          className="h-2 w-2 shrink-0 transition-transform group-open:rotate-90"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M2.5 1 6 4l-3.5 3" />
+                        </svg>
+                        <span>Clear ({clears.length})</span>
+                        <span aria-hidden="true" className="h-px flex-1 bg-line" />
+                      </span>
                     </summary>
-                    <ul className="mt-2 flex flex-col gap-3">
+                    <ul className="mt-2.5 flex flex-col gap-3">
                       {clearGroups.map((g) => (
                         <FindingGroupCard key={g.key} group={g} hasOtherFindings={hasOtherFindings} />
                       ))}
@@ -496,14 +562,12 @@ export default function Home() {
             </>
           )}
 
-          <div className="mt-6 flex items-center justify-between text-xs text-neutral-400 dark:text-neutral-600">
-            <span>
-              {result.duration_ms}ms · {result.model_version} · corpus {result.corpus_version}
-            </span>
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-line pt-3">
+            <span className="font-mono text-[10px] text-faint">{result.model_version}</span>
             <button
               type="button"
               onClick={reset}
-              className="text-blue-700 hover:underline dark:text-blue-400"
+              className="rounded-sm text-xs text-signal hover:underline"
             >
               analyze another ad
             </button>
