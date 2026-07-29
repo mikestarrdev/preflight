@@ -5,7 +5,7 @@ import type { AnalysisResult } from '@/lib/types';
 import { EXAMPLE_ADS } from '@/lib/example-ads';
 import { MAX_COPY_CHARS } from '@/lib/limits';
 import { ANALYSIS_STEPS, StepProgress } from './components/StepProgress';
-import { groupFindings, countDistinctIssues, FindingGroupCard } from './components/FindingGroup';
+import { groupFindings, FindingGroupCard } from './components/FindingGroup';
 import { HelpModal } from './components/HelpModal';
 
 // Mirrors lib/agent/orchestrator.ts's RunDiagnostics shape without importing
@@ -202,9 +202,6 @@ export default function Home() {
   const violationGroups = groupFindings(violations);
   const riskGroups = groupFindings(risks);
   const clearGroups = groupFindings(clears);
-  // Deduped across all findings, not summed from the groups above: a span
-  // that's a violation via one clause and a risk via another is one issue.
-  const distinctIssueCount = countDistinctIssues(result?.findings ?? []);
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6">
@@ -408,17 +405,52 @@ export default function Home() {
             </p>
           ) : (
             <>
-              <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
-                {distinctIssueCount} {distinctIssueCount === 1 ? 'issue' : 'issues'} found across{' '}
-                {result.findings.length} policy{' '}
-                {result.findings.length === 1 ? 'finding' : 'findings'}
-                <span className="text-neutral-400 dark:text-neutral-600">
-                  {' '}
-                  ({violationGroups.length} violation{violationGroups.length === 1 ? '' : 's'} ·{' '}
-                  {riskGroups.length} risk{riskGroups.length === 1 ? '' : 's'} · {clearGroups.length}{' '}
-                  clear)
-                </span>
-              </p>
+              {violationGroups.length > 0 ? (
+                <div className="mb-4">
+                  <p className="text-base font-semibold text-red-700 dark:text-red-400">
+                    {violationGroups.length}{' '}
+                    {violationGroups.length === 1 ? 'problem needs' : 'problems need'} attention
+                    before you publish.
+                  </p>
+                  <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                    {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
+                    <span className="text-neutral-400 dark:text-neutral-600">
+                      {violations.length} violation{violations.length === 1 ? '' : 's'} ·{' '}
+                      {risks.length} risk{risks.length === 1 ? '' : 's'} ·{' '}
+                      {clears.length} clear
+                    </span>
+                  </p>
+                </div>
+              ) : riskGroups.length > 0 ? (
+                <div className="mb-4">
+                  <p className="text-base font-semibold text-amber-700 dark:text-amber-400">
+                    No clear violations. {riskGroups.length}{' '}
+                    {riskGroups.length === 1 ? 'area' : 'areas'} worth reviewing before you publish.
+                  </p>
+                  <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                    {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
+                    <span className="text-neutral-400 dark:text-neutral-600">
+                      {violations.length} violation{violations.length === 1 ? '' : 's'} ·{' '}
+                      {risks.length} risk{risks.length === 1 ? '' : 's'} ·{' '}
+                      {clears.length} clear
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20">
+                  <p className="text-base font-semibold text-emerald-800 dark:text-emerald-300">
+                    No violations found. {clearGroups.length}{' '}
+                    {clearGroups.length === 1 ? 'policy area' : 'policy areas'} checked against
+                    Meta&apos;s advertising standards.
+                  </p>
+                  <p className="mt-1 text-sm text-emerald-700/80 dark:text-emerald-400/70">
+                    {result.findings.length} {result.findings.length === 1 ? 'finding' : 'findings'}:{' '}
+                    {violations.length} violation{violations.length === 1 ? '' : 's'} ·{' '}
+                    {risks.length} risk{risks.length === 1 ? '' : 's'} · {clears.length}{' '}
+                    clear
+                  </p>
+                </div>
+              )}
               <div className="flex flex-col gap-6">
                 {violations.length > 0 && (
                   <div>
@@ -434,9 +466,13 @@ export default function Home() {
                 )}
                 {risks.length > 0 && (
                   <div>
-                    <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                    <h2 className="mb-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
                       Worth a second look ({risks.length})
                     </h2>
+                    <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-500">
+                      These aren&apos;t confirmed violations. They&apos;re findings the model
+                      couldn&apos;t resolve from the ad alone and need a human judgment call.
+                    </p>
                     <ul className="flex flex-col gap-3">
                       {riskGroups.map((g) => (
                         <FindingGroupCard key={g.key} group={g} hasOtherFindings={hasOtherFindings} />
