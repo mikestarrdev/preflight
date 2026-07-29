@@ -12,7 +12,7 @@ export const ANALYSIS_STEPS = [
 
 export function StepProgress({ activeIndex }: { activeIndex: number }) {
   return (
-    <ol aria-live="polite" className="flex flex-col gap-2.5">
+    <ol data-sev="clear" aria-live="polite" className="flex flex-col gap-2.5">
       {ANALYSIS_STEPS.map((label, i) => {
         const done = i < activeIndex;
         const active = i === activeIndex;
@@ -20,26 +20,22 @@ export function StepProgress({ activeIndex }: { activeIndex: number }) {
           <li key={label} className="flex items-center gap-3">
             <span
               className={
-                'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] ' +
+                'flex h-5 w-5 shrink-0 items-center justify-center rounded-[3px] border font-mono text-[10px] ' +
                 (done
-                  ? 'border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500'
+                  ? 'sev-badge border-transparent'
                   : active
-                    ? 'animate-pulse border-neutral-900 text-neutral-900 dark:border-neutral-100 dark:text-neutral-100'
-                    : 'border-neutral-300 text-neutral-300 dark:border-neutral-700 dark:text-neutral-700')
+                    ? 'animate-pulse border-line-strong text-ink'
+                    : 'border-line text-faint')
               }
             >
               {done ? '✓' : i + 1}
             </span>
-            <span
-              className={
-                'text-sm ' +
-                (done || active
-                  ? 'text-neutral-900 dark:text-neutral-100'
-                  : 'text-neutral-400 dark:text-neutral-600')
-              }
-            >
+            <span className={'text-sm ' + (done || active ? 'text-ink' : 'text-faint')}>
               {label}
-              {active ? '…' : ''}
+            </span>
+            <span aria-hidden="true" className="min-w-4 flex-1 border-b border-dotted border-line" />
+            <span className={'label-micro shrink-0 ' + (done ? 'sev-text' : '')}>
+              {done ? 'Checked' : active ? 'Running' : ''}
             </span>
           </li>
         );

@@ -69,12 +69,6 @@ const ELEMENT_LABEL: Record<Finding['element'], string> = {
   landing_page: 'Landing page',
 };
 
-const SEVERITY_BADGE: Record<Finding['severity'], string> = {
-  violation: 'bg-red-600 text-white',
-  risk: 'bg-amber-500 text-black',
-  clear: 'bg-neutral-400 text-white dark:bg-neutral-600',
-};
-
 export function FindingGroupCard({
   group,
   hasOtherFindings,
@@ -84,35 +78,37 @@ export function FindingGroupCard({
 }) {
   const [primary, ...rest] = group.findings;
 
-  if (!group.offendingSpan) {
+  // A group of one has nothing to group: the shell would repeat the card's own
+  // severity, element, and span verbatim. Grouping is unchanged, only the
+  // wrapper is dropped.
+  if (!group.offendingSpan || group.findings.length === 1) {
     return <FindingCard finding={primary} hasOtherFindings={hasOtherFindings} />;
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
-      <p className="text-sm text-neutral-600 italic dark:text-neutral-400">
-        &ldquo;{group.offendingSpan}&rdquo;
-      </p>
+    <li
+      data-sev={primary.severity}
+      className="flex flex-col gap-2 rounded-lg border border-line bg-panel p-3 shadow-[var(--lift)]"
+    >
+      <p className="text-sm text-muted italic">&ldquo;{group.offendingSpan}&rdquo;</p>
       <div className="flex flex-wrap items-center gap-2">
-        <span
-          className={`rounded px-2 py-0.5 text-xs font-semibold tracking-wide uppercase ${SEVERITY_BADGE[primary.severity]}`}
-        >
+        <span className="sev-badge rounded px-2 py-0.5 font-mono text-[10px] font-semibold tracking-[0.12em] uppercase">
           {primary.severity}
         </span>
-        <span className="rounded border border-neutral-300 px-2 py-0.5 text-xs text-neutral-600 dark:border-neutral-700 dark:text-neutral-400">
+        <span className="rounded border border-line-strong px-2 py-0.5 text-xs text-muted">
           {ELEMENT_LABEL[primary.element]}
         </span>
-        <span className="text-xs text-neutral-500 dark:text-neutral-500">
+        <span className="text-xs text-faint">
           {group.findings.length} {group.findings.length === 1 ? 'clause cites' : 'clauses cite'} this
           text
         </span>
       </div>
       <ul className="flex flex-col gap-3">
-        <FindingCard finding={primary} hasOtherFindings={hasOtherFindings} />
+        <FindingCard finding={primary} hasOtherFindings={hasOtherFindings} nested />
       </ul>
       {rest.length > 0 && (
         <details>
-          <summary className="cursor-pointer text-xs text-neutral-500 hover:underline dark:text-neutral-500">
+          <summary className="cursor-pointer rounded-sm text-xs text-muted hover:underline">
             {rest.length} more {rest.length === 1 ? 'clause cites' : 'clauses cite'} this text
           </summary>
           <ul className="mt-2 flex flex-col gap-3">
@@ -121,6 +117,7 @@ export function FindingGroupCard({
                 key={`${f.element}:${f.policy_id}:${i}`}
                 finding={f}
                 hasOtherFindings={hasOtherFindings}
+                nested
               />
             ))}
           </ul>
