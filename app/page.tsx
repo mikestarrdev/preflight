@@ -5,7 +5,7 @@ import type { AnalysisResult } from '@/lib/types';
 import { EXAMPLE_ADS } from '@/lib/example-ads';
 import { MAX_COPY_CHARS } from '@/lib/limits';
 import { ANALYSIS_STEPS, StepProgress } from './components/StepProgress';
-import { FindingCard } from './components/FindingCard';
+import { groupFindings, countDistinctIssues, FindingGroupCard } from './components/FindingGroup';
 import { HelpModal } from './components/HelpModal';
 
 // Mirrors lib/agent/orchestrator.ts's RunDiagnostics shape without importing
@@ -196,6 +196,15 @@ export default function Home() {
   // there's more than one flagged finding, that needs saying out loud, or a
   // copied rewrite reads as "the ad, fixed" instead of "this one issue, fixed."
   const hasOtherFindings = violations.length + risks.length > 1;
+
+  // Grouped per severity section, so every group's members share one
+  // severity and the badge on a FindingGroupCard needs no separate lookup.
+  const violationGroups = groupFindings(violations);
+  const riskGroups = groupFindings(risks);
+  const clearGroups = groupFindings(clears);
+  // Deduped across all findings, not summed from the groups above: a span
+  // that's a violation via one clause and a risk via another is one issue.
+  const distinctIssueCount = countDistinctIssues(result?.findings ?? []);
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6">
@@ -398,56 +407,57 @@ export default function Home() {
               No policy findings for the elements analyzed.
             </p>
           ) : (
-            <div className="flex flex-col gap-6">
-              {violations.length > 0 && (
-                <div>
-                  <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                    Violations ({violations.length})
-                  </h2>
-                  <ul className="flex flex-col gap-3">
-                    {violations.map((f, i) => (
-                      <FindingCard
-                        key={`${f.element}:${f.policy_id}:${i}`}
-                        finding={f}
-                        hasOtherFindings={hasOtherFindings}
-                      />
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {risks.length > 0 && (
-                <div>
-                  <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                    Worth a second look ({risks.length})
-                  </h2>
-                  <ul className="flex flex-col gap-3">
-                    {risks.map((f, i) => (
-                      <FindingCard
-                        key={`${f.element}:${f.policy_id}:${i}`}
-                        finding={f}
-                        hasOtherFindings={hasOtherFindings}
-                      />
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {clears.length > 0 && (
-                <details className="group">
-                  <summary className="cursor-pointer text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                    Clear ({clears.length})
-                  </summary>
-                  <ul className="mt-2 flex flex-col gap-3">
-                    {clears.map((f, i) => (
-                      <FindingCard
-                        key={`${f.element}:${f.policy_id}:${i}`}
-                        finding={f}
-                        hasOtherFindings={hasOtherFindings}
-                      />
-                    ))}
-                  </ul>
-                </details>
-              )}
-            </div>
+            <>
+              <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+                {distinctIssueCount} {distinctIssueCount === 1 ? 'issue' : 'issues'} found across{' '}
+                {result.findings.length} policy{' '}
+                {result.findings.length === 1 ? 'finding' : 'findings'}
+                <span className="text-neutral-400 dark:text-neutral-600">
+                  {' '}
+                  ({violationGroups.length} violation{violationGroups.length === 1 ? '' : 's'} ·{' '}
+                  {riskGroups.length} risk{riskGroups.length === 1 ? '' : 's'} · {clearGroups.length}{' '}
+                  clear)
+                </span>
+              </p>
+              <div className="flex flex-col gap-6">
+                {violations.length > 0 && (
+                  <div>
+                    <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                      Violations ({violations.length})
+                    </h2>
+                    <ul className="flex flex-col gap-3">
+                      {violationGroups.map((g) => (
+                        <FindingGroupCard key={g.key} group={g} hasOtherFindings={hasOtherFindings} />
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {risks.length > 0 && (
+                  <div>
+                    <h2 className="mb-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                      Worth a second look ({risks.length})
+                    </h2>
+                    <ul className="flex flex-col gap-3">
+                      {riskGroups.map((g) => (
+                        <FindingGroupCard key={g.key} group={g} hasOtherFindings={hasOtherFindings} />
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {clears.length > 0 && (
+                  <details className="group">
+                    <summary className="cursor-pointer text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+                      Clear ({clears.length})
+                    </summary>
+                    <ul className="mt-2 flex flex-col gap-3">
+                      {clearGroups.map((g) => (
+                        <FindingGroupCard key={g.key} group={g} hasOtherFindings={hasOtherFindings} />
+                      ))}
+                    </ul>
+                  </details>
+                )}
+              </div>
+            </>
           )}
 
           <div className="mt-6 flex items-center justify-between text-xs text-neutral-400 dark:text-neutral-600">
