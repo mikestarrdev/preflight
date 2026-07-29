@@ -1,21 +1,40 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 const SITE_URL = "https://preflightads.com";
 const TITLE = "Preflight | Meta ad policy checker";
 const DESCRIPTION =
   "Check ad copy, creatives, and landing pages against Meta advertising policy before you spend a dollar on media. Findings cited to the exact clause, plus a compliant rewrite.";
+
+// Resolves the stored preference to a concrete light/dark value and stamps it
+// on <html> before the first paint, so the page never flashes the wrong theme.
+// Stays in sync with THEME_STORAGE_KEY in components/ThemeToggle.tsx.
+const THEME_SCRIPT = `
+(function () {
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var dark = prefersDark;
+  try {
+    var stored = localStorage.getItem('preflight-theme');
+    if (stored === 'dark') dark = true;
+    else if (stored === 'light') dark = false;
+  } catch (e) {
+    // Storage unavailable (private mode, blocked cookies): fall back to the OS.
+  }
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+})();
+`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -61,18 +80,24 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#edf1f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1118" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
+      <body className={`${archivo.variable} ${plexMono.variable} antialiased`}>{children}</body>
     </html>
   );
 }

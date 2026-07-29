@@ -1,26 +1,212 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Dark mode is driven by a data-theme attribute rather than the media query,
+   so the header toggle can override the OS preference. layout.tsx resolves
+   "system" to a concrete light/dark value before first paint, so this
+   attribute is always present and always one of two values. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* --- Light -------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --paper: #edf1f5;
+  --panel: #ffffff;
+  --sunken: #f4f7fa;
+  --line: #dbe3ec;
+  --line-strong: #c2cddb;
+
+  --ink: #0e141b;
+  --muted: #5a6b7c;
+  --faint: #7a8899;
+
+  --signal: #1b5fd0;
+  --signal-soft: #eaf0fc;
+
+  /* Selected segment of the theme toggle, which needs to sit above the
+     recessed track in both themes rather than match the panel. */
+  --seg-active: #ffffff;
+
+  --violation: #b02219;
+  --violation-tint: #fdf3f2;
+  --violation-line: #f0cdc9;
+  --violation-solid: #b02219;
+  --violation-on: #ffffff;
+  --violation-lamp: #d93a2b;
+
+  --risk: #8f5b00;
+  --risk-tint: #fdf7ec;
+  --risk-line: #eeddb8;
+  --risk-solid: #e0a006;
+  --risk-on: #2b1d00;
+  --risk-lamp: #e0a006;
+
+  --clear: #0b6b47;
+  --clear-tint: #eff9f4;
+  --clear-line: #c6e6d7;
+  --clear-solid: #0b6b47;
+  --clear-on: #ffffff;
+  --clear-lamp: #10a06a;
+
+  --bezel: inset 0 1px 2px rgb(14 20 27 / 0.07);
+  --lift: 0 1px 2px rgb(14 20 27 / 0.05);
+}
+
+/* --- Dark --------------------------------------------------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #0b1118;
+  --panel: #131c26;
+  --sunken: #0d151d;
+  --line: #24303d;
+  --line-strong: #35424f;
+
+  --ink: #e4eaf0;
+  --muted: #93a3b4;
+  --faint: #76869a;
+
+  --signal: #7fa8ff;
+  --signal-soft: #16233a;
+
+  --seg-active: #293544;
+
+  --violation: #ff9a8f;
+  --violation-tint: #1e1315;
+  --violation-line: #48231f;
+  --violation-solid: #ff9a8f;
+  --violation-on: #1a0908;
+  --violation-lamp: #ff5a45;
+
+  --risk: #f5c453;
+  --risk-tint: #1c1810;
+  --risk-line: #48381a;
+  --risk-solid: #f5c453;
+  --risk-on: #2b1d00;
+  --risk-lamp: #f5b21f;
+
+  --clear: #4fd9a0;
+  --clear-tint: #0e1d18;
+  --clear-line: #1e4638;
+  --clear-solid: #4fd9a0;
+  --clear-on: #04140d;
+  --clear-lamp: #2fd193;
+
+  --bezel: inset 0 1px 2px rgb(0 0 0 / 0.4);
+  --lift: 0 1px 2px rgb(0 0 0 / 0.3);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-violation: var(--violation);
+  --color-risk: var(--risk);
+  --color-clear: var(--clear);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* One focus treatment for everything, so no interactive element can ship
+   without a visible focus state. */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Instrument chrome --------------------------------------------------- */
+
+/* Field label: the small stamped caption over an instrument readout. */
+.label-micro {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* Recessed surface: strip fields, clause slabs, rewrite blocks. */
+.sunken {
+  background: var(--sunken);
+  box-shadow: var(--bezel);
+}
+
+/* The annunciator lens. Sits at the head of the status strip: a vertical bar
+   on wide viewports, a lit edge across the top on narrow ones. */
+.lamp {
+  background: var(--sev-lamp);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--sev-lamp) 50%, transparent),
+    0 0 12px 1px color-mix(in oklab, var(--sev-lamp) 40%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 40%, transparent);
+}
+
+/* Severity is carried by one data-sev attribute on a container, which maps the
+   three palettes onto a single set of --sev-* variables. Saves three parallel
+   className lookup tables across the finding components. */
+[data-sev="violation"] {
+  --sev: var(--violation);
+  --sev-tint: var(--violation-tint);
+  --sev-line: var(--violation-line);
+  --sev-solid: var(--violation-solid);
+  --sev-on: var(--violation-on);
+  --sev-lamp: var(--violation-lamp);
+}
+[data-sev="risk"] {
+  --sev: var(--risk);
+  --sev-tint: var(--risk-tint);
+  --sev-line: var(--risk-line);
+  --sev-solid: var(--risk-solid);
+  --sev-on: var(--risk-on);
+  --sev-lamp: var(--risk-lamp);
+}
+[data-sev="clear"] {
+  --sev: var(--clear);
+  --sev-tint: var(--clear-tint);
+  --sev-line: var(--clear-line);
+  --sev-solid: var(--clear-solid);
+  --sev-on: var(--clear-on);
+  --sev-lamp: var(--clear-lamp);
+}
+
+.sev-surface {
+  background: var(--sev-tint);
+  border-color: var(--sev-line);
+}
+.sev-badge {
+  background: var(--sev-solid);
+  color: var(--sev-on);
+}
+.sev-text {
+  color: var(--sev);
+}
+.sev-rule {
+  border-color: var(--sev);
 }
