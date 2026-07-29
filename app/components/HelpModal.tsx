@@ -83,7 +83,8 @@ export function HelpModal({ open, onClose }: { open: boolean; onClose: () => voi
             <h3 className="mb-1 font-medium text-neutral-700 dark:text-neutral-300">Limits worth knowing</h3>
             <p className="text-neutral-600 dark:text-neutral-400">
               This is a policy-matching aid, not legal or compliance sign-off. Always apply your
-              own review before spending on media.
+              own review before spending on media. Results can also vary between runs on the
+              same ad, since the model doesn&apos;t answer identically every time.
             </p>
           </section>
         </div>
